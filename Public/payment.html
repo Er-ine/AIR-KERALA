@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Payment | NAVIERO</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary-navy: #0e1e3a; --accent-gold: #f9b233; --main-blue: #0250d4; --success-green: #10b981; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; min-height: 100vh; }
+        .header-custom { background-color: var(--primary-navy); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--accent-gold); }
+        .nav-link { color: rgba(255,255,255,0.8); padding: 10px 20px; border-radius: 20px; text-decoration: none; font-weight: 600; font-size: 14px; }
+        .nav-link.active { background: var(--accent-gold); color: #000; }
+        .payment-card { background: white; border-radius: 25px; padding: 40px; box-shadow: 0 25px 50px rgba(0,0,0,0.1); margin-top: 50px; border: 1px solid #f1f5f9; }
+        .btn-pay { background: linear-gradient(90deg, var(--success-green), #059669); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 800; width: 100%; transition: 0.3s; cursor: pointer; }
+        
+        /* Receipt Styling */
+        .receipt-box { border: 2px solid var(--primary-navy); padding: 30px; border-radius: 15px; margin-top: 20px; display: none; background: white; }
+        .pnr-text { font-size: 24px; font-weight: 800; color: var(--main-blue); letter-spacing: 2px; }
+        
+        @media print {
+            .no-print { display: none !important; }
+            .receipt-box { display: block !important; border: none; box-shadow: none; margin: 0; padding: 0; }
+            body { background: white; }
+            .container { width: 100%; max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header-custom no-print">
+        <div style="color:white; font-weight:800; font-size:20px;">✈️ NAVIERO</div>
+        <nav style="background: #1c2e4a; border-radius: 50px; padding: 5px; display: flex;">
+            <a class="nav-link" href="index.html">Home</a>
+            <a class="nav-link" href="flights.html">Flights</a>
+            <a class="nav-link active" href="payment.html">Payment</a>
+            <a class="nav-link" href="cancel.html">Cancel</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div id="paymentSection" class="payment-card no-print">
+            <h4 class="fw-bold mb-4" style="color:var(--primary-navy)">💳 Secure Checkout</h4>
+            <div class="row g-4">
+                <div class="col-md-7">
+                    <div class="p-3 border rounded-4 bg-light">
+                        <div class="mb-3">
+                            <label class="small fw-bold text-muted">CARDHOLDER NAME</label>
+                            <input type="text" id="paxName" class="form-control" placeholder="Full Name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="small fw-bold text-muted">CARD NUMBER</label>
+                            <input type="text" class="form-control" placeholder="XXXX XXXX XXXX XXXX" maxlength="19">
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <label class="small fw-bold text-muted">EXPIRY DATE</label>
+                                <input type="text" class="form-control" placeholder="MM/YY">
+                            </div>
+                            <div class="col-6">
+                                <label class="small fw-bold text-muted">CVV CODE</label>
+                                <input type="password" class="form-control" placeholder="***" maxlength="3">
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn-pay mt-4" onclick="handleTransaction()">Pay & Print Receipt ➔</button>
+                </div>
+                
+                <div class="col-md-5">
+                    <div class="p-4 rounded-4" style="background: #eff6ff; border: 1px solid #dbeafe;">
+                        <h6 class="fw-bold text-primary mb-3">Order Summary</h6>
+                        <div class="d-flex justify-content-between mb-2"><span>Flight</span><span id="summaryRoute">-</span></div>
+<div class="d-flex justify-content-between mb-2"><span>Cabin Class</span><span id="summaryClass">-</span></div>
+<div class="d-flex justify-content-between mb-2"><span>Seat</span><span id="summarySeat">-</span></div>
+<hr>
+<div class="d-flex justify-content-between align-items-center">
+    <span class="h5 fw-bold mb-0">Total</span>
+    <span class="h4 fw-bold text-primary mb-0" id="summaryTotal">₹0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="receiptSection" class="receipt-box">
+            <div class="text-center border-bottom pb-4 mb-4">
+                <h2 class="fw-800">✈️ NAVIERO</h2>
+                <p class="text-muted mb-0">Electronic Payment Confirmation</p>
+                <small>PCI-DSS Verified Transaction</small>
+            </div>
+            
+            <div class="row mb-4">
+                <div class="col-6">
+                    <p class="text-muted small mb-1">PASSENGER NAME</p>
+                    <h5 id="recName" class="fw-bold">GUEST</h5>
+                </div>
+                <div class="col-6 text-end">
+                    <p class="text-muted small mb-1">BOOKING PNR</p>
+                    <h5 id="recPNR" class="pnr-text">PNR-000000</h5>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-6">
+                    <p class="text-muted small mb-1">CABIN CLASS</p>
+                    <h6 id="recClass" class="fw-bold">-</h6>
+                </div>
+                <div class="col-6 text-end">
+                    <p class="text-muted small mb-1">SEAT NUMBER</p>
+                    <h6 id="recSeat" class="fw-bold">-</h6>
+                </div>
+            </div>
+
+            <table class="table table-bordered mb-4">
+                <thead class="table-light">
+                    <tr><th>Service</th><th class="text-end">Amount</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td id="recRoute">Flight Booking</td><td class="text-end" id="recAmount">₹0.00</td></tr>
+                </tbody>
+            </table>
+
+            <div class="text-end mb-5">
+                <h4 class="fw-bold">Total Paid: <span id="recTotal">₹0</span></h4>
+            </div>
+
+            <div class="no-print text-center pt-4 border-top">
+                <button class="btn btn-primary px-5 py-3 fw-bold rounded-pill shadow" onclick="window.print()">🖨️ Print This Receipt</button>
+                <p class="mt-4"><a href="index.html" class="text-muted text-decoration-none small">Done? Go back to Home</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // Load details from localStorage
+window.onload = function() {
+    const total = parseInt(localStorage.getItem('bookingTotal')) || 5310;
+    const origin = localStorage.getItem('origin') || '-';
+    const dest = localStorage.getItem('dest') || '-';
+    const cls = localStorage.getItem('cabinClass') || 'Economy';
+    const seat = localStorage.getItem('selectedSeat') || '-';
+    const passengerName = localStorage.getItem('passengerName') || '';
+
+    document.getElementById('summaryRoute').textContent = `${origin} → ${dest}`;
+    document.getElementById('summaryClass').textContent = cls;
+    document.getElementById('summarySeat').textContent = seat;
+    document.getElementById('summaryTotal').textContent = `₹ ${total.toLocaleString()}`;
+    document.getElementById('paxName').value = passengerName;
+};
+    async function handleTransaction() {
+    const name = document.getElementById('paxName').value;
+    if (!name) return alert("Please enter Passenger Name");
+
+    const booking_id = localStorage.getItem('booking_id');
+    if (!booking_id) return alert("No booking found! Please book a flight first.");
+
+    const total = parseInt(localStorage.getItem('bookingTotal')) || 5310;
+    const origin = localStorage.getItem('origin') || '-';
+    const dest = localStorage.getItem('dest') || '-';
+    const cls = localStorage.getItem('cabinClass') || 'Economy';
+    const seat = localStorage.getItem('selectedSeat') || '-';
+    const flightNum = localStorage.getItem('flightNum') || '';
+    const airline = localStorage.getItem('airline') || '';
+
+    const paymentData = {
+        booking_id: parseInt(booking_id),
+        amount: total,
+        payment_method: 'CARD',
+        payment_date: new Date().toISOString().split('T')[0]
+    };
+        try {
+            const res = await fetch('/api/payment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(paymentData)
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+                const pnr = "TRV" + Math.floor(100000 + Math.random() * 900000);
+                document.getElementById('recName').innerText = name.toUpperCase();
+                document.getElementById('recPNR').innerText = pnr;
+                document.getElementById('recClass').innerText = cls;
+                document.getElementById('recSeat').innerText = seat;
+                document.getElementById('recRoute').innerText = `Flight Booking ${airline ? '(' + airline + (flightNum ? ' ' + flightNum : '') + ') ' : ''}(${origin} → ${dest})`;
+                document.getElementById('recAmount').innerText = '₹' + total.toLocaleString() + '.00';
+                document.getElementById('recTotal').innerText = '₹' + total.toLocaleString();
+                document.getElementById('paymentSection').style.display = 'none';
+                document.getElementById('receiptSection').style.display = 'block';
+                window.scrollTo(0, 0);
+            } else {
+                alert('Payment failed: ' + data.message);
+            }
+        } catch (err) {
+            alert('Error: ' + err.message);
+        }
+    }
+</script>
+</body>
+</html>

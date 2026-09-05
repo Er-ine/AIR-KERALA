@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Flights | NAVIERO
+    </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary-navy: #0e1e3a; --accent-gold: #f9b233; --main-blue: #0250d4; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f4f7fa; min-height: 100vh; display: flex; flex-direction: column; }
+        .header-custom { background: var(--primary-navy); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--accent-gold); }
+        .nav-link { color: rgba(255,255,255,0.8); text-decoration: none; padding: 10px 20px; border-radius: 20px; font-weight: 600; }
+        .nav-link.active { background: var(--accent-gold); color: #000; }
+        .search-area { background: var(--primary-navy); padding: 30px 5% 60px; border-bottom-left-radius: 60px; border-bottom-right-radius: 60px; color: white; }
+        .filter-box { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); color: #333; margin-top: 20px; }
+        .flight-card { background: white; border-radius: 20px; padding: 20px 25px; margin-bottom: 15px; border: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; gap: 15px; transition: 0.3s; }
+        .flight-card:hover { border-color: var(--main-blue); transform: translateY(-3px); }
+        .flight-name { font-weight: 800; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px; }
+        .footer-custom { background: var(--primary-navy); color: white; padding: 25px 5%; margin-top: auto; }
+    </style>
+</head>
+<body>
+    <header class="header-custom">
+        <div style="color:white; font-weight:800; font-size:22px;">✈️ Naviero</div>
+        <nav style="background: #1c2e4a; border-radius: 50px; padding: 5px; display: flex;">
+            <a class="nav-link" href="index.html">Home</a>
+            <a class="nav-link active" href="flights.html">Flights</a>
+            <a class="nav-link" href="booking.html">Booking</a>
+            <a class="nav-link" href="payment.html">Payment</a>
+        </nav>
+    </header>
+
+    <div class="search-area text-center">
+        <h2 class="fw-bold mb-1">Find Your Flight</h2>
+        <p class="opacity-75">Your perfect travel partner — search and book worldwide flights</p>
+        <div class="container filter-box text-start">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-3">
+                    <label class="small fw-bold text-muted">TRAVEL DATE</label>
+                    <input type="date" id="travelDate" class="form-control p-3" style="border: 2px solid var(--accent-gold); border-radius:12px;" onchange="filterByDate()">
+                </div>
+                <div class="col-md-3">
+                    <label class="small fw-bold text-muted">FROM</label>
+                    <select id="fromFilter" class="form-select p-3" style="border-radius:12px;" onchange="filterByDate()">
+                        <option value="all">All Airports</option>
+                        <option value="DEL">Delhi</option>
+                        <option value="BOM">Mumbai</option>
+                        <option value="BLR">Bangalore</option>
+                        <option value="MAA">Chennai</option>
+                        <option value="CCU">Kolkata</option>
+                        <option value="HYD">Hyderabad</option>
+                        <option value="COK">Kochi</option>
+                        <option value="DXB">Dubai</option>
+                        <option value="LHR">London</option>
+                        <option value="JFK">New York</option>
+                        <option value="SIN">Singapore</option>
+                        <option value="DOH">Doha</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="small fw-bold text-muted">TO</label>
+                    <select id="toFilter" class="form-select p-3" style="border-radius:12px;" onchange="filterByDate()">
+                        <option value="all">All Destinations</option>
+                        <option value="DEL">Delhi</option>
+                        <option value="BOM">Mumbai</option>
+                        <option value="BLR">Bangalore</option>
+                        <option value="MAA">Chennai</option>
+                        <option value="CCU">Kolkata</option>
+                        <option value="HYD">Hyderabad</option>
+                        <option value="COK">Kochi</option>
+                        <option value="DXB">Dubai</option>
+                        <option value="LHR">London</option>
+                        <option value="JFK">New York</option>
+                        <option value="SIN">Singapore</option>
+                        <option value="DOH">Doha</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button class="btn btn-primary w-100 p-3 fw-bold" style="background:var(--main-blue); border-radius:12px;" onclick="filterByDate()">Search Flights</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container my-5">
+        <div id="flightResults"></div>
+    </div>
+
+    <footer class="footer-custom">
+        <div>© 2026 Naviero — Your Perfect Travel Partner</div>
+        <div>📍 Global H.Q.</div>
+    </footer>
+
+    <script>
+    if (localStorage.getItem('isLoggedIn') !== 'true') {
+        alert("🔒 Access Denied. Please login first.");
+        window.location.href = "index.html";
+    }
+
+    const airportNames = {
+        DEL: '🇮🇳 Delhi', BOM: '🇮🇳 Mumbai', BLR: '🇮🇳 Bangalore',
+        MAA: '🇮🇳 Chennai', CCU: '🇮🇳 Kolkata', HYD: '🇮🇳 Hyderabad',
+        COK: '🇮🇳 Kochi', DXB: '🇦🇪 Dubai', LHR: '🇬🇧 London',
+        JFK: '🇺🇸 New York', SIN: '🇸🇬 Singapore', DOH: '🇶🇦 Doha'
+    };
+
+    async function filterByDate() {
+        const date = document.getElementById('travelDate').value;
+        const toDest = document.getElementById('toFilter').value;
+        const fromFilter = document.getElementById('fromFilter').value;
+        const container = document.getElementById('flightResults');
+        container.innerHTML = `<p class="text-muted">Loading live flights worldwide...</p>`;
+
+        try {
+            const today = date || new Date().toISOString().split('T')[0];
+            const liveRes = await fetch('/api/live-flights?date=' + today);
+            const liveData = await liveRes.json();
+            let airports = liveData.flights || [];
+
+            // Filter by origin airport
+            if (fromFilter !== 'all') {
+                airports = airports.filter(a => a.airport === fromFilter);
+            }
+
+            container.innerHTML = '<h5 class="fw-bold mb-4">🌍 Live Worldwide Flights for: ' + today + '</h5>';
+
+            let totalShown = 0;
+
+            airports.forEach(function({ airport, departures }) {
+                if (!departures || !departures.length) return;
+
+                let filtered = departures;
+                if (toDest !== 'all') {
+                    filtered = departures.filter(function(f) {
+                        const arrAirport = f.arrival && f.arrival.airport;
+                        if (!arrAirport) return false;
+                        const code = (arrAirport.iata || arrAirport.icao || '').toUpperCase();
+                        if (code) return code === toDest;
+                        // fallback: match by destination city name if no code is available
+                        const destName = (arrAirport.name || '').toLowerCase();
+                        const destCity = (airportNames[toDest] || '').split(' ').slice(1).join(' ').toLowerCase();
+                        return destCity && destName.includes(destCity);
+                    });
+                }
+                if (!filtered.length) return;
+
+                container.innerHTML += '<h6 class="fw-bold mt-4 mb-3 text-primary">' + (airportNames[airport] || airport) + ' Airport</h6>';
+
+                filtered.slice(0, 10).forEach(function(f) {
+                    const dep = (f.departure && f.departure.scheduledTime && f.departure.scheduledTime.local) ? f.departure.scheduledTime.local.slice(11, 16) : 'N/A';
+                    const arr = (f.arrival && f.arrival.scheduledTime && f.arrival.scheduledTime.local) ? f.arrival.scheduledTime.local.slice(11, 16) : 'N/A';
+                    const dest = (f.arrival && f.arrival.airport && f.arrival.airport.name) ? f.arrival.airport.name : 'Unknown';
+                    const airlineName = (f.airline && f.airline.name) ? f.airline.name : 'Unknown';
+                    const aircraftModel = (f.aircraft && f.aircraft.model) ? f.aircraft.model : '';
+                    const flightNum = f.number || '';
+                    const status = f.status || 'Unknown';
+                    const statusColor = status === 'Departed' ? 'success' : status === 'GateClosed' ? 'warning' : 'secondary';
+                    const originCity = airportNames[airport] ? airportNames[airport].split(' ').slice(1).join(' ') : airport;
+
+                    const detailsUrl = 'flight-details.html?number=' + encodeURIComponent(flightNum) +
+                        '&airline=' + encodeURIComponent(airlineName) +
+                        '&origin=' + encodeURIComponent(originCity) +
+                        '&dest=' + encodeURIComponent(dest) +
+                        '&dep=' + encodeURIComponent(dep) +
+                        '&arr=' + encodeURIComponent(arr) +
+                        '&aircraft=' + encodeURIComponent(aircraftModel) +
+                        '&status=' + encodeURIComponent(status);
+
+                    // If departed, show details only — no booking button
+                    const actionBtn = status === 'Departed'
+                        ? '<span class="text-muted small fst-italic">Flight departed</span>'
+                        : '<a href="' + detailsUrl + '" class="btn btn-dark fw-bold px-4" style="border-radius:10px;">View Flight</a>';
+
+                    container.innerHTML += `
+                        <div class="flight-card shadow-sm">
+                            <div style="min-width:150px;">
+                                <small class="text-muted fw-bold">${flightNum}</small>
+                                <div class="flight-name">${airlineName}</div>
+                                <small class="text-muted">${aircraftModel}</small>
+                            </div>
+                            <div class="text-center flex-grow-1">
+                                <div class="fw-bold h6 mb-1">${originCity} ➔ ${dest}</div>
+                                <div class="small text-muted">🕒 Dep: ${dep} | Arr: ${arr}</div>
+                            </div>
+                            <span class="badge bg-${statusColor} px-3 py-2">${status}</span>
+                            ${actionBtn}
+                        </div>`;
+                    totalShown++;
+                });
+            });
+
+            if (totalShown === 0) {
+                container.innerHTML += '<p class="text-muted">No flights found for selected filters.</p>';
+            }
+
+        } catch (err) {
+            container.innerHTML = '<p class="text-danger">Error loading flights: ' + err.message + '</p>';
+        }
+    }
+
+    window.onload = filterByDate;
+    </script>
+</body>
+</html>
