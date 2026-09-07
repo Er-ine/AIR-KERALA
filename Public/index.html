@@ -3,238 +3,2050 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NAVIERO | Your Perfect Travel Partner</title>
+
+    <title>AIR KERALA | Fly Beyond</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     <style>
-        :root { --primary-navy: #0e1e3a; --accent-gold: #f9b233; --main-blue: #0250d4; --text-dark: #1f2937; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; background-color: #fff; color: var(--text-dark); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
-        .header-custom { background-color: var(--primary-navy); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--accent-gold); position: relative; z-index: 100; }
-        .brand-section { display: flex; align-items: center; color: white; text-decoration: none; }
-        .brand-icon { background: var(--accent-gold); padding: 10px; border-radius: 8px; margin-right: 15px; font-size: 24px; }
-        .brand-text h4 { margin: 0; font-weight: 800; line-height: 1; font-size: 22px; }
-        .brand-text small { color: #d1d5db; font-size: 11px; font-weight: 400; }
-        .nav-section { display: flex; align-items: center; gap: 10px; }
-        .nav-pills-custom { background: #1c2e4a; border-radius: 50px; padding: 5px; display: flex; gap: 5px; }
-        .nav-pills-custom .nav-link { color: rgba(255,255,255,0.8); text-decoration: none; font-size: 14px; font-weight: 600; padding: 10px 20px; border-radius: 20px; transition: 0.3s; }
-        .nav-pills-custom .nav-link.active { background: var(--accent-gold); color: #000; }
-        .nav-pills-custom .nav-link:hover:not(.active) { color: white; background: rgba(255,255,255,0.1); }
-        .auth-btn { background: white; color: var(--primary-navy); padding: 10px 25px; border-radius: 12px; font-weight: 700; display: flex; align-items: center; gap: 8px; font-size: 14px; border: none; cursor: pointer; }
-        .hero-section { background-color: white; padding: 80px 5% 40px; position: relative; flex-grow: 1; }
-        .hero-wave { position: absolute; top: 0; left: 0; width: 100%; height: 60vh; background: linear-gradient(135deg, rgba(59,130,246,0.4) 0%, rgba(147,197,253,0.1) 50%, rgba(255,255,255,0) 100%); border-bottom-left-radius: 100px; z-index: 1; }
-        .hero-content { position: relative; z-index: 10; max-width: 1100px; margin: 0 auto; display: flex; align-items: center; gap: 50px; }
-        .text-area { flex: 1.2; text-align: left; }
-        .welcome-label { color: var(--accent-gold); font-size: 26px; font-style: italic; font-weight: 400; display: inline-block; padding: 5px 15px; background: rgba(249,178,51,0.1); border-radius: 50px; }
-        .hero-title { font-size: 48px; font-weight: 800; color: #002e63; line-height: 1.1; margin: 15px 0; }
-        .hero-title span { position: relative; display: inline-block; }
-        .hero-title span::after { content:''; position: absolute; bottom: -2px; left: 0; width: 100%; height: 4px; background: var(--accent-gold); border-radius: 2px; }
-        .hero-desc { color: #4b5563; font-weight: 500; font-size: 17px; max-width: 600px; margin-bottom: 50px; }
-        .visual-area { flex: 1; display: flex; flex-direction: column; align-items: center; position: relative; }
-        .plane-box { width: 300px; padding: 20px; background: rgba(255,255,255,0.8); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); backdrop-filter: blur(5px); transform: rotate(-5deg); }
-        .plane-icon { font-size: 80px; }
-        .map-icon { position: absolute; font-size: 100px; color: rgba(2,80,212,0.1); top: -20px; z-index: -1; }
-        .status-section { position: relative; z-index: 10; max-width: 1000px; margin: 0 auto 50px; }
-        .status-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
-        .status-card { background: white; border-radius: 24px; padding: 30px; display: flex; align-items: center; gap: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.06); border: 1px solid #f1f5f9; }
-        .icon-box { width: 65px; height: 65px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 28px; color: white; }
-        .blue-icon { background: #3b82f6; }
-        .dark-blue-icon { background: #0c4cb3; }
-        .gold-icon { background: var(--accent-gold); }
-        .info-box h3 { margin: 0; font-weight: 800; font-size: 24px; color: var(--text-dark); }
-        .info-box small { color: #6b7280; font-size: 13px; font-weight: 600; display: block; margin-top: 3px; }
-        .cta-section { position: relative; z-index: 10; text-align: center; margin-bottom: 60px; }
-        .check-flights-btn { background: linear-gradient(90deg, #0250d4 0%, #3a8cff 100%); color: white; padding: 18px 50px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 18px; display: inline-flex; align-items: center; gap: 12px; box-shadow: 0 15px 30px rgba(2,80,212,0.3); transition: 0.3s; }
-        .check-flights-btn:hover { color: white; transform: translateY(-3px); }
-        .footer-custom { background-color: var(--primary-navy); color: white; padding: 20px 5%; font-size: 14px; font-weight: 500; margin-top: auto; }
-        .footer-content { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
-        .footer-logo { display: flex; align-items: center; gap: 10px; color: rgba(255,255,255,0.7); }
-        .contact-info { display: flex; gap: 20px; align-items: center; color: rgba(255,255,255,0.6); }
+
+        /* =====================================================
+           GLOBAL
+        ===================================================== */
+
+        :root {
+            --air-blue: #0878d1;
+            --air-dark: #071b2e;
+            --air-gold: #d7b56d;
+            --white: #ffffff;
+            --light: #f5f7fa;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #17202a;
+            background: #ffffff;
+            overflow-x: hidden;
+        }
+
+
+        /* =====================================================
+           HERO
+        ===================================================== */
+
+        .hero {
+            height: 760px;
+            min-height: 680px;
+            position: relative;
+            overflow: hidden;
+            color: white;
+        }
+
+
+        /* Background slideshow */
+
+        .hero-slides {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+        }
+
+        .slide {
+            position: absolute;
+            inset: 0;
+
+            background-size: cover;
+            background-position: center;
+
+            opacity: 0;
+            transform: scale(1.05);
+
+            transition:
+                opacity 1.2s ease-in-out,
+                transform 7s ease;
+
+            pointer-events: none;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+
+        /* Kerala images */
+
+        .slide:nth-child(1) {
+            background-image:
+                url("https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&w=2200&q=90");
+        }
+
+        .slide:nth-child(2) {
+            background-image:
+                url("https://images.unsplash.com/photo-1593693411515-c20261bcad6e?auto=format&fit=crop&w=2200&q=90");
+        }
+
+        .slide:nth-child(3) {
+            background-image:
+                url("https://images.unsplash.com/photo-1590050752117-23a9d3f6c4c9?auto=format&fit=crop&w=2200&q=90");
+        }
+
+        .slide:nth-child(4) {
+            background-image:
+                url("https://images.unsplash.com/photo-1609920658906-8223bd289001?auto=format&fit=crop&w=2200&q=90");
+        }
+
+
+        /* Dark overlay */
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(3, 20, 34, 0.78) 0%,
+                    rgba(3, 20, 34, 0.45) 40%,
+                    rgba(3, 20, 34, 0.10) 75%
+                );
+
+            z-index: 1;
+        }
+
+
+        /* =====================================================
+           NAVBAR
+        ===================================================== */
+
+        .navbar-air {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+
+            z-index: 20;
+
+            padding: 22px 5%;
+
+            border-bottom: 1px solid rgba(255,255,255,0.22);
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            text-decoration: none;
+            color: white;
+        }
+
+        .brand-symbol {
+            width: 42px;
+            height: 42px;
+
+            border-radius: 50%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: rgba(255,255,255,0.15);
+
+            backdrop-filter: blur(10px);
+
+            font-size: 21px;
+        }
+
+        .brand-name {
+            font-size: 23px;
+            font-weight: 700;
+            letter-spacing: 3px;
+        }
+
+        .brand-subtitle {
+            display: block;
+
+            font-size: 8px;
+            letter-spacing: 2px;
+
+            color: rgba(255,255,255,0.75);
+
+            margin-top: 2px;
+        }
+
+
+        /* Navigation */
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-links a {
+            color: rgba(255,255,255,0.9);
+
+            text-decoration: none;
+
+            padding: 10px 17px;
+
+            font-size: 13px;
+            font-weight: 500;
+
+            border-radius: 4px;
+
+            transition: 0.25s;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255,255,255,0.13);
+            color: white;
+        }
+
+        .nav-links a.active {
+            border-bottom: 2px solid white;
+        }
+
+
+        /* Login */
+
+        .login-btn {
+            border: 1px solid rgba(255,255,255,0.55);
+
+            background: rgba(255,255,255,0.08);
+
+            color: white;
+
+            padding: 10px 20px;
+
+            border-radius: 4px;
+
+            font-size: 13px;
+            font-weight: 600;
+
+            margin-left: 12px;
+
+            backdrop-filter: blur(8px);
+
+            cursor: pointer;
+
+            transition: 0.3s;
+        }
+
+        .login-btn:hover {
+            background: white;
+            color: var(--air-dark);
+        }
+
+
+        /* =====================================================
+           HERO CONTENT
+        ===================================================== */
+
+        .hero-content {
+            position: relative;
+            z-index: 5;
+
+            max-width: 1250px;
+
+            margin: 0 auto;
+
+            padding: 175px 5% 0;
+        }
+
+        .hero-eyebrow {
+            font-size: 13px;
+
+            letter-spacing: 5px;
+
+            font-weight: 500;
+
+            margin-bottom: 18px;
+
+            color: rgba(255,255,255,0.9);
+        }
+
+        .hero-title {
+            font-size: clamp(46px, 6vw, 78px);
+
+            font-weight: 300;
+
+            line-height: 1.05;
+
+            margin: 0;
+
+            max-width: 650px;
+        }
+
+        .hero-title strong {
+            font-weight: 700;
+        }
+
+        .hero-description {
+            max-width: 550px;
+
+            font-size: 16px;
+
+            line-height: 1.8;
+
+            color: rgba(255,255,255,0.9);
+
+            margin-top: 22px;
+        }
+
+
+        /* =====================================================
+           SLIDE LABEL
+        ===================================================== */
+
+        .slide-location {
+            position: absolute;
+
+            left: 5%;
+            bottom: 170px;
+
+            z-index: 7;
+
+            font-size: 12px;
+
+            letter-spacing: 3px;
+
+            text-transform: uppercase;
+
+            color: rgba(255,255,255,0.85);
+        }
+
+
+        /* =====================================================
+           SLIDER CONTROLS
+        ===================================================== */
+
+        .slider-arrow {
+            position: absolute;
+
+            top: 48%;
+
+            z-index: 8;
+
+            width: 48px;
+            height: 48px;
+
+            border-radius: 50%;
+
+            border: 1px solid rgba(255,255,255,0.5);
+
+            background: rgba(0,0,0,0.15);
+
+            color: white;
+
+            font-size: 24px;
+
+            cursor: pointer;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            transition: 0.3s;
+
+            backdrop-filter: blur(5px);
+        }
+
+        .slider-arrow:hover {
+            background: white;
+            color: var(--air-dark);
+        }
+
+        .prev {
+            left: 25px;
+        }
+
+        .next {
+            right: 25px;
+        }
+
+
+        /* Dots */
+
+        .slider-dots {
+            position: absolute;
+
+            bottom: 108px;
+
+            left: 5%;
+
+            z-index: 8;
+
+            display: flex;
+
+            gap: 10px;
+        }
+
+        .dot {
+            width: 35px;
+            height: 3px;
+
+            border: none;
+
+            background: rgba(255,255,255,0.45);
+
+            cursor: pointer;
+
+            transition: 0.3s;
+        }
+
+        .dot.active {
+            background: white;
+        }
+
+
+        /* =====================================================
+           FLIGHT SEARCH BOX
+        ===================================================== */
+
+        .search-wrapper {
+            position: absolute;
+
+            bottom: -1px;
+
+            left: 50%;
+
+            transform: translateX(-50%);
+
+            width: min(1180px, 90%);
+
+            z-index: 10;
+        }
+
+        .search-card {
+            background: white;
+
+            color: #17202a;
+
+            border-radius: 5px 5px 0 0;
+
+            box-shadow:
+                0 -10px 40px rgba(0,0,0,0.18);
+        }
+
+
+        /* Search tabs */
+
+        .search-tabs {
+            display: flex;
+
+            border-bottom: 1px solid #e5e7eb;
+
+            padding: 0 25px;
+        }
+
+        .search-tab {
+            padding: 17px 22px;
+
+            border: none;
+
+            background: transparent;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            color: #68717d;
+
+            cursor: pointer;
+
+            position: relative;
+        }
+
+        .search-tab.active {
+            color: var(--air-blue);
+        }
+
+        .search-tab.active::after {
+            content: "";
+
+            position: absolute;
+
+            bottom: -1px;
+            left: 0;
+            right: 0;
+
+            height: 3px;
+
+            background: var(--air-blue);
+        }
+
+
+        /* Search fields */
+
+        .search-fields {
+            display: grid;
+
+            grid-template-columns:
+                1.3fr
+                1.3fr
+                1.1fr
+                0.9fr
+                180px;
+
+            gap: 0;
+
+            padding: 20px;
+        }
+
+        .field {
+            padding: 4px 20px;
+
+            border-right: 1px solid #e5e7eb;
+        }
+
+        .field:last-of-type {
+            border-right: none;
+        }
+
+        .field-label {
+            display: block;
+
+            font-size: 10px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 1.5px;
+
+            font-weight: 700;
+
+            color: #69727e;
+
+            margin-bottom: 8px;
+        }
+
+        .field-input {
+            width: 100%;
+
+            border: none;
+
+            outline: none;
+
+            font-size: 15px;
+
+            font-weight: 600;
+
+            color: #17202a;
+
+            background: transparent;
+
+            cursor: pointer;
+        }
+
+        .field-input::placeholder {
+            color: #9ca3af;
+        }
+
+
+        /* Search button */
+
+        .search-button {
+            border: none;
+
+            background: var(--air-blue);
+
+            color: white;
+
+            border-radius: 3px;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition: 0.3s;
+
+            margin-left: 15px;
+        }
+
+        .search-button:hover {
+            background: #0565b0;
+
+            transform: translateY(-1px);
+        }
+
+
+        /* =====================================================
+           INTRO SECTION
+        ===================================================== */
+
+        .intro-section {
+            padding: 90px 5% 70px;
+
+            max-width: 1250px;
+
+            margin: auto;
+        }
+
+        .section-label {
+            font-size: 11px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 3px;
+
+            color: var(--air-blue);
+
+            font-weight: 700;
+        }
+
+        .section-title {
+            font-size: 38px;
+
+            font-weight: 300;
+
+            margin: 10px 0 18px;
+
+            color: #10283e;
+        }
+
+        .section-title strong {
+            font-weight: 700;
+        }
+
+        .section-description {
+            max-width: 650px;
+
+            color: #6b7280;
+
+            line-height: 1.8;
+
+            font-size: 15px;
+        }
+
+
+        /* =====================================================
+           FEATURES
+        ===================================================== */
+
+        .features {
+            display: grid;
+
+            grid-template-columns: repeat(3, 1fr);
+
+            gap: 30px;
+
+            margin-top: 45px;
+        }
+
+        .feature {
+            padding: 28px;
+
+            border-top: 1px solid #dce2e8;
+
+            transition: 0.3s;
+        }
+
+        .feature:hover {
+            transform: translateY(-4px);
+        }
+
+        .feature-icon {
+            font-size: 26px;
+
+            margin-bottom: 18px;
+        }
+
+        .feature h3 {
+            font-size: 17px;
+
+            font-weight: 700;
+
+            color: #10283e;
+
+            margin-bottom: 8px;
+        }
+
+        .feature p {
+            color: #737b84;
+
+            font-size: 13px;
+
+            line-height: 1.7;
+
+            margin: 0;
+        }
+
+
+        /* =====================================================
+           DESTINATIONS
+        ===================================================== */
+
+        .destinations-section {
+            background: #f5f7f9;
+
+            padding: 80px 5%;
+        }
+
+        .destinations-container {
+            max-width: 1250px;
+
+            margin: auto;
+        }
+
+        .destination-grid {
+            display: grid;
+
+            grid-template-columns: repeat(4, 1fr);
+
+            gap: 18px;
+
+            margin-top: 40px;
+        }
+
+        .destination-card {
+            height: 310px;
+
+            position: relative;
+
+            overflow: hidden;
+
+            border-radius: 4px;
+
+            cursor: pointer;
+        }
+
+        .destination-card::before {
+            content: "";
+
+            position: absolute;
+
+            inset: 0;
+
+            background-size: cover;
+
+            background-position: center;
+
+            transition: 0.5s;
+        }
+
+        .destination-card:nth-child(1)::before {
+            background-image:
+                url("https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&w=900&q=85");
+        }
+
+        .destination-card:nth-child(2)::before {
+            background-image:
+                url("https://images.unsplash.com/photo-1593693411515-c20261bcad6e?auto=format&fit=crop&w=900&q=85");
+        }
+
+        .destination-card:nth-child(3)::before {
+            background-image:
+                url("https://images.unsplash.com/photo-1590050752117-23a9d3f6c4c9?auto=format&fit=crop&w=900&q=85");
+        }
+
+        .destination-card:nth-child(4)::before {
+            background-image:
+                url("https://images.unsplash.com/photo-1609920658906-8223bd289001?auto=format&fit=crop&w=900&q=85");
+        }
+
+        .destination-card:hover::before {
+            transform: scale(1.08);
+        }
+
+        .destination-card::after {
+            content: "";
+
+            position: absolute;
+
+            inset: 0;
+
+            background:
+                linear-gradient(
+                    transparent 30%,
+                    rgba(0,0,0,0.78)
+                );
+        }
+
+        .destination-info {
+            position: absolute;
+
+            bottom: 25px;
+            left: 23px;
+
+            z-index: 2;
+
+            color: white;
+        }
+
+        .destination-info small {
+            font-size: 10px;
+
+            letter-spacing: 2px;
+
+            text-transform: uppercase;
+
+            opacity: 0.8;
+        }
+
+        .destination-info h3 {
+            font-size: 20px;
+
+            margin: 5px 0 0;
+
+            font-weight: 600;
+        }
+
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        footer {
+            background: #071b2e;
+
+            color: white;
+
+            padding: 50px 5% 25px;
+        }
+
+        .footer-container {
+            max-width: 1250px;
+
+            margin: auto;
+        }
+
+        .footer-top {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            padding-bottom: 35px;
+
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+        }
+
+        .footer-brand {
+            font-size: 21px;
+
+            font-weight: 700;
+
+            letter-spacing: 3px;
+        }
+
+        .footer-links {
+            display: flex;
+
+            gap: 25px;
+        }
+
+        .footer-links a {
+            color: rgba(255,255,255,0.65);
+
+            text-decoration: none;
+
+            font-size: 12px;
+
+            transition: 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            display: flex;
+
+            justify-content: space-between;
+
+            padding-top: 22px;
+
+            color: rgba(255,255,255,0.45);
+
+            font-size: 11px;
+        }
+
+
+        /* =====================================================
+           LOGIN MODAL
+        ===================================================== */
+
+        .modal-content {
+            border: none;
+
+            border-radius: 5px;
+        }
+
+        .modal-header-custom {
+            background: #071b2e;
+
+            color: white;
+
+            padding: 25px 30px;
+
+            border-radius: 5px 5px 0 0;
+        }
+
+        .modal-header-custom h3 {
+            margin: 0;
+
+            font-size: 22px;
+
+            font-weight: 600;
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .form-control {
+            border-radius: 3px;
+
+            padding: 13px;
+
+            border: 1px solid #d9dee5;
+        }
+
+        .form-control:focus {
+            box-shadow: none;
+
+            border-color: var(--air-blue);
+        }
+
+        .modal-btn {
+            width: 100%;
+
+            border: none;
+
+            background: var(--air-blue);
+
+            color: white;
+
+            padding: 14px;
+
+            border-radius: 3px;
+
+            font-weight: 700;
+
+            transition: 0.3s;
+        }
+
+        .modal-btn:hover {
+            background: #0565b0;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 1000px) {
+
+            .nav-links {
+                display: none;
+            }
+
+            .search-fields {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .field {
+                border-bottom: 1px solid #e5e7eb;
+
+                padding: 15px;
+            }
+
+            .search-button {
+                min-height: 50px;
+
+                margin: 15px;
+            }
+
+            .destination-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .hero {
+                height: 820px;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+
+
+        @media (max-width: 600px) {
+
+            .brand-name {
+                font-size: 18px;
+            }
+
+            .brand-subtitle {
+                display: none;
+            }
+
+            .login-btn {
+                padding: 8px 12px;
+            }
+
+            .hero {
+                min-height: 900px;
+                height: auto;
+            }
+
+            .hero-content {
+                padding-top: 140px;
+                padding-bottom: 350px;
+            }
+
+            .hero-title {
+                font-size: 44px;
+            }
+
+            .hero-description {
+                font-size: 14px;
+            }
+
+            .search-wrapper {
+                width: 94%;
+            }
+
+            .search-tabs {
+                overflow-x: auto;
+            }
+
+            .search-fields {
+                grid-template-columns: 1fr;
+            }
+
+            .field {
+                border-right: none;
+            }
+
+            .destination-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .destination-card {
+                height: 280px;
+            }
+
+            .footer-top,
+            .footer-bottom {
+                flex-direction: column;
+
+                gap: 20px;
+
+                align-items: flex-start;
+            }
+
+            .footer-links {
+                flex-wrap: wrap;
+            }
+
+            .slider-arrow {
+                width: 40px;
+                height: 40px;
+            }
+        }
+
     </style>
 </head>
+
 <body>
 
-    <header class="header-custom">
-        <a href="index.html" class="brand-section">
-            <div class="brand-icon">✈️</div>
-            <div class="brand-text">
-                <h4>NAVIERO</h4>
-                <small>Your Perfect Travel Partner</small>
-            </div>
-        </a>
-        <div class="nav-section">
-            <nav class="nav nav-pills-custom">
-                <a class="nav-link active" href="index.html">Home</a>
-                <a class="nav-link" href="flights.html">Flights</a>
-                <a class="nav-link" href="booking.html">Booking</a>
-                <a class="nav-link" href="payment.html">Payment</a>
-                <a class="nav-link" href="cancel.html">Cancel Booking</a>
-            </nav>
-            <div id="authArea">
-                <button class="auth-btn" data-bs-toggle="modal" data-bs-target="#loginModal">👤 Login</button>
-            </div>
-        </div>
-    </header>
 
-    <main class="hero-section">
-        <div class="hero-wave"></div>
-        <div class="hero-content">
-            <div class="text-area">
-                <div class="welcome-label" id="welcomeTag">Welcome</div>
-                <h1 class="hero-title">Naviero<br><span id="displayUser">Your Perfect Travel Partner</span></h1>
-                <p class="hero-desc">Discover, book and manage flights worldwide — seamlessly and securely, all in one place.</p>
-            </div>
-            <div class="visual-area">
-                <div class="plane-box text-center">
-                    <span class="plane-icon">✈️</span>
-                    <h5 class="fw-bold mt-2">Active Network</h5>
-                    <small class="text-muted">Global Operations Live</small>
-                </div>
-                <span class="map-icon">🗺️</span>
-            </div>
-        </div>
-    </main>
+<!-- =====================================================
+     HERO
+===================================================== -->
 
-    <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="border-radius: 20px; border: none;">
-                <div class="modal-body p-5">
-                    <h3 class="fw-bold mb-4" id="authTitle" style="color:var(--primary-navy)">User Login</h3>
-                    <div id="loginForm">
-                        <div class="mb-3">
-                            <label class="form-label small fw-bold text-muted">USERNAME</label>
-                            <input type="text" id="loginID" class="form-control p-3" placeholder="Enter your username" style="border-radius:12px;">
-                        </div>
-                        <div class="mb-4">
-                            <label class="form-label small fw-bold text-muted">PASSWORD</label>
-                            <input type="password" id="loginPass" class="form-control p-3" placeholder="Enter your password" style="border-radius:12px;">
-                        </div>
-                        <button onclick="handleLogin()" class="btn btn-primary w-100 p-3 fw-bold mb-3" style="background:var(--main-blue); border-radius:12px; border:none;">Login to Naviero</button>
-                        <p class="text-center small">New here? <a href="#" onclick="toggleAuth(true)" class="text-primary fw-bold">Sign Up</a></p>
-                    </div>
-                    <div id="signupForm" style="display:none;">
-                        <div class="mb-3">
-                            <label class="form-label small fw-bold text-muted">CHOOSE USERNAME</label>
-                            <input type="text" id="newID" class="form-control p-3" placeholder="Pick a username" style="border-radius:12px;">
-                        </div>
-                        <div class="mb-4">
-                            <label class="form-label small fw-bold text-muted">CREATE PASSWORD</label>
-                            <input type="password" id="newPass" class="form-control p-3" placeholder="Create a password" style="border-radius:12px;">
-                        </div>
-                        <button onclick="handleSignup()" class="btn btn-dark w-100 p-3 fw-bold mb-3" style="border-radius:12px;">Create Account</button>
-                        <p class="text-center small">Already have an account? <a href="#" onclick="toggleAuth(false)" class="text-primary fw-bold">Login</a></p>
-                    </div>
-                </div>
-            </div>
-        </div>
+<section class="hero">
+
+
+    <!-- Background slideshow -->
+
+    <div class="hero-slides">
+
+        <div class="slide active"></div>
+
+        <div class="slide"></div>
+
+        <div class="slide"></div>
+
+        <div class="slide"></div>
+
     </div>
 
-    <section class="status-section">
-        <div class="status-grid">
-            <div class="status-card">
-                <div class="icon-box blue-icon">📡</div>
-                <div class="info-box">
-                    <h3>1,402</h3>
-                    <small>Live Flights Tracked</small>
-                </div>
+
+    <!-- NAVBAR -->
+
+    <header class="navbar-air">
+
+        <a href="index.html" class="brand">
+
+            <div class="brand-symbol">
+                ✈
             </div>
-            <div class="status-card">
-                <div class="icon-box dark-blue-icon">💺</div>
-                <div class="info-box">
-                    <h3>94%</h3>
-                    <small>Current Seat Availability</small>
+
+            <div>
+
+                <div class="brand-name">
+                    AIR KERALA
                 </div>
+
+                <span class="brand-subtitle">
+                    FLY BEYOND
+                </span>
+
             </div>
-            <div class="status-card">
-                <div class="icon-box gold-icon">✈️</div>
-                <div class="info-box">
-                    <h3>2,530</h3>
-                    <small>Real-time Available Flights</small>
-                </div>
-            </div>
+
+        </a>
+
+
+        <nav class="nav-links">
+
+            <a href="index.html" class="active">
+                Home
+            </a>
+
+            <a href="flights.html">
+                Book Flight
+            </a>
+
+            <a href="booking.html">
+                Manage Booking
+            </a>
+
+            <a href="#">
+                Check-in
+            </a>
+
+            <a href="flights.html">
+                Flight Status
+            </a>
+
+            <a href="#">
+                Contact
+            </a>
+
+        </nav>
+
+
+        <div id="authArea">
+
+            <button
+                class="login-btn"
+                data-bs-toggle="modal"
+                data-bs-target="#loginModal">
+
+                👤 Login
+
+            </button>
+
         </div>
-    </section>
 
-    <section class="cta-section">
-        <a href="flights.html" class="check-flights-btn">Check Available Flights ➔</a>
-    </section>
+    </header>
 
-    <footer class="footer-custom">
-        <div class="footer-content">
-            <div class="footer-logo">
-                <span class="fs-4">✈️</span>
-                <div>
-                    <div class="fw-bold fs-6">NAVIERO</div>
-                    <small style="font-size:10px;">Your Perfect Travel Partner</small>
-                </div>
-            </div>
-            <div class="fw-bold text-center">© 2026 NAVIERO — Your Perfect Travel Partner</div>
-            <div class="contact-info">
-                <span>📞 Support</span>
-                <span>📧 Contact</span>
-                <span>📍 Global H.Q.</span>
-            </div>
+
+    <!-- HERO TEXT -->
+
+    <div class="hero-content">
+
+        <div class="hero-eyebrow">
+            EXPERIENCE THE LAND OF GOD'S OWN COUNTRY
         </div>
-    </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        window.onload = function() {
-            const isLoggedIn = localStorage.getItem('isLoggedIn');
-            const userName = localStorage.getItem('userName');
-            if (isLoggedIn === 'true') updateUI(userName);
-        };
+        <h1 class="hero-title">
 
-        function toggleAuth(showSignup) {
-            document.getElementById('authTitle').innerText = showSignup ? 'Create Account' : 'User Login';
-            document.getElementById('loginForm').style.display = showSignup ? 'none' : 'block';
-            document.getElementById('signupForm').style.display = showSignup ? 'block' : 'none';
+            Discover <strong>Kerala.</strong><br>
+
+            Fly with <strong>Air Kerala.</strong>
+
+        </h1>
+
+        <p class="hero-description">
+
+            From tranquil backwaters to mist-covered mountains,
+            experience the beauty of Kerala and travel beyond
+            with Air Kerala.
+
+        </p>
+
+    </div>
+
+
+    <!-- SLIDE LOCATION -->
+
+    <div class="slide-location" id="slideLocation">
+        ALLEPPEY · KERALA
+    </div>
+
+
+    <!-- SLIDER ARROWS -->
+
+    <button class="slider-arrow prev" onclick="changeSlide(-1)">
+        ‹
+    </button>
+
+    <button class="slider-arrow next" onclick="changeSlide(1)">
+        ›
+    </button>
+
+
+    <!-- SLIDER DOTS -->
+
+    <div class="slider-dots">
+
+        <button class="dot active" onclick="goToSlide(0)"></button>
+
+        <button class="dot" onclick="goToSlide(1)"></button>
+
+        <button class="dot" onclick="goToSlide(2)"></button>
+
+        <button class="dot" onclick="goToSlide(3)"></button>
+
+    </div>
+
+
+    <!-- =====================================================
+         FLIGHT SEARCH
+    ===================================================== -->
+
+    <div class="search-wrapper">
+
+        <div class="search-card">
+
+
+            <!-- Search tabs -->
+
+            <div class="search-tabs">
+
+                <button class="search-tab active">
+                    One Way
+                </button>
+
+                <button class="search-tab">
+                    Round Trip
+                </button>
+
+                <button class="search-tab">
+                    Multi-City
+                </button>
+
+            </div>
+
+
+            <!-- Search fields -->
+
+            <div class="search-fields">
+
+
+                <div class="field">
+
+                    <label class="field-label">
+                        From
+                    </label>
+
+                    <input
+                        class="field-input"
+                        type="text"
+                        placeholder="Departure airport">
+
+                </div>
+
+
+                <div class="field">
+
+                    <label class="field-label">
+                        To
+                    </label>
+
+                    <input
+                        class="field-input"
+                        type="text"
+                        placeholder="Destination airport">
+
+                </div>
+
+
+                <div class="field">
+
+                    <label class="field-label">
+                        Departure
+                    </label>
+
+                    <input
+                        class="field-input"
+                        type="date">
+
+                </div>
+
+
+                <div class="field">
+
+                    <label class="field-label">
+                        Passengers
+                    </label>
+
+                    <select class="field-input">
+
+                        <option>1 Adult</option>
+
+                        <option>2 Adults</option>
+
+                        <option>3 Adults</option>
+
+                        <option>4 Adults</option>
+
+                    </select>
+
+                </div>
+
+
+                <button
+                    class="search-button"
+                    onclick="searchFlights()">
+
+                    Search Flights →
+
+                </button>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     INTRO
+===================================================== -->
+
+<section class="intro-section">
+
+    <span class="section-label">
+        THE AIR KERALA EXPERIENCE
+    </span>
+
+    <h2 class="section-title">
+        Your journey starts <strong>here.</strong>
+    </h2>
+
+    <p class="section-description">
+
+        Whether you're travelling across Kerala or flying
+        beyond the horizon, Air Kerala brings together
+        effortless booking, reliable service and a journey
+        designed around you.
+
+    </p>
+
+
+    <div class="features">
+
+
+        <div class="feature">
+
+            <div class="feature-icon">
+                ✈️
+            </div>
+
+            <h3>
+                Best Fares
+            </h3>
+
+            <p>
+                Find competitive fares and flexible options
+                for your next journey.
+            </p>
+
+        </div>
+
+
+        <div class="feature">
+
+            <div class="feature-icon">
+                🛡️
+            </div>
+
+            <h3>
+                Safe & Secure
+            </h3>
+
+            <p>
+                Your bookings and travel information are
+                handled with security at every step.
+            </p>
+
+        </div>
+
+
+        <div class="feature">
+
+            <div class="feature-icon">
+                🎧
+            </div>
+
+            <h3>
+                Always Connected
+            </h3>
+
+            <p>
+                Get the information you need before,
+                during and after your journey.
+            </p>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     KERALA DESTINATIONS
+===================================================== -->
+
+<section class="destinations-section">
+
+    <div class="destinations-container">
+
+        <span class="section-label">
+            EXPLORE KERALA
+        </span>
+
+        <h2 class="section-title">
+            From Kerala, <strong>to everywhere.</strong>
+        </h2>
+
+
+        <div class="destination-grid">
+
+
+            <div class="destination-card">
+
+                <div class="destination-info">
+
+                    <small>
+                        Backwaters
+                    </small>
+
+                    <h3>
+                        Alleppey
+                    </h3>
+
+                </div>
+
+            </div>
+
+
+            <div class="destination-card">
+
+                <div class="destination-info">
+
+                    <small>
+                        Hills & Tea
+                    </small>
+
+                    <h3>
+                        Munnar
+                    </h3>
+
+                </div>
+
+            </div>
+
+
+            <div class="destination-card">
+
+                <div class="destination-info">
+
+                    <small>
+                        Coastline
+                    </small>
+
+                    <h3>
+                        Kovalam
+                    </h3>
+
+                </div>
+
+            </div>
+
+
+            <div class="destination-card">
+
+                <div class="destination-info">
+
+                    <small>
+                        Heritage
+                    </small>
+
+                    <h3>
+                        Fort Kochi
+                    </h3>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     LOGIN / SIGNUP MODAL
+===================================================== -->
+
+<div
+    class="modal fade"
+    id="loginModal"
+    tabindex="-1"
+    aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content">
+
+
+            <div class="modal-header-custom">
+
+                <h3 id="authTitle">
+                    User Login
+                </h3>
+
+            </div>
+
+
+            <div class="modal-body">
+
+
+                <!-- LOGIN -->
+
+                <div id="loginForm">
+
+                    <div class="mb-3">
+
+                        <label class="form-label small fw-bold text-muted">
+                            USERNAME
+                        </label>
+
+                        <input
+                            type="text"
+                            id="loginID"
+                            class="form-control"
+                            placeholder="Enter your username">
+
+                    </div>
+
+
+                    <div class="mb-4">
+
+                        <label class="form-label small fw-bold text-muted">
+                            PASSWORD
+                        </label>
+
+                        <input
+                            type="password"
+                            id="loginPass"
+                            class="form-control"
+                            placeholder="Enter your password">
+
+                    </div>
+
+
+                    <button
+                        onclick="handleLogin()"
+                        class="modal-btn mb-3">
+
+                        Login to Air Kerala
+
+                    </button>
+
+
+                    <p class="text-center small">
+
+                        New here?
+
+                        <a
+                            href="#"
+                            onclick="toggleAuth(true)"
+                            class="text-primary fw-bold">
+
+                            Create an account
+
+                        </a>
+
+                    </p>
+
+                </div>
+
+
+
+                <!-- SIGNUP -->
+
+                <div
+                    id="signupForm"
+                    style="display:none;">
+
+
+                    <div class="mb-3">
+
+                        <label class="form-label small fw-bold text-muted">
+                            CHOOSE USERNAME
+                        </label>
+
+                        <input
+                            type="text"
+                            id="newID"
+                            class="form-control"
+                            placeholder="Pick a username">
+
+                    </div>
+
+
+                    <div class="mb-4">
+
+                        <label class="form-label small fw-bold text-muted">
+                            CREATE PASSWORD
+                        </label>
+
+                        <input
+                            type="password"
+                            id="newPass"
+                            class="form-control"
+                            placeholder="Create a password">
+
+                    </div>
+
+
+                    <button
+                        onclick="handleSignup()"
+                        class="modal-btn mb-3">
+
+                        Create Account
+
+                    </button>
+
+
+                    <p class="text-center small">
+
+                        Already have an account?
+
+                        <a
+                            href="#"
+                            onclick="toggleAuth(false)"
+                            class="text-primary fw-bold">
+
+                            Login
+
+                        </a>
+
+                    </p>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer>
+
+    <div class="footer-container">
+
+
+        <div class="footer-top">
+
+            <div class="footer-brand">
+                AIR KERALA
+            </div>
+
+
+            <div class="footer-links">
+
+                <a href="index.html">
+                    Home
+                </a>
+
+                <a href="flights.html">
+                    Flights
+                </a>
+
+                <a href="booking.html">
+                    Manage Booking
+                </a>
+
+                <a href="cancel.html">
+                    Cancellation
+                </a>
+
+                <a href="#">
+                    Contact
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="footer-bottom">
+
+            <span>
+                © 2026 Air Kerala. All rights reserved.
+            </span>
+
+            <span>
+                Fly beyond.
+            </span>
+
+        </div>
+
+    </div>
+
+</footer>
+
+
+
+<!-- Bootstrap -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<script>
+
+/* =====================================================
+   KERALA SLIDESHOW
+===================================================== */
+
+const slides = document.querySelectorAll(".slide");
+const dots = document.querySelectorAll(".dot");
+
+const locations = [
+    "ALLEPPEY · KERALA",
+    "MUNNAR · KERALA",
+    "KOVALAM · KERALA",
+    "FORT KOCHI · KERALA"
+];
+
+let currentSlide = 0;
+let slideTimer;
+
+
+function showSlide(index) {
+
+    if (index >= slides.length) {
+        index = 0;
+    }
+
+    if (index < 0) {
+        index = slides.length - 1;
+    }
+
+    slides.forEach(slide => {
+        slide.classList.remove("active");
+    });
+
+    dots.forEach(dot => {
+        dot.classList.remove("active");
+    });
+
+    slides[index].classList.add("active");
+
+    dots[index].classList.add("active");
+
+    document.getElementById("slideLocation").innerText =
+        locations[index];
+
+    currentSlide = index;
+}
+
+
+function changeSlide(direction) {
+
+    showSlide(currentSlide + direction);
+
+    restartTimer();
+}
+
+
+function goToSlide(index) {
+
+    showSlide(index);
+
+    restartTimer();
+}
+
+
+function startSlideshow() {
+
+    slideTimer = setInterval(() => {
+
+        showSlide(currentSlide + 1);
+
+    }, 6000);
+
+}
+
+
+function restartTimer() {
+
+    clearInterval(slideTimer);
+
+    startSlideshow();
+
+}
+
+
+startSlideshow();
+
+
+
+/* =====================================================
+   SEARCH FLIGHTS
+===================================================== */
+
+function searchFlights() {
+
+    window.location.href = "flights.html";
+
+}
+
+
+
+/* =====================================================
+   LOGIN
+===================================================== */
+
+window.onload = function() {
+
+    const isLoggedIn =
+        localStorage.getItem("isLoggedIn");
+
+    const userName =
+        localStorage.getItem("userName");
+
+    if (isLoggedIn === "true") {
+
+        updateUI(userName);
+
+    }
+
+};
+
+
+
+/* =====================================================
+   LOGIN / SIGNUP TOGGLE
+===================================================== */
+
+function toggleAuth(showSignup) {
+
+    document.getElementById("authTitle").innerText =
+        showSignup
+            ? "Create Account"
+            : "User Login";
+
+    document.getElementById("loginForm").style.display =
+        showSignup
+            ? "none"
+            : "block";
+
+    document.getElementById("signupForm").style.display =
+        showSignup
+            ? "block"
+            : "none";
+
+}
+
+
+
+/* =====================================================
+   LOGIN
+===================================================== */
+
+function handleLogin() {
+
+    const id =
+        document.getElementById("loginID").value.trim();
+
+    const pass =
+        document.getElementById("loginPass").value;
+
+    const storedPass =
+        localStorage.getItem("user_pass_" + id);
+
+
+    if (storedPass && storedPass === pass) {
+
+        successLogin(id);
+
+    } else {
+
+        alert("Invalid Credentials.");
+
+    }
+
+}
+
+
+
+/* =====================================================
+   SIGNUP
+===================================================== */
+
+function handleSignup() {
+
+    const id =
+        document.getElementById("newID").value.trim();
+
+    const pass =
+        document.getElementById("newPass").value;
+
+
+    if (id && pass) {
+
+
+        if (localStorage.getItem("user_pass_" + id)) {
+
+            alert(
+                "Username already taken. Please choose another."
+            );
+
+            return;
+
         }
 
-        function handleLogin() {
-            const id = document.getElementById('loginID').value.trim();
-            const pass = document.getElementById('loginPass').value;
-            const storedPass = localStorage.getItem('user_pass_' + id);
-            if (storedPass && storedPass === pass) {
-                successLogin(id);
-            } else {
-                alert("Invalid Credentials.");
-            }
-        }
 
-        function handleSignup() {
-            const id = document.getElementById('newID').value.trim();
-            const pass = document.getElementById('newPass').value;
-            if (id && pass) {
-                if (localStorage.getItem('user_pass_' + id)) {
-                    alert("Username already taken. Please choose another.");
-                    return;
-                }
-                localStorage.setItem('user_pass_' + id, pass);
-                alert("Account created! Please login.");
-                document.getElementById('newID').value = '';
-                document.getElementById('newPass').value = '';
-                toggleAuth(false);
-            } else {
-                alert("Please fill all fields.");
-            }
-        }
+        localStorage.setItem(
+            "user_pass_" + id,
+            pass
+        );
 
-        function successLogin(name) {
-            localStorage.setItem('isLoggedIn', 'true');
-            localStorage.setItem('userName', name);
-            location.reload();
-        }
 
-        function updateUI(name) {
-            document.getElementById('displayUser').innerText = name.toUpperCase() + " — Welcome Back!";
-            document.getElementById('authArea').innerHTML = `<button onclick="logout()" class="auth-btn" style="background:#ef4444;color:white;">🚪 Logout</button>`;
-        }
+        alert(
+            "Account created! Please login."
+        );
 
-        function logout() {
-            localStorage.removeItem('isLoggedIn');
-            localStorage.removeItem('userName');
-            location.reload();
-        }
-    </script>
+
+        document.getElementById("newID").value = "";
+
+        document.getElementById("newPass").value = "";
+
+        toggleAuth(false);
+
+
+    } else {
+
+        alert("Please fill all fields.");
+
+    }
+
+}
+
+
+
+/* =====================================================
+   LOGIN SUCCESS
+===================================================== */
+
+function successLogin(name) {
+
+    localStorage.setItem(
+        "isLoggedIn",
+        "true"
+    );
+
+    localStorage.setItem(
+        "userName",
+        name
+    );
+
+    location.reload();
+
+}
+
+
+
+/* =====================================================
+   UPDATE USER UI
+===================================================== */
+
+function updateUI(name) {
+
+    document.getElementById("authArea").innerHTML = `
+
+        <button
+            onclick="logout()"
+            class="login-btn">
+
+            🚪 ${name}
+
+        </button>
+
+    `;
+
+}
+
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+function logout() {
+
+    localStorage.removeItem(
+        "isLoggedIn"
+    );
+
+    localStorage.removeItem(
+        "userName"
+    );
+
+    location.reload();
+
+}
+
+</script>
+
+
 </body>
 </html>

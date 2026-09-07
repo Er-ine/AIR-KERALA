@@ -2,94 +2,434 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Flights | NAVIERO
-    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Flight | AIR KERALA</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary-navy: #0e1e3a; --accent-gold: #f9b233; --main-blue: #0250d4; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f4f7fa; min-height: 100vh; display: flex; flex-direction: column; }
-        .header-custom { background: var(--primary-navy); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--accent-gold); }
-        .nav-link { color: rgba(255,255,255,0.8); text-decoration: none; padding: 10px 20px; border-radius: 20px; font-weight: 600; }
-        .nav-link.active { background: var(--accent-gold); color: #000; }
-        .search-area { background: var(--primary-navy); padding: 30px 5% 60px; border-bottom-left-radius: 60px; border-bottom-right-radius: 60px; color: white; }
-        .filter-box { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); color: #333; margin-top: 20px; }
-        .flight-card { background: white; border-radius: 20px; padding: 20px 25px; margin-bottom: 15px; border: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; gap: 15px; transition: 0.3s; }
-        .flight-card:hover { border-color: var(--main-blue); transform: translateY(-3px); }
-        .flight-name { font-weight: 800; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px; }
-        .footer-custom { background: var(--primary-navy); color: white; padding: 25px 5%; margin-top: auto; }
+
+        :root {
+            --air-blue: #0878d1;
+            --air-dark: #071b2e;
+            --air-gold: #d7b56d;
+            --white: #ffffff;
+            --light: #f5f7fa;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #17202a;
+            background: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* =====================================================
+           NAVBAR (solid variant of the homepage navbar)
+        ===================================================== */
+
+        .navbar-solid {
+            background: var(--air-dark);
+            padding: 22px 5%;
+            border-bottom: 1px solid rgba(255,255,255,0.12);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .brand-symbol {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            font-size: 21px;
+        }
+
+        .brand-name {
+            font-size: 23px;
+            font-weight: 700;
+            letter-spacing: 3px;
+        }
+
+        .brand-subtitle {
+            display: block;
+            font-size: 8px;
+            letter-spacing: 2px;
+            color: rgba(255,255,255,0.75);
+            margin-top: 2px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-links a {
+            color: rgba(255,255,255,0.9);
+            text-decoration: none;
+            padding: 10px 17px;
+            font-size: 13px;
+            font-weight: 500;
+            border-radius: 4px;
+            transition: 0.25s;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255,255,255,0.13);
+            color: white;
+        }
+
+        .nav-links a.active {
+            border-bottom: 2px solid var(--air-gold);
+        }
+
+        .login-btn {
+            border: 1px solid rgba(255,255,255,0.55);
+            background: rgba(255,255,255,0.08);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            backdrop-filter: blur(8px);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .login-btn:hover {
+            background: white;
+            color: var(--air-dark);
+        }
+
+        /* =====================================================
+           SEARCH BAND — continues the homepage search-card style
+        ===================================================== */
+
+        .search-band {
+            background: var(--air-dark);
+            color: white;
+            padding: 45px 5% 0;
+        }
+
+        .search-eyebrow {
+            font-size: 11px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--air-gold);
+            font-weight: 700;
+        }
+
+        .search-title {
+            font-size: 32px;
+            font-weight: 300;
+            margin: 10px 0 6px;
+        }
+
+        .search-title strong {
+            font-weight: 700;
+        }
+
+        .search-subtitle {
+            color: rgba(255,255,255,0.75);
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .search-wrapper {
+            max-width: 1180px;
+            margin: 0 auto;
+            transform: translateY(40px);
+        }
+
+        .search-card {
+            background: white;
+            color: #17202a;
+            border-radius: 5px;
+            box-shadow: 0 20px 45px rgba(0,0,0,0.18);
+        }
+
+        .search-fields {
+            display: grid;
+            grid-template-columns: 1.1fr 1.1fr 1fr 180px;
+            gap: 0;
+            padding: 20px;
+        }
+
+        .field {
+            padding: 4px 20px;
+            border-right: 1px solid #e5e7eb;
+        }
+
+        .field:last-of-type {
+            border-right: none;
+        }
+
+        .field-label {
+            display: block;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 700;
+            color: #69727e;
+            margin-bottom: 8px;
+        }
+
+        .field-input {
+            width: 100%;
+            border: none;
+            outline: none;
+            font-size: 15px;
+            font-weight: 600;
+            color: #17202a;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        .search-button {
+            border: none;
+            background: var(--air-blue);
+            color: white;
+            border-radius: 3px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-left: 15px;
+            width: 100%;
+        }
+
+        .search-button:hover {
+            background: #0565b0;
+            transform: translateY(-1px);
+        }
+
+        /* =====================================================
+           RESULTS
+        ===================================================== */
+
+        .results-section {
+            max-width: 1180px;
+            margin: 90px auto 60px;
+            padding: 0 5%;
+            flex: 1;
+        }
+
+        .results-heading {
+            font-size: 20px;
+            font-weight: 700;
+            color: #10283e;
+            margin-bottom: 25px;
+        }
+
+        .airport-heading {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--air-blue);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 35px 0 15px;
+        }
+
+        .flight-card {
+            background: white;
+            border-top: 1px solid #dce2e8;
+            padding: 22px 5px;
+            margin-bottom: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            transition: 0.3s;
+        }
+
+        .flight-card:hover {
+            transform: translateX(4px);
+        }
+
+        .flight-name {
+            font-weight: 700;
+            font-size: 16px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 170px;
+            color: #10283e;
+        }
+
+        .status-badge {
+            padding: 6px 14px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .status-departed { background: #e6f4ea; color: #1f7a3d; }
+        .status-gateclosed { background: #fdf1de; color: #9a6a13; }
+        .status-default { background: #eef1f4; color: #4b5563; }
+
+        .btn-view {
+            border: none;
+            background: var(--air-dark);
+            color: white;
+            padding: 10px 22px;
+            border-radius: 3px;
+            font-weight: 700;
+            font-size: 13px;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .btn-view:hover {
+            background: var(--air-blue);
+            color: white;
+        }
+
+        .empty-state {
+            color: #737b84;
+            font-size: 14px;
+            padding: 20px 0;
+        }
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        footer {
+            background: var(--air-dark);
+            color: white;
+            padding: 35px 5%;
+        }
+
+        .footer-container {
+            max-width: 1250px;
+            margin: auto;
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
+        }
+
+        @media (max-width: 900px) {
+            .nav-links { display: none; }
+            .search-fields { grid-template-columns: 1fr 1fr; }
+            .field { border-right: none; border-bottom: 1px solid #e5e7eb; padding: 14px; }
+            .search-wrapper { transform: none; margin-top: 20px; }
+            .results-section { margin-top: 40px; }
+            .flight-card { flex-direction: column; align-items: flex-start; }
+        }
+
     </style>
 </head>
 <body>
-    <header class="header-custom">
-        <div style="color:white; font-weight:800; font-size:22px;">✈️ Naviero</div>
-        <nav style="background: #1c2e4a; border-radius: 50px; padding: 5px; display: flex;">
-            <a class="nav-link" href="index.html">Home</a>
-            <a class="nav-link active" href="flights.html">Flights</a>
-            <a class="nav-link" href="booking.html">Booking</a>
-            <a class="nav-link" href="payment.html">Payment</a>
+
+    <header class="navbar-solid">
+
+        <a href="index.html" class="brand">
+            <div class="brand-symbol">✈</div>
+            <div>
+                <div class="brand-name">AIR KERALA</div>
+                <span class="brand-subtitle">FLY BEYOND</span>
+            </div>
+        </a>
+
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="flights.html" class="active">Book Flight</a>
+            <a href="booking.html">Manage Booking</a>
+            <a href="payment.html">Payment</a>
         </nav>
+
+        <button class="login-btn" onclick="window.location.href='index.html'">👤 Account</button>
+
     </header>
 
-    <div class="search-area text-center">
-        <h2 class="fw-bold mb-1">Find Your Flight</h2>
-        <p class="opacity-75">Your perfect travel partner — search and book worldwide flights</p>
-        <div class="container filter-box text-start">
-            <div class="row g-3 align-items-end">
-                <div class="col-md-3">
-                    <label class="small fw-bold text-muted">TRAVEL DATE</label>
-                    <input type="date" id="travelDate" class="form-control p-3" style="border: 2px solid var(--accent-gold); border-radius:12px;" onchange="filterByDate()">
-                </div>
-                <div class="col-md-3">
-                    <label class="small fw-bold text-muted">FROM</label>
-                    <select id="fromFilter" class="form-select p-3" style="border-radius:12px;" onchange="filterByDate()">
-                        <option value="all">All Airports</option>
-                        <option value="DEL">Delhi</option>
-                        <option value="BOM">Mumbai</option>
-                        <option value="BLR">Bangalore</option>
-                        <option value="MAA">Chennai</option>
-                        <option value="CCU">Kolkata</option>
-                        <option value="HYD">Hyderabad</option>
-                        <option value="COK">Kochi</option>
-                        <option value="DXB">Dubai</option>
-                        <option value="LHR">London</option>
-                        <option value="JFK">New York</option>
-                        <option value="SIN">Singapore</option>
-                        <option value="DOH">Doha</option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label class="small fw-bold text-muted">TO</label>
-                    <select id="toFilter" class="form-select p-3" style="border-radius:12px;" onchange="filterByDate()">
-                        <option value="all">All Destinations</option>
-                        <option value="DEL">Delhi</option>
-                        <option value="BOM">Mumbai</option>
-                        <option value="BLR">Bangalore</option>
-                        <option value="MAA">Chennai</option>
-                        <option value="CCU">Kolkata</option>
-                        <option value="HYD">Hyderabad</option>
-                        <option value="COK">Kochi</option>
-                        <option value="DXB">Dubai</option>
-                        <option value="LHR">London</option>
-                        <option value="JFK">New York</option>
-                        <option value="SIN">Singapore</option>
-                        <option value="DOH">Doha</option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <button class="btn btn-primary w-100 p-3 fw-bold" style="background:var(--main-blue); border-radius:12px;" onclick="filterByDate()">Search Flights</button>
+    <section class="search-band">
+
+        <div class="search-eyebrow">FIND YOUR FLIGHT</div>
+        <h1 class="search-title">Search <strong>live availability.</strong></h1>
+        <p class="search-subtitle">Real-time flights, sourced worldwide.</p>
+
+        <div class="search-wrapper">
+            <div class="search-card">
+                <div class="search-fields">
+
+                    <div class="field">
+                        <label class="field-label">From</label>
+                        <select id="fromFilter" class="field-input" onchange="filterByDate()">
+                            <option value="all">All Airports</option>
+                            <option value="DEL">Delhi</option>
+                            <option value="BOM">Mumbai</option>
+                            <option value="BLR">Bangalore</option>
+                            <option value="MAA">Chennai</option>
+                            <option value="CCU">Kolkata</option>
+                            <option value="HYD">Hyderabad</option>
+                            <option value="COK">Kochi</option>
+                            <option value="DXB">Dubai</option>
+                            <option value="LHR">London</option>
+                            <option value="JFK">New York</option>
+                            <option value="SIN">Singapore</option>
+                            <option value="DOH">Doha</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label class="field-label">To</label>
+                        <select id="toFilter" class="field-input" onchange="filterByDate()">
+                            <option value="all">All Destinations</option>
+                            <option value="DEL">Delhi</option>
+                            <option value="BOM">Mumbai</option>
+                            <option value="BLR">Bangalore</option>
+                            <option value="MAA">Chennai</option>
+                            <option value="CCU">Kolkata</option>
+                            <option value="HYD">Hyderabad</option>
+                            <option value="COK">Kochi</option>
+                            <option value="DXB">Dubai</option>
+                            <option value="LHR">London</option>
+                            <option value="JFK">New York</option>
+                            <option value="SIN">Singapore</option>
+                            <option value="DOH">Doha</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label class="field-label">Travel Date</label>
+                        <input type="date" id="travelDate" class="field-input" onchange="filterByDate()">
+                    </div>
+
+                    <button class="search-button" onclick="filterByDate()">Search Flights →</button>
+
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="container my-5">
+    </section>
+
+    <section class="results-section">
         <div id="flightResults"></div>
-    </div>
+    </section>
 
-    <footer class="footer-custom">
-        <div>© 2026 Naviero — Your Perfect Travel Partner</div>
-        <div>📍 Global H.Q.</div>
+    <footer>
+        <div class="footer-container">
+            <span>© 2026 Air Kerala. All rights reserved.</span>
+            <span>Fly beyond.</span>
+        </div>
     </footer>
 
     <script>
@@ -110,7 +450,7 @@
         const toDest = document.getElementById('toFilter').value;
         const fromFilter = document.getElementById('fromFilter').value;
         const container = document.getElementById('flightResults');
-        container.innerHTML = `<p class="text-muted">Loading live flights worldwide...</p>`;
+        container.innerHTML = `<p class="empty-state">Loading live flights worldwide...</p>`;
 
         try {
             const today = date || new Date().toISOString().split('T')[0];
@@ -118,12 +458,11 @@
             const liveData = await liveRes.json();
             let airports = liveData.flights || [];
 
-            // Filter by origin airport
             if (fromFilter !== 'all') {
                 airports = airports.filter(a => a.airport === fromFilter);
             }
 
-            container.innerHTML = '<h5 class="fw-bold mb-4">🌍 Live Worldwide Flights for: ' + today + '</h5>';
+            container.innerHTML = '<h2 class="results-heading">🌍 Live Worldwide Flights for: ' + today + '</h2>';
 
             let totalShown = 0;
 
@@ -137,7 +476,6 @@
                         if (!arrAirport) return false;
                         const code = (arrAirport.iata || arrAirport.icao || '').toUpperCase();
                         if (code) return code === toDest;
-                        // fallback: match by destination city name if no code is available
                         const destName = (arrAirport.name || '').toLowerCase();
                         const destCity = (airportNames[toDest] || '').split(' ').slice(1).join(' ').toLowerCase();
                         return destCity && destName.includes(destCity);
@@ -145,7 +483,7 @@
                 }
                 if (!filtered.length) return;
 
-                container.innerHTML += '<h6 class="fw-bold mt-4 mb-3 text-primary">' + (airportNames[airport] || airport) + ' Airport</h6>';
+                container.innerHTML += '<div class="airport-heading">' + (airportNames[airport] || airport) + ' Airport</div>';
 
                 filtered.slice(0, 10).forEach(function(f) {
                     const dep = (f.departure && f.departure.scheduledTime && f.departure.scheduledTime.local) ? f.departure.scheduledTime.local.slice(11, 16) : 'N/A';
@@ -155,7 +493,7 @@
                     const aircraftModel = (f.aircraft && f.aircraft.model) ? f.aircraft.model : '';
                     const flightNum = f.number || '';
                     const status = f.status || 'Unknown';
-                    const statusColor = status === 'Departed' ? 'success' : status === 'GateClosed' ? 'warning' : 'secondary';
+                    const statusClass = status === 'Departed' ? 'status-departed' : status === 'GateClosed' ? 'status-gateclosed' : 'status-default';
                     const originCity = airportNames[airport] ? airportNames[airport].split(' ').slice(1).join(' ') : airport;
 
                     const detailsUrl = 'flight-details.html?number=' + encodeURIComponent(flightNum) +
@@ -167,13 +505,12 @@
                         '&aircraft=' + encodeURIComponent(aircraftModel) +
                         '&status=' + encodeURIComponent(status);
 
-                    // If departed, show details only — no booking button
                     const actionBtn = status === 'Departed'
                         ? '<span class="text-muted small fst-italic">Flight departed</span>'
-                        : '<a href="' + detailsUrl + '" class="btn btn-dark fw-bold px-4" style="border-radius:10px;">View Flight</a>';
+                        : '<a href="' + detailsUrl + '" class="btn-view">View Flight</a>';
 
                     container.innerHTML += `
-                        <div class="flight-card shadow-sm">
+                        <div class="flight-card">
                             <div style="min-width:150px;">
                                 <small class="text-muted fw-bold">${flightNum}</small>
                                 <div class="flight-name">${airlineName}</div>
@@ -183,7 +520,7 @@
                                 <div class="fw-bold h6 mb-1">${originCity} ➔ ${dest}</div>
                                 <div class="small text-muted">🕒 Dep: ${dep} | Arr: ${arr}</div>
                             </div>
-                            <span class="badge bg-${statusColor} px-3 py-2">${status}</span>
+                            <span class="status-badge ${statusClass}">${status}</span>
                             ${actionBtn}
                         </div>`;
                     totalShown++;
@@ -191,7 +528,7 @@
             });
 
             if (totalShown === 0) {
-                container.innerHTML += '<p class="text-muted">No flights found for selected filters.</p>';
+                container.innerHTML += '<p class="empty-state">No flights found for selected filters.</p>';
             }
 
         } catch (err) {
@@ -199,7 +536,20 @@
         }
     }
 
-    window.onload = filterByDate;
+    // Pick up whatever was entered on the homepage search box and
+    // run the live search immediately with those values pre-filled.
+    window.onload = function() {
+        const params = new URLSearchParams(window.location.search);
+        const from = params.get('from');
+        const to = params.get('to');
+        const date = params.get('date');
+
+        if (from) document.getElementById('fromFilter').value = from;
+        if (to) document.getElementById('toFilter').value = to;
+        if (date) document.getElementById('travelDate').value = date;
+
+        filterByDate();
+    };
     </script>
 </body>
 </html>
