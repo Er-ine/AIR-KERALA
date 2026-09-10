@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Details | Travel Agency</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary-navy: #0e1e3a; --accent-gold: #f9b233; --main-blue: #0250d4; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f4f7fa; }
+        .header-custom { background: var(--primary-navy); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--accent-gold); }
+        .nav-link { color: rgba(255,255,255,0.8); text-decoration: none; padding: 10px 20px; border-radius: 20px; font-weight: 600; }
+        .nav-link.active { background: var(--accent-gold); color: #000; }
+        .hero { background: var(--primary-navy); color: white; padding: 40px 5%; border-bottom-left-radius: 60px; border-bottom-right-radius: 60px; }
+        .detail-card { background: white; border-radius: 20px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); margin-bottom: 20px; }
+        .seat-badge { display: inline-block; padding: 8px 16px; border-radius: 10px; font-weight: 700; font-size: 14px; margin: 5px; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
+        .seat-economy { background: #dbeafe; color: #1e40af; border-color: #3b82f6; }
+        .seat-business { background: #fef3c7; color: #92400e; border-color: #f9b233; }
+        .seat-first { background: #f3e8ff; color: #6b21a8; border-color: #a855f7; }
+        .seat-selected { outline: 3px solid #0250d4 !important; transform: scale(1.1); }
+        .seat-badge:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .info-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
+        .info-row:last-child { border-bottom: none; }
+        .btn-book { background: var(--primary-navy); color: white; padding: 15px 40px; border-radius: 12px; font-weight: 800; border: none; transition: 0.3s; font-size: 18px; }
+        .btn-book:hover { background: var(--accent-gold); color: black; transform: translateY(-3px); }
+        .timeline { display: flex; align-items: center; gap: 15px; }
+        .timeline-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--accent-gold); flex-shrink: 0; }
+        .timeline-line { flex: 1; height: 2px; background: #e2e8f0; }
+        .class-card { cursor: pointer; border-radius: 12px; border: 2px solid #e2e8f0; padding: 20px; text-align: center; transition: 0.2s; }
+        .class-card.selected { border-color: #0250d4; background: #eff6ff; }
+        .class-card:hover { border-color: #0250d4; }
+    </style>
+</head>
+<body>
+
+<header class="header-custom">
+    <div style="color:white; font-weight:800; font-size:20px;">✈️ NAVIERO</div>
+    <nav style="background: #1c2e4a; border-radius: 50px; padding: 5px; display: flex;">
+        <a class="nav-link" href="index.html">Home</a>
+        <a class="nav-link active" href="flights.html">Flights</a>
+        <a class="nav-link" href="booking.html">Booking</a>
+        <a class="nav-link" href="payment.html">Payment</a>
+    </nav>
+</header>
+
+<div class="hero text-center">
+    <h2 class="fw-bold mb-1" id="heroTitle">Flight Details</h2>
+    <p class="opacity-75" id="heroSubtitle">Review your flight before booking</p>
+</div>
+
+<div class="container my-5">
+
+    <!-- Flight Summary -->
+    <div class="detail-card">
+        <h5 class="fw-bold mb-4">✈️ Flight Summary</h5>
+        <div class="timeline mb-4">
+            <div>
+                <div class="fw-bold fs-4" id="depTime">-</div>
+                <div class="text-muted small" id="originCity">-</div>
+            </div>
+            <div class="timeline-line"></div>
+            <div class="timeline-dot"></div>
+            <div class="text-center">
+                <div class="small text-muted fw-bold">DIRECT</div>
+                <div class="small text-muted" id="aircraftModel">-</div>
+            </div>
+            <div class="timeline-dot"></div>
+            <div class="timeline-line"></div>
+            <div class="text-end">
+                <div class="fw-bold fs-4" id="arrTime">-</div>
+                <div class="text-muted small" id="destCity">-</div>
+            </div>
+        </div>
+        <div class="info-row"><span class="text-muted">Flight Number</span><span class="fw-bold" id="infoFlight">-</span></div>
+        <div class="info-row"><span class="text-muted">Airline</span><span class="fw-bold" id="infoAirline">-</span></div>
+        <div class="info-row"><span class="text-muted">Aircraft</span><span class="fw-bold" id="infoAircraft">-</span></div>
+        <div class="info-row"><span class="text-muted">Status</span><span class="fw-bold" id="infoStatus">-</span></div>
+    </div>
+
+    <!-- Cabin Class Selection -->
+    <div class="detail-card">
+        <h5 class="fw-bold mb-4">🪑 Select Cabin Class</h5>
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="class-card selected" id="class-Economy" onclick="selectClass('Economy')">
+                    <div class="fw-bold fs-5">Economy Class</div>
+                    <div class="text-muted small">42 seats left</div>
+                    <div class="fw-bold text-primary mt-1">₹ 5,500</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="class-card" id="class-Business" onclick="selectClass('Business')">
+                    <div class="fw-bold fs-5">Business Class</div>
+                    <div class="text-muted small">12 seats left</div>
+                    <div class="fw-bold text-primary mt-1">₹ 12,500</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="class-card" id="class-First" onclick="selectClass('First')">
+                    <div class="fw-bold fs-5">First Class</div>
+                    <div class="text-muted small">4 seats left</div>
+                    <div class="fw-bold text-primary mt-1">₹ 25,000</div>
+                </div>
+            </div>
+        </div>
+
+        <h6 class="fw-bold mb-3">Select Seat</h6>
+        <div id="seatMap" class="mb-3"></div>
+        <div class="mt-2 text-muted small">Selected Seat: <strong id="selectedSeatLabel">12A</strong></div>
+    </div>
+
+    <!-- Price Summary -->
+    <div class="detail-card">
+        <h5 class="fw-bold mb-3">💰 Price Summary</h5>
+        <div class="info-row"><span class="text-muted">Base Fare</span><span id="baseFare" class="fw-bold">₹ 5,500</span></div>
+        <div class="info-row"><span class="text-muted">Taxes & Fees (18%)</span><span id="taxFare" class="fw-bold">₹ 990</span></div>
+        <div class="info-row"><span class="text-muted fw-bold">Total</span><span id="totalFare" class="fw-bold fs-5 text-primary">₹ 6,490</span></div>
+    </div>
+
+    <!-- Book Button -->
+    <div class="text-center mt-4">
+        <button class="btn-book shadow" onclick="bookFlight()">
+            🎫 Book Ticket Now
+        </button>
+    </div>
+
+</div>
+
+<script>
+    if (localStorage.getItem('isLoggedIn') !== 'true') {
+        alert("🔒 Access Denied. Please login first.");
+        window.location.href = "index.html";
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const flightNum = params.get('number') || '';
+    const airline = params.get('airline') || '';
+    const origin = params.get('origin') || '';
+    const dest = params.get('dest') || '';
+    const dep = params.get('dep') || '';
+    const arr = params.get('arr') || '';
+    const aircraft = params.get('aircraft') || 'TBD';
+    const status = params.get('status') || 'Unknown';
+
+    const seatOptions = {
+        Economy: ['12A','12B','12C','14A','14B','15C','16A','17B'],
+        Business: ['2A','2B','3A','3B','4A','4B'],
+        First: ['1A','1B','1C','1D']
+    };
+
+    const prices = { Economy: 5500, Business: 12500, First: 25000 };
+
+    let selectedClass = 'Economy';
+    let selectedSeat = seatOptions.Economy[0];
+
+    // Fill in flight info
+    document.getElementById('heroTitle').textContent = airline + ' · ' + flightNum;
+    document.getElementById('heroSubtitle').textContent = origin + ' → ' + dest;
+    document.getElementById('depTime').textContent = dep;
+    document.getElementById('originCity').textContent = origin;
+    document.getElementById('arrTime').textContent = arr;
+    document.getElementById('destCity').textContent = dest;
+    document.getElementById('infoFlight').textContent = flightNum;
+    document.getElementById('infoAirline').textContent = airline;
+    document.getElementById('infoAircraft').textContent = aircraft;
+    document.getElementById('infoStatus').textContent = status;
+    document.getElementById('aircraftModel').textContent = aircraft;
+
+    function renderSeats() {
+        const map = document.getElementById('seatMap');
+        map.innerHTML = '';
+        seatOptions[selectedClass].forEach(function(s) {
+            const span = document.createElement('span');
+            span.className = 'seat-badge seat-' + selectedClass.toLowerCase();
+            span.textContent = s;
+            if (s === selectedSeat) span.classList.add('seat-selected');
+            span.addEventListener('click', function() {
+                selectedSeat = s;
+                document.getElementById('selectedSeatLabel').textContent = s;
+                document.querySelectorAll('.seat-badge').forEach(function(b) {
+                    b.classList.remove('seat-selected');
+                });
+                span.classList.add('seat-selected');
+            });
+            map.appendChild(span);
+        });
+        document.getElementById('selectedSeatLabel').textContent = selectedSeat;
+    }
+
+    function selectClass(cls) {
+        selectedClass = cls;
+        selectedSeat = seatOptions[cls][0];
+
+        ['Economy','Business','First'].forEach(function(c) {
+            const el = document.getElementById('class-' + c);
+            if (c === cls) {
+                el.classList.add('selected');
+            } else {
+                el.classList.remove('selected');
+            }
+        });
+
+        updatePrice();
+        renderSeats();
+    }
+
+    function updatePrice() {
+        const base = prices[selectedClass];
+        const tax = Math.round(base * 0.18);
+        const total = base + tax;
+        document.getElementById('baseFare').textContent = '₹ ' + base.toLocaleString();
+        document.getElementById('taxFare').textContent = '₹ ' + tax.toLocaleString();
+        document.getElementById('totalFare').textContent = '₹ ' + total.toLocaleString();
+    }
+
+    function bookFlight() {
+        const base = prices[selectedClass];
+        const total = base + Math.round(base * 0.18);
+
+        localStorage.setItem('flightNum', flightNum);
+        localStorage.setItem('airline', airline);
+        localStorage.setItem('origin', origin);
+        localStorage.setItem('dest', dest);
+        localStorage.setItem('dep', dep);
+        localStorage.setItem('arr', arr);
+        localStorage.setItem('cabinClass', selectedClass);
+        localStorage.setItem('selectedSeat', selectedSeat);
+        localStorage.setItem('bookingTotal', total);
+
+        window.location.href = 'booking.html';
+    }
+
+    // Initialize
+    updatePrice();
+    renderSeats();
+</script>
+
+</body>
+</html>
