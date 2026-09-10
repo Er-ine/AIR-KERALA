@@ -19,20 +19,36 @@ router.post('/passenger', async (req, res) => {
     }
 });
 
+// Assigns a real available seat from the flight's live inventory instead
+// of fabricating a new one. Price now comes from the DB, not the client.
 router.post('/seat', async (req, res) => {
-    const { flight_id, class: cls, price } = req.body;
-    try {
-        const [maxRow] = await db.query(`SELECT MAX(SEAT_ID) AS maxId FROM SEAT`);
-        const nextId = (maxRow[0].maxId || 0) + 1;
+    const { flight_id, class: cls } = req.body;
 
-        const seatNum = Math.floor(Math.random() * 30) + 1 + ['A','B','C'][Math.floor(Math.random()*3)];
-        await db.query(
-            `INSERT INTO SEAT (SEAT_ID, FLIGHT_ID, SEAT_NUMBER, CLASS, AVAILABILITY, PRICE) VALUES (?, ?, ?, ?, 1, ?)`,
-            [nextId, flight_id, seatNum, cls, price]
+    if (!flight_id || !cls) {
+        return res.status(400).json({ success: false, message: 'flight_id and class are required' });
+    }
+
+    try {
+        const [seats] = await db.query(
+            `SELECT SEAT_ID, SEAT_NUMBER, PRICE
+             FROM SEAT
+             WHERE FLIGHT_ID = ? AND CLASS = ? AND AVAILABILITY = 1
+             LIMIT 1`,
+            [flight_id, cls]
         );
-        res.json({ success: true, seat_id: nextId });
+
+        if (!seats.length) {
+            return res.status(400).json({ success: false, message: 'No seats available in this class' });
+        }
+
+        res.json({
+            success: true,
+            seat_id: seats[0].SEAT_ID,
+            seat_number: seats[0].SEAT_NUMBER,
+            price: seats[0].PRICE
+        });
     } catch (err) {
-        console.error('SEAT INSERT ERROR:', err);
+        console.error('SEAT ASSIGN ERROR:', err);
         res.status(500).json({ success: false, message: err.message, code: err.code });
     }
 });

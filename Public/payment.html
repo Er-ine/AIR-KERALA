@@ -3,22 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure Payment | NAVIERO</title>
+    <title>Secure Payment | AIR KERALA</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary-navy: #0e1e3a; --accent-gold: #f9b233; --main-blue: #0250d4; --success-green: #10b981; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; min-height: 100vh; }
-        .header-custom { background-color: var(--primary-navy); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--accent-gold); }
-        .nav-link { color: rgba(255,255,255,0.8); padding: 10px 20px; border-radius: 20px; text-decoration: none; font-weight: 600; font-size: 14px; }
-        .nav-link.active { background: var(--accent-gold); color: #000; }
-        .payment-card { background: white; border-radius: 25px; padding: 40px; box-shadow: 0 25px 50px rgba(0,0,0,0.1); margin-top: 50px; border: 1px solid #f1f5f9; }
-        .btn-pay { background: linear-gradient(90deg, var(--success-green), #059669); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 800; width: 100%; transition: 0.3s; cursor: pointer; }
-        
+        :root {
+            --air-blue: #0878d1;
+            --air-dark: #071b2e;
+            --air-gold: #d7b56d;
+            --success-green: #10b981;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+            min-height: 100vh;
+            color: #17202a;
+        }
+
+        .navbar-solid {
+            background: var(--air-dark);
+            padding: 22px 5%;
+            border-bottom: 1px solid rgba(255,255,255,0.12);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .brand-symbol {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.15);
+            font-size: 21px;
+        }
+
+        .brand-name {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 3px;
+        }
+
+        .nav-links a {
+            color: rgba(255,255,255,0.9);
+            text-decoration: none;
+            padding: 10px 17px;
+            font-size: 13px;
+            font-weight: 500;
+            border-radius: 4px;
+        }
+
+        .nav-links a.active {
+            border-bottom: 2px solid var(--air-gold);
+        }
+
+        .payment-card {
+            background: white;
+            border-radius: 5px;
+            padding: 40px;
+            box-shadow: 0 20px 45px rgba(0,0,0,0.08);
+            margin-top: 50px;
+            border: 1px solid #f1f5f9;
+        }
+
+        .btn-pay {
+            background: linear-gradient(90deg, var(--success-green), #059669);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 3px;
+            font-weight: 700;
+            width: 100%;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .btn-pay:hover {
+            transform: translateY(-2px);
+        }
+
         /* Receipt Styling */
-        .receipt-box { border: 2px solid var(--primary-navy); padding: 30px; border-radius: 15px; margin-top: 20px; display: none; background: white; }
-        .pnr-text { font-size: 24px; font-weight: 800; color: var(--main-blue); letter-spacing: 2px; }
-        
+        .receipt-box {
+            border: 2px solid var(--air-dark);
+            padding: 30px;
+            border-radius: 5px;
+            margin-top: 20px;
+            display: none;
+            background: white;
+        }
+
+        .pnr-text {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--air-blue);
+            letter-spacing: 2px;
+        }
+
+        .form-control {
+            border-radius: 3px;
+        }
+
+        .form-control:focus {
+            border-color: var(--air-blue);
+            box-shadow: none;
+        }
+
         @media print {
             .no-print { display: none !important; }
             .receipt-box { display: block !important; border: none; box-shadow: none; margin: 0; padding: 0; }
@@ -29,22 +132,25 @@
 </head>
 <body>
 
-    <header class="header-custom no-print">
-        <div style="color:white; font-weight:800; font-size:20px;">✈️ NAVIERO</div>
-        <nav style="background: #1c2e4a; border-radius: 50px; padding: 5px; display: flex;">
-            <a class="nav-link" href="index.html">Home</a>
-            <a class="nav-link" href="flights.html">Flights</a>
-            <a class="nav-link active" href="payment.html">Payment</a>
-            <a class="nav-link" href="cancel.html">Cancel</a>
+    <header class="navbar-solid no-print">
+        <a href="index.html" class="brand">
+            <div class="brand-symbol">✈</div>
+            <div class="brand-name">AIR KERALA</div>
+        </a>
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="flights.html">Book Flight</a>
+            <a href="payment.html" class="active">Payment</a>
+            <a href="cancel.html">Cancel</a>
         </nav>
     </header>
 
     <div class="container">
         <div id="paymentSection" class="payment-card no-print">
-            <h4 class="fw-bold mb-4" style="color:var(--primary-navy)">💳 Secure Checkout</h4>
+            <h4 class="fw-bold mb-4" style="color: var(--air-dark);">💳 Secure Checkout</h4>
             <div class="row g-4">
                 <div class="col-md-7">
-                    <div class="p-3 border rounded-4 bg-light">
+                    <div class="p-3 border rounded-3 bg-light">
                         <div class="mb-3">
                             <label class="small fw-bold text-muted">CARDHOLDER NAME</label>
                             <input type="text" id="paxName" class="form-control" placeholder="Full Name" required>
@@ -66,17 +172,17 @@
                     </div>
                     <button class="btn-pay mt-4" onclick="handleTransaction()">Pay & Print Receipt ➔</button>
                 </div>
-                
+
                 <div class="col-md-5">
-                    <div class="p-4 rounded-4" style="background: #eff6ff; border: 1px solid #dbeafe;">
-                        <h6 class="fw-bold text-primary mb-3">Order Summary</h6>
+                    <div class="p-4 rounded-3" style="background: #eaf3fc; border: 1px solid #cfe4f8;">
+                        <h6 class="fw-bold mb-3" style="color: var(--air-blue);">Order Summary</h6>
                         <div class="d-flex justify-content-between mb-2"><span>Flight</span><span id="summaryRoute">-</span></div>
 <div class="d-flex justify-content-between mb-2"><span>Cabin Class</span><span id="summaryClass">-</span></div>
 <div class="d-flex justify-content-between mb-2"><span>Seat</span><span id="summarySeat">-</span></div>
 <hr>
 <div class="d-flex justify-content-between align-items-center">
     <span class="h5 fw-bold mb-0">Total</span>
-    <span class="h4 fw-bold text-primary mb-0" id="summaryTotal">₹0</span>
+    <span class="h4 fw-bold mb-0" style="color: var(--air-blue);" id="summaryTotal">₹0</span>
                         </div>
                     </div>
                 </div>
@@ -85,11 +191,11 @@
 
         <div id="receiptSection" class="receipt-box">
             <div class="text-center border-bottom pb-4 mb-4">
-                <h2 class="fw-800">✈️ NAVIERO</h2>
+                <h2 class="fw-bold">✈ AIR KERALA</h2>
                 <p class="text-muted mb-0">Electronic Payment Confirmation</p>
                 <small>PCI-DSS Verified Transaction</small>
             </div>
-            
+
             <div class="row mb-4">
                 <div class="col-6">
                     <p class="text-muted small mb-1">PASSENGER NAME</p>
@@ -126,7 +232,7 @@
             </div>
 
             <div class="no-print text-center pt-4 border-top">
-                <button class="btn btn-primary px-5 py-3 fw-bold rounded-pill shadow" onclick="window.print()">🖨️ Print This Receipt</button>
+                <button class="btn px-5 py-3 fw-bold rounded-pill shadow-sm" style="background: var(--air-blue); color: white; border: none;" onclick="window.print()">🖨️ Print This Receipt</button>
                 <p class="mt-4"><a href="index.html" class="text-muted text-decoration-none small">Done? Go back to Home</a></p>
             </div>
         </div>
