@@ -6,6 +6,7 @@
     <title>Secure Payment | AIR KERALA</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         :root {
             --air-blue: #0878d1;
@@ -232,7 +233,8 @@
             </div>
 
             <div class="no-print text-center pt-4 border-top">
-                <button class="btn px-5 py-3 fw-bold rounded-pill shadow-sm" style="background: var(--air-blue); color: white; border: none;" onclick="window.print()">🖨️ Print This Receipt</button>
+                <button class="btn px-5 py-3 fw-bold rounded-pill shadow-sm me-2" style="background: var(--air-blue); color: white; border: none;" onclick="downloadTicketPDF()">⬇️ Download Ticket (PDF)</button>
+                <button class="btn px-5 py-3 fw-bold rounded-pill shadow-sm" style="background: var(--air-dark); color: white; border: none;" onclick="window.print()">🖨️ Print This Receipt</button>
                 <p class="mt-4"><a href="index.html" class="text-muted text-decoration-none small">Done? Go back to Home</a></p>
             </div>
         </div>
@@ -254,7 +256,12 @@ window.onload = function() {
     document.getElementById('summaryTotal').textContent = `₹ ${total.toLocaleString()}`;
     document.getElementById('paxName').value = passengerName;
 };
-    async function handleTransaction() {
+
+// Holds the data for the most recently generated ticket, so the
+// Download button can re-generate the same PDF on demand.
+let lastTicket = null;
+
+async function handleTransaction() {
     const name = document.getElementById('paxName').value;
     if (!name) return alert("Please enter Passenger Name");
 
@@ -268,6 +275,8 @@ window.onload = function() {
     const seat = localStorage.getItem('selectedSeat') || '-';
     const flightNum = localStorage.getItem('flightNum') || '';
     const airline = localStorage.getItem('airline') || '';
+    const dep = localStorage.getItem('dep') || '-';
+    const arr = localStorage.getItem('arr') || '-';
 
     const paymentData = {
         booking_id: parseInt(booking_id),
@@ -296,6 +305,14 @@ window.onload = function() {
                 document.getElementById('paymentSection').style.display = 'none';
                 document.getElementById('receiptSection').style.display = 'block';
                 window.scrollTo(0, 0);
+
+                lastTicket = {
+                    pnr, name: name.toUpperCase(), airline, flightNum,
+                    origin, dest, dep, arr, cls, seat, total,
+                    paymentDate: paymentData.payment_date
+                };
+
+                downloadTicketPDF();
             } else {
                 alert('Payment failed: ' + data.message);
             }
@@ -303,6 +320,134 @@ window.onload = function() {
             alert('Error: ' + err.message);
         }
     }
+
+// Builds an e-ticket PDF client-side with jsPDF — no server round trip needed.
+function downloadTicketPDF() {
+    if (!lastTicket) {
+        alert('No completed booking to generate a ticket for yet.');
+        return;
+    }
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+    const t = lastTicket;
+
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const navy = [7, 27, 46];
+    const gold = [215, 181, 109];
+    const blue = [8, 120, 209];
+    const grey = [100, 116, 139];
+
+    // Header band
+    doc.setFillColor(...navy);
+    doc.rect(0, 0, pageWidth, 90, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(22);
+    doc.text('AIR KERALA', 40, 45);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    doc.setTextColor(...gold);
+    doc.text('FLY BEYOND — E-TICKET / ITINERARY RECEIPT', 40, 65);
+
+    // PNR box
+    doc.setDrawColor(...blue);
+    doc.setLineWidth(1);
+    doc.rect(pageWidth - 190, 25, 150, 45);
+    doc.setTextColor(...navy);
+    doc.setFontSize(9);
+    doc.text('BOOKING PNR', pageWidth - 175, 42);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(16);
+    doc.setTextColor(...blue);
+    doc.text(t.pnr, pageWidth - 175, 60);
+
+    let y = 130;
+    doc.setTextColor(...grey);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    doc.text('PASSENGER NAME', 40, y);
+    doc.setTextColor(...navy);
+    doc.setFontSize(14);
+    doc.text(t.name, 40, y + 20);
+
+    y += 55;
+    doc.setDrawColor(220, 226, 232);
+    doc.line(40, y, pageWidth - 40, y);
+
+    // Flight route block
+    y += 35;
+    doc.setFontSize(9);
+    doc.setTextColor(...grey);
+    doc.text('FROM', 40, y);
+    doc.text('TO', pageWidth - 120, y);
+
+    doc.setFontSize(16);
+    doc.setTextColor(...navy);
+    doc.setFont('helvetica', 'bold');
+    doc.text(t.origin, 40, y + 22);
+    doc.text(t.dest, pageWidth - 120, y + 22);
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    doc.setTextColor(...grey);
+    doc.text('Departs ' + t.dep, 40, y + 40);
+    doc.text('Arrives ' + t.arr, pageWidth - 120, y + 40);
+
+    doc.setDrawColor(...gold);
+    doc.setLineWidth(1.5);
+    doc.line(140, y + 15, pageWidth - 140, y + 15);
+
+    y += 75;
+    doc.setDrawColor(220, 226, 232);
+    doc.line(40, y, pageWidth - 40, y);
+
+    // Details table
+    const rows = [
+        ['Flight', (t.airline || '-') + (t.flightNum ? ' · ' + t.flightNum : '')],
+        ['Cabin Class', t.cls],
+        ['Seat Number', t.seat],
+        ['Payment Date', t.paymentDate],
+        ['Payment Status', 'CONFIRMED']
+    ];
+
+    y += 30;
+    doc.setFontSize(11);
+    rows.forEach(function(r) {
+        doc.setTextColor(...grey);
+        doc.setFont('helvetica', 'normal');
+        doc.text(r[0], 40, y);
+        doc.setTextColor(...navy);
+        doc.setFont('helvetica', 'bold');
+        doc.text(String(r[1]), 220, y);
+        y += 24;
+    });
+
+    y += 15;
+    doc.setDrawColor(220, 226, 232);
+    doc.line(40, y, pageWidth - 40, y);
+
+    y += 35;
+    doc.setFontSize(11);
+    doc.setTextColor(...grey);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Total Paid', 40, y);
+    doc.setFontSize(18);
+    doc.setTextColor(...blue);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Rs. ' + t.total.toLocaleString('en-IN'), pageWidth - 160, y + 2);
+
+    // Footer
+    doc.setFillColor(...navy);
+    doc.rect(0, doc.internal.pageSize.getHeight() - 50, pageWidth, 50, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+    doc.text('This is a computer-generated ticket and does not require a signature.', 40, doc.internal.pageSize.getHeight() - 28);
+    doc.text('Air Kerala · Fly beyond.', 40, doc.internal.pageSize.getHeight() - 14);
+
+    doc.save('AirKerala_Ticket_' + t.pnr + '.pdf');
+}
 </script>
 </body>
 </html>

@@ -1,0 +1,11 @@
+-- Run this once against TRAVEL_AGENCY before deploying the updated routes.
+
+ALTER TABLE FLIGHT MODIFY FLIGHT_ID INT AUTO_INCREMENT;
+ALTER TABLE FLIGHT ADD COLUMN FLIGHT_NUMBER VARCHAR(10) UNIQUE;
+
+ALTER TABLE SEAT MODIFY SEAT_ID INT AUTO_INCREMENT;
+
+-- If you already have rows using FLIGHT_ID / SEAT_ID values, make sure the
+-- new AUTO_INCREMENT counters start above your highest existing ID:
+-- ALTER TABLE FLIGHT AUTO_INCREMENT = 1000;
+-- ALTER TABLE SEAT AUTO_INCREMENT = 1000;

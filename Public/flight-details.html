@@ -234,22 +234,22 @@
             <div class="col-md-4">
                 <div class="class-card selected" id="class-Economy" onclick="selectClass('Economy')">
                     <div class="fw-bold fs-5">Economy Class</div>
-                    <div class="text-muted small">42 seats left</div>
-                    <div class="fw-bold mt-1" style="color: var(--air-blue);">₹ 5,500</div>
+                    <div class="text-muted small" id="seatsLeft-Economy">Loading…</div>
+                    <div class="fw-bold mt-1" style="color: var(--air-blue);" id="price-Economy">—</div>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="class-card" id="class-Business" onclick="selectClass('Business')">
                     <div class="fw-bold fs-5">Business Class</div>
-                    <div class="text-muted small">12 seats left</div>
-                    <div class="fw-bold mt-1" style="color: var(--air-blue);">₹ 12,500</div>
+                    <div class="text-muted small" id="seatsLeft-Business">Loading…</div>
+                    <div class="fw-bold mt-1" style="color: var(--air-blue);" id="price-Business">—</div>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="class-card" id="class-First" onclick="selectClass('First')">
                     <div class="fw-bold fs-5">First Class</div>
-                    <div class="text-muted small">4 seats left</div>
-                    <div class="fw-bold mt-1" style="color: var(--air-blue);">₹ 25,000</div>
+                    <div class="text-muted small" id="seatsLeft-First">Loading…</div>
+                    <div class="fw-bold mt-1" style="color: var(--air-blue);" id="price-First">—</div>
                 </div>
             </div>
         </div>
@@ -293,17 +293,22 @@
     const arr = params.get('arr') || '';
     const aircraft = params.get('aircraft') || 'TBD';
     const status = params.get('status') || 'Unknown';
+    const searchDate = params.get('date') || new Date().toISOString().split('T')[0];
 
+    // Placeholder seat labels shown while live inventory loads. Once the
+    // /api/flights/ensure call returns, these stay as display labels —
+    // the actual booked seat is assigned server-side from real inventory.
     const seatOptions = {
         Economy: ['12A','12B','12C','14A','14B','15C','16A','17B'],
         Business: ['2A','2B','3A','3B','4A','4B'],
         First: ['1A','1B','1C','1D']
     };
 
-    const prices = { Economy: 5500, Business: 12500, First: 25000 };
-
     let selectedClass = 'Economy';
     let selectedSeat = seatOptions.Economy[0];
+    let liveFlightId = null;
+    let livePrices = { Economy: 5500, Business: 12500, First: 25000 }; // fallback until live data loads
+    let liveSeatCounts = {};
 
     document.getElementById('heroTitle').textContent = airline + ' · ' + flightNum;
     document.getElementById('heroSubtitle').textContent = origin + ' → ' + dest;
@@ -316,6 +321,50 @@
     document.getElementById('infoAircraft').textContent = aircraft;
     document.getElementById('infoStatus').textContent = status;
     document.getElementById('aircraftModel').textContent = aircraft;
+
+    function toDateTime(timeStr) {
+        // dep/arr are "HH:MM" strings; combine with the search date for a real DATETIME
+        if (!timeStr || timeStr === 'N/A') return searchDate + ' 00:00:00';
+        return searchDate + ' ' + timeStr + ':00';
+    }
+
+    async function loadLiveInventory() {
+        try {
+            const res = await fetch('/api/flights/ensure', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    flight_number: flightNum || (airline + '-' + dep),
+                    airline_name: airline,
+                    origin: origin,
+                    destination: dest,
+                    departure_time: toDateTime(dep),
+                    arrival_time: toDateTime(arr)
+                })
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                liveFlightId = data.flight_id;
+                data.seats.forEach(function(row) {
+                    livePrices[row.CLASS] = row.price;
+                    liveSeatCounts[row.CLASS] = row.available;
+                });
+            }
+        } catch (err) {
+            console.error('Live inventory error:', err);
+        }
+
+        ['Economy','Business','First'].forEach(function(c) {
+            const count = liveSeatCounts[c];
+            document.getElementById('seatsLeft-' + c).textContent =
+                (count !== undefined ? count : '—') + ' seats left';
+            document.getElementById('price-' + c).textContent =
+                '₹ ' + livePrices[c].toLocaleString();
+        });
+
+        updatePrice();
+    }
 
     function renderSeats() {
         const map = document.getElementById('seatMap');
@@ -356,7 +405,7 @@
     }
 
     function updatePrice() {
-        const base = prices[selectedClass];
+        const base = livePrices[selectedClass];
         const tax = Math.round(base * 0.18);
         const total = base + tax;
         document.getElementById('baseFare').textContent = '₹ ' + base.toLocaleString();
@@ -365,9 +414,15 @@
     }
 
     function bookFlight() {
-        const base = prices[selectedClass];
+        if (!liveFlightId) {
+            alert('Still loading live seat availability — please wait a moment and try again.');
+            return;
+        }
+
+        const base = livePrices[selectedClass];
         const total = base + Math.round(base * 0.18);
 
+        localStorage.setItem('flightId', liveFlightId);
         localStorage.setItem('flightNum', flightNum);
         localStorage.setItem('airline', airline);
         localStorage.setItem('origin', origin);
@@ -381,8 +436,8 @@
         window.location.href = 'booking.html';
     }
 
-    updatePrice();
     renderSeats();
+    loadLiveInventory();
 </script>
 
 </body>

@@ -4,41 +4,61 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Book Flight | AIR KERALA</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
         :root {
             --air-blue: #0878d1;
+            --air-blue-dark: #0565b0;
             --air-dark: #071b2e;
             --air-gold: #d7b56d;
             --white: #ffffff;
             --light: #f5f7fa;
+            --text: #17202a;
         }
 
-        * { box-sizing: border-box; }
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
 
         body {
             margin: 0;
             font-family: 'Plus Jakarta Sans', sans-serif;
-            color: #17202a;
-            background: #ffffff;
+            color: var(--text);
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            background:
+                linear-gradient(
+                    rgba(4, 24, 42, 0.72),
+                    rgba(4, 24, 42, 0.78)
+                ),
+                url("https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=2000&q=85")
+                center/cover fixed no-repeat;
         }
 
         /* =====================================================
-           NAVBAR (solid variant of the homepage navbar)
+           NAVBAR
         ===================================================== */
 
         .navbar-solid {
-            background: var(--air-dark);
-            padding: 22px 5%;
+            background: rgba(7, 27, 46, 0.94);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: 18px 5%;
             border-bottom: 1px solid rgba(255,255,255,0.12);
+
             display: flex;
             align-items: center;
             justify-content: space-between;
+
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
         .brand {
@@ -50,20 +70,24 @@
         }
 
         .brand-symbol {
-            width: 42px;
-            height: 42px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
+
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(255,255,255,0.15);
-            backdrop-filter: blur(10px);
+
+            background: rgba(255,255,255,0.14);
+            border: 1px solid rgba(255,255,255,0.15);
             font-size: 21px;
+
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
         }
 
         .brand-name {
-            font-size: 23px;
-            font-weight: 700;
+            font-size: 22px;
+            font-weight: 800;
             letter-spacing: 3px;
         }
 
@@ -71,44 +95,48 @@
             display: block;
             font-size: 8px;
             letter-spacing: 2px;
-            color: rgba(255,255,255,0.75);
-            margin-top: 2px;
+            color: rgba(255,255,255,0.7);
+            margin-top: 1px;
         }
 
         .nav-links {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
         }
 
         .nav-links a {
-            color: rgba(255,255,255,0.9);
+            color: rgba(255,255,255,0.88);
             text-decoration: none;
             padding: 10px 17px;
             font-size: 13px;
             font-weight: 500;
-            border-radius: 4px;
+            border-radius: 6px;
             transition: 0.25s;
         }
 
         .nav-links a:hover {
-            background: rgba(255,255,255,0.13);
+            background: rgba(255,255,255,0.1);
             color: white;
         }
 
         .nav-links a.active {
+            color: white;
+            background: rgba(255,255,255,0.08);
             border-bottom: 2px solid var(--air-gold);
         }
 
         .login-btn {
-            border: 1px solid rgba(255,255,255,0.55);
-            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.45);
+            background: rgba(255,255,255,0.07);
             color: white;
-            padding: 10px 20px;
-            border-radius: 4px;
+
+            padding: 10px 19px;
+            border-radius: 6px;
+
             font-size: 13px;
             font-weight: 600;
-            backdrop-filter: blur(8px);
+
             cursor: pointer;
             transition: 0.3s;
         }
@@ -119,65 +147,137 @@
         }
 
         /* =====================================================
-           SEARCH BAND — continues the homepage search-card style
+           HERO
         ===================================================== */
 
-        .search-band {
-            background: var(--air-dark);
+        .hero {
+            min-height: 390px;
+            padding: 75px 5% 0;
             color: white;
-            padding: 45px 5% 0;
+            text-align: center;
+
+            position: relative;
         }
 
-        .search-eyebrow {
+        .hero-content {
+            max-width: 850px;
+            margin: 0 auto;
+        }
+
+        .hero-eyebrow {
             font-size: 11px;
-            letter-spacing: 3px;
+            letter-spacing: 4px;
             text-transform: uppercase;
             color: var(--air-gold);
-            font-weight: 700;
+            font-weight: 800;
+            margin-bottom: 14px;
         }
 
-        .search-title {
-            font-size: 32px;
+        .hero-title {
+            font-size: clamp(36px, 5vw, 58px);
             font-weight: 300;
-            margin: 10px 0 6px;
+            line-height: 1.1;
+            margin: 0;
         }
 
-        .search-title strong {
+        .hero-title strong {
+            font-weight: 800;
+        }
+
+        .hero-subtitle {
+            max-width: 650px;
+            margin: 18px auto 0;
+            color: rgba(255,255,255,0.82);
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        .domestic-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            margin-top: 22px;
+            padding: 8px 15px;
+
+            border-radius: 100px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.18);
+
+            font-size: 11px;
             font-weight: 700;
+            letter-spacing: 0.5px;
+
+            backdrop-filter: blur(10px);
         }
 
-        .search-subtitle {
-            color: rgba(255,255,255,0.75);
-            font-size: 14px;
-            margin-bottom: 25px;
-        }
+        /* =====================================================
+           SEARCH CARD
+        ===================================================== */
 
         .search-wrapper {
             max-width: 1180px;
-            margin: 0 auto;
-            transform: translateY(40px);
+            margin: -55px auto 0;
+            padding: 0 25px;
+
+            position: relative;
+            z-index: 20;
         }
 
         .search-card {
-            background: white;
-            color: #17202a;
-            border-radius: 5px;
-            box-shadow: 0 20px 45px rgba(0,0,0,0.18);
+            background: rgba(255,255,255,0.98);
+            border-radius: 18px;
+
+            box-shadow:
+                0 30px 70px rgba(0,0,0,0.28),
+                0 8px 25px rgba(0,0,0,0.12);
+
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.7);
+        }
+
+        .search-card-top {
+            padding: 20px 25px;
+            border-bottom: 1px solid #edf0f3;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .search-card-heading {
+            font-size: 17px;
+            font-weight: 800;
+            color: var(--air-dark);
+        }
+
+        .search-card-heading span {
+            color: var(--air-blue);
+        }
+
+        .domestic-only-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #247a45;
+
+            background: #eaf7ee;
+            padding: 7px 12px;
+            border-radius: 100px;
         }
 
         .search-fields {
             display: grid;
-            grid-template-columns: 1.1fr 1.1fr 1fr 180px;
+            grid-template-columns: 1fr 1fr 1fr 180px;
             gap: 0;
             padding: 20px;
         }
 
         .field {
-            padding: 4px 20px;
+            padding: 7px 20px;
             border-right: 1px solid #e5e7eb;
         }
 
-        .field:last-of-type {
+        .field:last-child {
             border-right: none;
         }
 
@@ -186,7 +286,7 @@
             font-size: 10px;
             text-transform: uppercase;
             letter-spacing: 1.5px;
-            font-weight: 700;
+            font-weight: 800;
             color: #69727e;
             margin-bottom: 8px;
         }
@@ -195,29 +295,42 @@
             width: 100%;
             border: none;
             outline: none;
-            font-size: 15px;
-            font-weight: 600;
+
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 700;
             color: #17202a;
+
             background: transparent;
             cursor: pointer;
+        }
+
+        .field-input:focus {
+            color: var(--air-blue);
         }
 
         .search-button {
             border: none;
             background: var(--air-blue);
             color: white;
-            border-radius: 3px;
-            font-size: 14px;
-            font-weight: 700;
+
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 800;
+
             cursor: pointer;
             transition: 0.3s;
+
             margin-left: 15px;
-            width: 100%;
+            width: calc(100% - 15px);
+
+            box-shadow: 0 8px 18px rgba(8,120,209,0.28);
         }
 
         .search-button:hover {
-            background: #0565b0;
-            transform: translateY(-1px);
+            background: var(--air-blue-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(8,120,209,0.35);
         }
 
         /* =====================================================
@@ -226,85 +339,208 @@
 
         .results-section {
             max-width: 1180px;
-            margin: 90px auto 60px;
-            padding: 0 5%;
-            flex: 1;
+            margin: 75px auto 70px;
+            padding: 0 25px;
+
+            min-height: 400px;
+        }
+
+        .results-container {
+            background: rgba(255,255,255,0.97);
+            border-radius: 18px;
+
+            padding: 30px;
+
+            box-shadow:
+                0 20px 50px rgba(0,0,0,0.2);
+
+            border: 1px solid rgba(255,255,255,0.8);
         }
 
         .results-heading {
-            font-size: 20px;
-            font-weight: 700;
+            font-size: 21px;
+            font-weight: 800;
             color: #10283e;
-            margin-bottom: 25px;
+            margin-bottom: 5px;
+        }
+
+        .results-subheading {
+            font-size: 12px;
+            color: #737b84;
+            margin-bottom: 28px;
         }
 
         .airport-heading {
-            font-size: 14px;
-            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            font-size: 13px;
+            font-weight: 800;
             color: var(--air-blue);
+
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin: 35px 0 15px;
+
+            margin: 30px 0 10px;
         }
+
+        .airport-heading::before {
+            content: "";
+            width: 4px;
+            height: 22px;
+            background: var(--air-blue);
+            border-radius: 10px;
+        }
+
+        /* =====================================================
+           FLIGHT CARD
+        ===================================================== */
 
         .flight-card {
             background: white;
-            border-top: 1px solid #dce2e8;
-            padding: 22px 5px;
-            margin-bottom: 0;
+
+            border: 1px solid #e6ebf0;
+            border-radius: 13px;
+
+            padding: 20px 22px;
+            margin-bottom: 12px;
+
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 15px;
-            transition: 0.3s;
+
+            gap: 18px;
+
+            transition: 0.25s;
+
+            box-shadow: 0 5px 16px rgba(0,0,0,0.045);
         }
 
         .flight-card:hover {
-            transform: translateX(4px);
+            transform: translateY(-3px);
+
+            border-color: rgba(8,120,209,0.3);
+
+            box-shadow:
+                0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .flight-number {
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--air-blue);
+            margin-bottom: 4px;
         }
 
         .flight-name {
-            font-weight: 700;
-            font-size: 16px;
+            font-weight: 800;
+            font-size: 15px;
+
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+
             max-width: 170px;
             color: #10283e;
         }
 
-        .status-badge {
-            padding: 6px 14px;
-            border-radius: 3px;
-            font-size: 12px;
-            font-weight: 700;
+        .route {
+            text-align: center;
+            flex: 1;
         }
 
-        .status-departed { background: #e6f4ea; color: #1f7a3d; }
-        .status-gateclosed { background: #fdf1de; color: #9a6a13; }
-        .status-default { background: #eef1f4; color: #4b5563; }
+        .route-main {
+            font-size: 14px;
+            font-weight: 800;
+            color: #17202a;
+        }
+
+        .route-time {
+            font-size: 11px;
+            color: #737b84;
+            margin-top: 5px;
+        }
+
+        .status-badge {
+            padding: 7px 13px;
+            border-radius: 100px;
+
+            font-size: 10px;
+            font-weight: 800;
+
+            white-space: nowrap;
+        }
+
+        .status-departed {
+            background: #e6f4ea;
+            color: #1f7a3d;
+        }
+
+        .status-gateclosed {
+            background: #fdf1de;
+            color: #9a6a13;
+        }
+
+        .status-default {
+            background: #eef1f4;
+            color: #4b5563;
+        }
 
         .btn-view {
             border: none;
             background: var(--air-dark);
             color: white;
-            padding: 10px 22px;
-            border-radius: 3px;
-            font-weight: 700;
-            font-size: 13px;
+
+            padding: 10px 18px;
+            border-radius: 8px;
+
+            font-weight: 800;
+            font-size: 11px;
+
             text-decoration: none;
-            transition: 0.3s;
+            white-space: nowrap;
+
+            transition: 0.25s;
         }
 
         .btn-view:hover {
             background: var(--air-blue);
             color: white;
+            transform: translateY(-1px);
         }
 
         .empty-state {
             color: #737b84;
-            font-size: 14px;
-            padding: 20px 0;
+            font-size: 13px;
+            padding: 25px 5px;
+            text-align: center;
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 45px 20px;
+            color: #6b7280;
+        }
+
+        .loading-spinner {
+            width: 30px;
+            height: 30px;
+
+            border: 3px solid #e5e7eb;
+            border-top-color: var(--air-blue);
+
+            border-radius: 50%;
+
+            animation: spin 0.8s linear infinite;
+
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         /* =====================================================
@@ -312,244 +548,995 @@
         ===================================================== */
 
         footer {
-            background: var(--air-dark);
+            background: rgba(7,27,46,0.97);
             color: white;
-            padding: 35px 5%;
+            padding: 30px 5%;
+
+            margin-top: auto;
         }
 
         .footer-container {
             max-width: 1250px;
             margin: auto;
+
             display: flex;
             justify-content: space-between;
-            font-size: 12px;
+
+            font-size: 11px;
             color: rgba(255,255,255,0.6);
         }
 
+        /* =====================================================
+           MOBILE
+        ===================================================== */
+
         @media (max-width: 900px) {
-            .nav-links { display: none; }
-            .search-fields { grid-template-columns: 1fr 1fr; }
-            .field { border-right: none; border-bottom: 1px solid #e5e7eb; padding: 14px; }
-            .search-wrapper { transform: none; margin-top: 20px; }
-            .results-section { margin-top: 40px; }
-            .flight-card { flex-direction: column; align-items: flex-start; }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero {
+                padding-top: 55px;
+            }
+
+            .search-wrapper {
+                margin-top: -35px;
+            }
+
+            .search-fields {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .field {
+                border-right: none;
+                border-bottom: 1px solid #e5e7eb;
+                padding: 15px;
+            }
+
+            .search-button {
+                margin: 15px 0 0;
+                width: 100%;
+                min-height: 52px;
+            }
+
+            .results-section {
+                margin-top: 45px;
+            }
+
+            .flight-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .route {
+                width: 100%;
+                text-align: left;
+            }
+
+            .footer-container {
+                flex-direction: column;
+                gap: 8px;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            .brand-name {
+                font-size: 17px;
+            }
+
+            .brand-subtitle {
+                display: none;
+            }
+
+            .login-btn {
+                display: none;
+            }
+
+            .search-fields {
+                grid-template-columns: 1fr;
+            }
+
+            .search-card-top {
+                align-items: flex-start;
+                gap: 10px;
+                flex-direction: column;
+            }
+
+            .results-container {
+                padding: 20px 15px;
+            }
         }
 
     </style>
 </head>
+
 <body>
 
-    <header class="navbar-solid">
+<header class="navbar-solid">
 
-        <a href="index.html" class="brand">
-            <div class="brand-symbol">✈</div>
-            <div>
-                <div class="brand-name">AIR KERALA</div>
-                <span class="brand-subtitle">FLY BEYOND</span>
+    <a href="index.html" class="brand">
+        <div class="brand-symbol">✈</div>
+
+        <div>
+            <div class="brand-name">AIR KERALA</div>
+            <span class="brand-subtitle">FLY BEYOND</span>
+        </div>
+    </a>
+
+    <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="flights.html" class="active">Book Flight</a>
+        <a href="booking.html">Manage Booking</a>
+    </nav>
+
+    <button class="login-btn" onclick="window.location.href='index.html'">
+        👤 Account
+    </button>
+
+</header>
+
+
+<!-- =====================================================
+     HERO
+===================================================== -->
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <div class="hero-eyebrow">
+            AIR KERALA
+        </div>
+
+        <h1 class="hero-title">
+            Book your <strong>journey.</strong>
+        </h1>
+
+        <p class="hero-subtitle">
+            Search real-time domestic flights across India and
+            find the right flight for your journey.
+        </p>
+
+        <div class="domestic-pill">
+            🇮🇳 Domestic flights across India
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     SEARCH
+===================================================== -->
+
+<div class="search-wrapper">
+
+    <div class="search-card">
+
+        <div class="search-card-top">
+
+            <div class="search-card-heading">
+                Find your <span>flight</span>
             </div>
-        </a>
 
-        <nav class="nav-links">
-            <a href="index.html">Home</a>
-            <a href="flights.html" class="active">Book Flight</a>
-            <a href="booking.html">Manage Booking</a>
-            <a href="payment.html">Payment</a>
-        </nav>
+            <div class="domestic-only-label">
+                ✓ DOMESTIC ONLY
+            </div>
 
-        <button class="login-btn" onclick="window.location.href='index.html'">👤 Account</button>
+        </div>
 
-    </header>
+        <div class="search-fields">
 
-    <section class="search-band">
+            <!-- FROM -->
 
-        <div class="search-eyebrow">FIND YOUR FLIGHT</div>
-        <h1 class="search-title">Search <strong>live availability.</strong></h1>
-        <p class="search-subtitle">Real-time flights, sourced worldwide.</p>
+            <div class="field">
 
-        <div class="search-wrapper">
-            <div class="search-card">
-                <div class="search-fields">
+                <label class="field-label">
+                    From
+                </label>
 
-                    <div class="field">
-                        <label class="field-label">From</label>
-                        <select id="fromFilter" class="field-input" onchange="filterByDate()">
-                            <option value="all">All Airports</option>
-                            <option value="DEL">Delhi</option>
-                            <option value="BOM">Mumbai</option>
-                            <option value="BLR">Bangalore</option>
-                            <option value="MAA">Chennai</option>
-                            <option value="CCU">Kolkata</option>
-                            <option value="HYD">Hyderabad</option>
-                            <option value="COK">Kochi</option>
-                            <option value="DXB">Dubai</option>
-                            <option value="LHR">London</option>
-                            <option value="JFK">New York</option>
-                            <option value="SIN">Singapore</option>
-                            <option value="DOH">Doha</option>
-                        </select>
-                    </div>
+                <select id="fromFilter" class="field-input">
+                    <option value="all">All Indian Airports</option>
 
-                    <div class="field">
-                        <label class="field-label">To</label>
-                        <select id="toFilter" class="field-input" onchange="filterByDate()">
-                            <option value="all">All Destinations</option>
-                            <option value="DEL">Delhi</option>
-                            <option value="BOM">Mumbai</option>
-                            <option value="BLR">Bangalore</option>
-                            <option value="MAA">Chennai</option>
-                            <option value="CCU">Kolkata</option>
-                            <option value="HYD">Hyderabad</option>
-                            <option value="COK">Kochi</option>
-                            <option value="DXB">Dubai</option>
-                            <option value="LHR">London</option>
-                            <option value="JFK">New York</option>
-                            <option value="SIN">Singapore</option>
-                            <option value="DOH">Doha</option>
-                        </select>
-                    </div>
+                    <option value="COK">Kochi (COK)</option>
+                    <option value="TRV">Thiruvananthapuram (TRV)</option>
+                    <option value="CCJ">Kozhikode (CCJ)</option>
+                    <option value="CNN">Kannur (CNN)</option>
 
-                    <div class="field">
-                        <label class="field-label">Travel Date</label>
-                        <input type="date" id="travelDate" class="field-input" onchange="filterByDate()">
-                    </div>
+                    <option value="BLR">Bengaluru (BLR)</option>
+                    <option value="MAA">Chennai (MAA)</option>
+                    <option value="HYD">Hyderabad (HYD)</option>
+                    <option value="BOM">Mumbai (BOM)</option>
+                    <option value="DEL">Delhi (DEL)</option>
+                    <option value="CCU">Kolkata (CCU)</option>
+                    <option value="PNQ">Pune (PNQ)</option>
+                    <option value="GOI">Goa (GOI)</option>
+                    <option value="AMD">Ahmedabad (AMD)</option>
+                    <option value="JAI">Jaipur (JAI)</option>
+                    <option value="LKO">Lucknow (LKO)</option>
+                    <option value="IXC">Chandigarh (IXC)</option>
+                    <option value="BBI">Bhubaneswar (BBI)</option>
+                    <option value="PAT">Patna (PAT)</option>
+                    <option value="GAU">Guwahati (GAU)</option>
+                    <option value="IXE">Mangaluru (IXE)</option>
+                </select>
 
-                    <button class="search-button" onclick="filterByDate()">Search Flights →</button>
+            </div>
 
+
+            <!-- TO -->
+
+            <div class="field">
+
+                <label class="field-label">
+                    To
+                </label>
+
+                <select id="toFilter" class="field-input">
+                    <option value="all">All Indian Destinations</option>
+
+                    <option value="COK">Kochi (COK)</option>
+                    <option value="TRV">Thiruvananthapuram (TRV)</option>
+                    <option value="CCJ">Kozhikode (CCJ)</option>
+                    <option value="CNN">Kannur (CNN)</option>
+
+                    <option value="BLR">Bengaluru (BLR)</option>
+                    <option value="MAA">Chennai (MAA)</option>
+                    <option value="HYD">Hyderabad (HYD)</option>
+                    <option value="BOM">Mumbai (BOM)</option>
+                    <option value="DEL">Delhi (DEL)</option>
+                    <option value="CCU">Kolkata (CCU)</option>
+                    <option value="PNQ">Pune (PNQ)</option>
+                    <option value="GOI">Goa (GOI)</option>
+                    <option value="AMD">Ahmedabad (AMD)</option>
+                    <option value="JAI">Jaipur (JAI)</option>
+                    <option value="LKO">Lucknow (LKO)</option>
+                    <option value="IXC">Chandigarh (IXC)</option>
+                    <option value="BBI">Bhubaneswar (BBI)</option>
+                    <option value="PAT">Patna (PAT)</option>
+                    <option value="GAU">Guwahati (GAU)</option>
+                    <option value="IXE">Mangaluru (IXE)</option>
+                </select>
+
+            </div>
+
+
+            <!-- DATE -->
+
+            <div class="field">
+
+                <label class="field-label">
+                    Travel Date
+                </label>
+
+                <input
+                    type="date"
+                    id="travelDate"
+                    class="field-input"
+                >
+
+            </div>
+
+
+            <!-- SEARCH -->
+
+            <button
+                class="search-button"
+                onclick="filterFlights()"
+            >
+                Search Flights →
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     RESULTS
+===================================================== -->
+
+<section class="results-section">
+
+    <div class="results-container">
+
+        <div id="flightResults">
+
+            <div class="loading-state">
+
+                <div class="loading-spinner"></div>
+
+                <div>
+                    Loading domestic flights...
                 </div>
+
             </div>
+
         </div>
 
-    </section>
+    </div>
 
-    <section class="results-section">
-        <div id="flightResults"></div>
-    </section>
+</section>
 
-    <footer>
-        <div class="footer-container">
-            <span>© 2026 Air Kerala. All rights reserved.</span>
-            <span>Fly beyond.</span>
-        </div>
-    </footer>
 
-    <script>
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer>
+
+    <div class="footer-container">
+
+        <span>
+            © 2026 Air Kerala. All rights reserved.
+        </span>
+
+        <span>
+            Fly beyond.
+        </span>
+
+    </div>
+
+</footer>
+
+
+<script>
+
+    /* =====================================================
+       LOGIN CHECK
+    ===================================================== */
+
     if (localStorage.getItem('isLoggedIn') !== 'true') {
+
         alert("🔒 Access Denied. Please login first.");
+
         window.location.href = "index.html";
+
     }
 
+
+    /* =====================================================
+       AIRPORT DATA
+    ===================================================== */
+
     const airportNames = {
-        DEL: '🇮🇳 Delhi', BOM: '🇮🇳 Mumbai', BLR: '🇮🇳 Bangalore',
-        MAA: '🇮🇳 Chennai', CCU: '🇮🇳 Kolkata', HYD: '🇮🇳 Hyderabad',
-        COK: '🇮🇳 Kochi', DXB: '🇦🇪 Dubai', LHR: '🇬🇧 London',
-        JFK: '🇺🇸 New York', SIN: '🇸🇬 Singapore', DOH: '🇶🇦 Doha'
+
+        DEL: 'Delhi',
+        BOM: 'Mumbai',
+        BLR: 'Bengaluru',
+        MAA: 'Chennai',
+        CCU: 'Kolkata',
+        HYD: 'Hyderabad',
+
+        COK: 'Kochi',
+        TRV: 'Thiruvananthapuram',
+        CCJ: 'Kozhikode',
+        CNN: 'Kannur',
+
+        PNQ: 'Pune',
+        GOI: 'Goa',
+        AMD: 'Ahmedabad',
+        JAI: 'Jaipur',
+        LKO: 'Lucknow',
+        IXC: 'Chandigarh',
+        BBI: 'Bhubaneswar',
+        PAT: 'Patna',
+        GAU: 'Guwahati',
+        IXE: 'Mangaluru'
     };
 
-    async function filterByDate() {
-        const date = document.getElementById('travelDate').value;
-        const toDest = document.getElementById('toFilter').value;
-        const fromFilter = document.getElementById('fromFilter').value;
-        const container = document.getElementById('flightResults');
-        container.innerHTML = `<p class="empty-state">Loading live flights worldwide...</p>`;
+
+    /* =====================================================
+       DOMESTIC AIRPORT LIST
+    ===================================================== */
+
+    const domesticAirports = new Set([
+        'COK',
+        'TRV',
+        'CCJ',
+        'CNN',
+        'BLR',
+        'MAA',
+        'HYD',
+        'BOM',
+        'DEL',
+        'CCU',
+        'PNQ',
+        'GOI',
+        'AMD',
+        'JAI',
+        'LKO',
+        'IXC',
+        'BBI',
+        'PAT',
+        'GAU',
+        'IXE'
+    ]);
+
+
+    /* =====================================================
+       DATE
+    ===================================================== */
+
+    const dateInput = document.getElementById('travelDate');
+
+    const today = new Date();
+
+    const todayString =
+        today.getFullYear() +
+        '-' +
+        String(today.getMonth() + 1).padStart(2, '0') +
+        '-' +
+        String(today.getDate()).padStart(2, '0');
+
+    dateInput.min = todayString;
+
+
+    /* =====================================================
+       GET DESTINATION CODE
+    ===================================================== */
+
+    function getArrivalCode(flight) {
+
+        if (
+            flight &&
+            flight.arrival &&
+            flight.arrival.airport
+        ) {
+
+            return (
+                flight.arrival.airport.iata ||
+                flight.arrival.airport.icao ||
+                ''
+            ).toUpperCase();
+
+        }
+
+        return '';
+
+    }
+
+
+    /* =====================================================
+       CHECK DOMESTIC FLIGHT
+    ===================================================== */
+
+    function isDomesticFlight(flight) {
+
+        const destinationCode =
+            getArrivalCode(flight);
+
+        return domesticAirports.has(destinationCode);
+
+    }
+
+
+    /* =====================================================
+       SEARCH FLIGHTS
+    ===================================================== */
+
+    async function filterFlights() {
+
+        const date =
+            document.getElementById('travelDate').value;
+
+        const toDest =
+            document.getElementById('toFilter').value;
+
+        const fromFilter =
+            document.getElementById('fromFilter').value;
+
+        const container =
+            document.getElementById('flightResults');
+
+
+        const searchDate =
+            date || todayString;
+
+
+        container.innerHTML = `
+
+            <div class="loading-state">
+
+                <div class="loading-spinner"></div>
+
+                <div>
+                    Loading domestic flights...
+                </div>
+
+            </div>
+
+        `;
+
 
         try {
-            const today = date || new Date().toISOString().split('T')[0];
-            const liveRes = await fetch('/api/live-flights?date=' + today);
-            const liveData = await liveRes.json();
-            let airports = liveData.flights || [];
 
-            if (fromFilter !== 'all') {
-                airports = airports.filter(a => a.airport === fromFilter);
+            const liveRes =
+                await fetch(
+                    '/api/live-flights?date=' +
+                    encodeURIComponent(searchDate)
+                );
+
+
+            if (!liveRes.ok) {
+
+                throw new Error(
+                    'Unable to retrieve live flight data.'
+                );
+
             }
 
-            container.innerHTML = '<h2 class="results-heading">🌍 Live Worldwide Flights for: ' + today + '</h2>';
+
+            const liveData =
+                await liveRes.json();
+
+
+            if (!liveData.success) {
+
+                throw new Error(
+                    liveData.message ||
+                    'Unable to load flights.'
+                );
+
+            }
+
+
+            let airports =
+                liveData.flights || [];
+
+
+            /* ---------------------------------------------
+               FILTER ORIGIN
+            --------------------------------------------- */
+
+            if (fromFilter !== 'all') {
+
+                airports =
+                    airports.filter(
+                        airport =>
+                            airport.airport === fromFilter
+                    );
+
+            }
+
+
+            container.innerHTML = `
+
+                <h2 class="results-heading">
+                    🇮🇳 Domestic Flights
+                </h2>
+
+                <div class="results-subheading">
+                    Live domestic departures for ${searchDate}
+                </div>
+
+            `;
+
 
             let totalShown = 0;
 
-            airports.forEach(function({ airport, departures }) {
-                if (!departures || !departures.length) return;
 
-                let filtered = departures;
-                if (toDest !== 'all') {
-                    filtered = departures.filter(function(f) {
-                        const arrAirport = f.arrival && f.arrival.airport;
-                        if (!arrAirport) return false;
-                        const code = (arrAirport.iata || arrAirport.icao || '').toUpperCase();
-                        if (code) return code === toDest;
-                        const destName = (arrAirport.name || '').toLowerCase();
-                        const destCity = (airportNames[toDest] || '').split(' ').slice(1).join(' ').toLowerCase();
-                        return destCity && destName.includes(destCity);
-                    });
+            /* =================================================
+               AIRPORTS
+            ================================================= */
+
+            airports.forEach(function({
+                airport,
+                departures
+            }) {
+
+                if (
+                    !departures ||
+                    !departures.length
+                ) {
+                    return;
                 }
-                if (!filtered.length) return;
 
-                container.innerHTML += '<div class="airport-heading">' + (airportNames[airport] || airport) + ' Airport</div>';
 
-                filtered.slice(0, 10).forEach(function(f) {
-                    const dep = (f.departure && f.departure.scheduledTime && f.departure.scheduledTime.local) ? f.departure.scheduledTime.local.slice(11, 16) : 'N/A';
-                    const arr = (f.arrival && f.arrival.scheduledTime && f.arrival.scheduledTime.local) ? f.arrival.scheduledTime.local.slice(11, 16) : 'N/A';
-                    const dest = (f.arrival && f.arrival.airport && f.arrival.airport.name) ? f.arrival.airport.name : 'Unknown';
-                    const airlineName = (f.airline && f.airline.name) ? f.airline.name : 'Unknown';
-                    const aircraftModel = (f.aircraft && f.aircraft.model) ? f.aircraft.model : '';
-                    const flightNum = f.number || '';
-                    const status = f.status || 'Unknown';
-                    const statusClass = status === 'Departed' ? 'status-departed' : status === 'GateClosed' ? 'status-gateclosed' : 'status-default';
-                    const originCity = airportNames[airport] ? airportNames[airport].split(' ').slice(1).join(' ') : airport;
+                /* ---------------------------------------------
+                   DOMESTIC FILTER
+                --------------------------------------------- */
 
-                    const detailsUrl = 'flight-details.html?number=' + encodeURIComponent(flightNum) +
-                        '&airline=' + encodeURIComponent(airlineName) +
-                        '&origin=' + encodeURIComponent(originCity) +
-                        '&dest=' + encodeURIComponent(dest) +
-                        '&dep=' + encodeURIComponent(dep) +
-                        '&arr=' + encodeURIComponent(arr) +
-                        '&aircraft=' + encodeURIComponent(aircraftModel) +
-                        '&status=' + encodeURIComponent(status);
+                let filtered =
+                    departures.filter(
+                        isDomesticFlight
+                    );
 
-                    const actionBtn = status === 'Departed'
-                        ? '<span class="text-muted small fst-italic">Flight departed</span>'
-                        : '<a href="' + detailsUrl + '" class="btn-view">View Flight</a>';
 
-                    container.innerHTML += `
-                        <div class="flight-card">
-                            <div style="min-width:150px;">
-                                <small class="text-muted fw-bold">${flightNum}</small>
-                                <div class="flight-name">${airlineName}</div>
-                                <small class="text-muted">${aircraftModel}</small>
+                /* ---------------------------------------------
+                   DESTINATION FILTER
+                --------------------------------------------- */
+
+                if (toDest !== 'all') {
+
+                    filtered =
+                        filtered.filter(
+                            function(flight) {
+
+                                const code =
+                                    getArrivalCode(
+                                        flight
+                                    );
+
+                                return code === toDest;
+
+                            }
+                        );
+
+                }
+
+
+                if (!filtered.length) {
+                    return;
+                }
+
+
+                container.innerHTML += `
+
+                    <div class="airport-heading">
+                        ${airportNames[airport] || airport}
+                        Airport
+                    </div>
+
+                `;
+
+
+                /* ---------------------------------------------
+                   SHOW MAX 10 FLIGHTS PER AIRPORT
+                --------------------------------------------- */
+
+                filtered
+                    .slice(0, 10)
+                    .forEach(function(f) {
+
+
+                        const dep =
+                            f.departure &&
+                            f.departure.scheduledTime &&
+                            f.departure.scheduledTime.local
+
+                            ? f.departure
+                                .scheduledTime
+                                .local
+                                .slice(11, 16)
+
+                            : 'N/A';
+
+
+                        const arr =
+                            f.arrival &&
+                            f.arrival.scheduledTime &&
+                            f.arrival.scheduledTime.local
+
+                            ? f.arrival
+                                .scheduledTime
+                                .local
+                                .slice(11, 16)
+
+                            : 'N/A';
+
+
+                        const dest =
+                            f.arrival &&
+                            f.arrival.airport &&
+                            f.arrival.airport.name
+
+                            ? f.arrival.airport.name
+
+                            : 'Unknown';
+
+
+                        const airlineName =
+                            f.airline &&
+                            f.airline.name
+
+                            ? f.airline.name
+
+                            : 'Unknown';
+
+
+                        const aircraftModel =
+                            f.aircraft &&
+                            f.aircraft.model
+
+                            ? f.aircraft.model
+
+                            : '';
+
+
+                        const flightNum =
+                            f.number || '';
+
+
+                        const status =
+                            f.status || 'Unknown';
+
+
+                        const statusClass =
+                            status === 'Departed'
+
+                                ? 'status-departed'
+
+                                : status === 'GateClosed'
+
+                                    ? 'status-gateclosed'
+
+                                    : 'status-default';
+
+
+                        const originCity =
+                            airportNames[airport] ||
+                            airport;
+
+
+                        const detailsUrl =
+                            'flight-details.html?' +
+
+                            'number=' +
+                            encodeURIComponent(
+                                flightNum
+                            ) +
+
+                            '&airline=' +
+                            encodeURIComponent(
+                                airlineName
+                            ) +
+
+                            '&origin=' +
+                            encodeURIComponent(
+                                originCity
+                            ) +
+
+                            '&dest=' +
+                            encodeURIComponent(
+                                dest
+                            ) +
+
+                            '&dep=' +
+                            encodeURIComponent(
+                                dep
+                            ) +
+
+                            '&arr=' +
+                            encodeURIComponent(
+                                arr
+                            ) +
+
+                            '&aircraft=' +
+                            encodeURIComponent(
+                                aircraftModel
+                            ) +
+
+                            '&status=' +
+                            encodeURIComponent(
+                                status
+                            ) +
+
+                            '&date=' +
+                            encodeURIComponent(
+                                searchDate
+                            );
+
+
+                        const actionBtn =
+                            status === 'Departed'
+
+                            ?
+
+                            `<span class="text-muted small fst-italic">
+                                Flight departed
+                            </span>`
+
+                            :
+
+                            `<a
+                                href="${detailsUrl}"
+                                class="btn-view"
+                            >
+                                View Flight
+                            </a>`;
+
+
+                        container.innerHTML += `
+
+                            <div class="flight-card">
+
+                                <div style="min-width:170px;">
+
+                                    <div class="flight-number">
+                                        ${flightNum}
+                                    </div>
+
+                                    <div class="flight-name">
+                                        ${airlineName}
+                                    </div>
+
+                                    <small class="text-muted">
+                                        ${aircraftModel}
+                                    </small>
+
+                                </div>
+
+
+                                <div class="route">
+
+                                    <div class="route-main">
+
+                                        ${originCity}
+
+                                        <span style="color:#0878d1;">
+                                            →
+                                        </span>
+
+                                        ${dest}
+
+                                    </div>
+
+                                    <div class="route-time">
+
+                                        🕒 Dep: ${dep}
+                                        &nbsp; · &nbsp;
+                                        Arr: ${arr}
+
+                                    </div>
+
+                                </div>
+
+
+                                <span
+                                    class="status-badge ${statusClass}"
+                                >
+                                    ${status}
+                                </span>
+
+
+                                ${actionBtn}
+
                             </div>
-                            <div class="text-center flex-grow-1">
-                                <div class="fw-bold h6 mb-1">${originCity} ➔ ${dest}</div>
-                                <div class="small text-muted">🕒 Dep: ${dep} | Arr: ${arr}</div>
-                            </div>
-                            <span class="status-badge ${statusClass}">${status}</span>
-                            ${actionBtn}
-                        </div>`;
-                    totalShown++;
-                });
+
+                        `;
+
+
+                        totalShown++;
+
+                    });
+
             });
 
+
+            /* =================================================
+               EMPTY
+            ================================================= */
+
             if (totalShown === 0) {
-                container.innerHTML += '<p class="empty-state">No flights found for selected filters.</p>';
+
+                container.innerHTML += `
+
+                    <div class="empty-state">
+
+                        ✈️ No domestic flights found
+                        for the selected filters.
+
+                        <br><br>
+
+                        Try another Indian airport
+                        or travel date.
+
+                    </div>
+
+                `;
+
             }
 
-        } catch (err) {
-            container.innerHTML = '<p class="text-danger">Error loading flights: ' + err.message + '</p>';
         }
+
+        catch (err) {
+
+            console.error(
+                'LIVE FLIGHT ERROR:',
+                err
+            );
+
+
+            container.innerHTML = `
+
+                <div class="empty-state text-danger">
+
+                    ⚠️ Unable to load live flights.
+
+                    <br>
+
+                    ${err.message}
+
+                </div>
+
+            `;
+
+        }
+
     }
 
-    // Pick up whatever was entered on the homepage search box and
-    // run the live search immediately with those values pre-filled.
-    window.onload = function() {
-        const params = new URLSearchParams(window.location.search);
-        const from = params.get('from');
-        const to = params.get('to');
-        const date = params.get('date');
 
-        if (from) document.getElementById('fromFilter').value = from;
-        if (to) document.getElementById('toFilter').value = to;
-        if (date) document.getElementById('travelDate').value = date;
+    /* =====================================================
+       HOMEPAGE PARAMETERS
+    ===================================================== */
 
-        filterByDate();
-    };
-    </script>
+    window.addEventListener(
+        'DOMContentLoaded',
+        function() {
+
+            const params =
+                new URLSearchParams(
+                    window.location.search
+                );
+
+
+            const from =
+                params.get('from');
+
+            const to =
+                params.get('to');
+
+            const date =
+                params.get('date');
+
+
+            if (
+                from &&
+                domesticAirports.has(from)
+            ) {
+
+                document
+                    .getElementById('fromFilter')
+                    .value = from;
+
+            }
+
+
+            if (
+                to &&
+                domesticAirports.has(to)
+            ) {
+
+                document
+                    .getElementById('toFilter')
+                    .value = to;
+
+            }
+
+
+            if (date) {
+
+                document
+                    .getElementById('travelDate')
+                    .value = date;
+
+            }
+
+
+            /*
+             * Don't automatically call the API if the user
+             * came directly to this page.
+             *
+             * They can choose their date and search.
+             */
+
+            if (date || from || to) {
+
+                filterFlights();
+
+            }
+
+        }
+    );
+
+</script>
+
 </body>
 </html>

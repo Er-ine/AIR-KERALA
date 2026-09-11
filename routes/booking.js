@@ -108,10 +108,6 @@ router.put('/cancel-booking', async (req, res) => {
       return res.status(400).json({ success: false, message: 'Already cancelled' });
     }
 
-    await db.query(
-      `UPDATE BOOKINGS SET STATUS_ = 'CANCELLED' WHERE BOOKING_ID = ?`,
-      [booking_id]
-    );
 
     await db.query(`
       UPDATE SEAT SET AVAILABILITY = 1
@@ -125,8 +121,8 @@ router.put('/cancel-booking', async (req, res) => {
       [booking_id]
     );
 
-    res.json({ success: true, message: 'Booking cancelled and payment refunded' });
-  } catch (err) {
+    res.json({ success: true, message: 'Booking cancelled successfully' });
+  } catch (err){
     console.error('CANCEL BOOKING ERROR:', err);
     res.status(500).json({ success: false, message: err.message, code: err.code });
   }
@@ -150,7 +146,6 @@ router.get('/booking-details/:booking_id', async (req, res) => {
       JOIN Booking_Passenger BP ON B.BOOKING_ID = BP.BOOKING_ID
       JOIN PASSENGER P ON BP.PASSENGER_ID = P.PASSENGER_ID
       JOIN SEAT S ON BP.SEAT_ID = S.SEAT_ID
-      LEFT JOIN PAYMENT PAY ON B.BOOKING_ID = PAY.BOOKING_ID
       WHERE B.BOOKING_ID = ?
     `, [booking_id]);
 

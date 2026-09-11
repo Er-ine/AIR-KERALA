@@ -344,12 +344,17 @@
             const age = document.getElementById('pAge').value;
             const gender = document.getElementById('pGender').value.toUpperCase();
             const passport = document.getElementById('pID').value;
-            const cabin = (localStorage.getItem('cabinClass') || 'Economy').toUpperCase();
-            const total = localStorage.getItem('bookingTotal') || 5500;
-            const realFlightId = 201;
+            const cabin = localStorage.getItem('cabinClass') || 'Economy'; // must match SEAT.CLASS exactly
+            const realFlightId = localStorage.getItem('flightId');
 
             if (!passport) {
                 alert('Please enter Passport / ID Number');
+                return;
+            }
+
+            if (!realFlightId) {
+                alert('No live flight selected — please go back and pick a flight again.');
+                window.location.href = 'flights.html';
                 return;
             }
 
@@ -373,14 +378,13 @@
                     return;
                 }
 
-                // Seat
+                // Seat — assigned from real live inventory; price comes back from the DB
                 const sRes = await fetch('/api/seat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         flight_id: realFlightId,
-                        class: cabin,
-                        price: total
+                        class: cabin
                     })
                 });
 
@@ -390,6 +394,10 @@
                     alert('Seat error: ' + sData.message);
                     return;
                 }
+
+                const total = Math.round(sData.price * 1.18); // base fare + 18% tax, sourced from DB
+                localStorage.setItem('selectedSeat', sData.seat_number);
+                localStorage.setItem('bookingTotal', total);
 
                 // Booking
                 const bRes = await fetch('/api/booking', {
