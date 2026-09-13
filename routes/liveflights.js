@@ -32,6 +32,16 @@ const AERODATABOX_HOST =
 
 const REQUEST_TIMEOUT_MS = 10000;
 
+// AeroDataBox's free RapidAPI tier allows only a few requests per
+// second. Space sequential requests out to stay under that limit,
+// and back off briefly before a single retry if one still gets 429.
+const REQUEST_SPACING_MS = 1100;
+const RETRY_BACKOFF_MS = 2000;
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 /*
  * Get today's date in India.
  */
@@ -246,22 +256,45 @@ router.get('/live-flights', async (req, res) => {
         /*
          * IMPORTANT:
          *
-         * This is ONE batch.
+         * AeroDataBox's free RapidAPI tier only allows a small
+         * number of requests per second. Firing all 20 airport
+         * requests at once (Promise.all) trips its rate limit
+         * immediately, so every request comes back HTTP 429.
          *
-         * There is NO retry loop.
-         * There is NO recursive search.
+         * Instead, we go through the airports ONE AT A TIME with
+         * a short delay between each. This is slower (roughly
+         * airports.length * REQUEST_SPACING_MS), but it actually
+         * gets data back instead of failing outright.
          *
-         * Once these requests finish, we return.
+         * There is still no retry loop or recursive search —
+         * each airport gets exactly one attempt, plus a single
+         * automatic retry if that attempt is rate-limited.
          */
-        const results = await Promise.all(
-            airports.map(code =>
-                fetchAirportDepartures(
+        const results = [];
+
+        for (const code of airports) {
+
+            let result = await fetchAirportDepartures(
+                code,
+                date,
+                apiKey
+            );
+
+            if (result.error === 'HTTP 429') {
+                // Back off and retry this one airport once —
+                // a single burst of 429s usually clears quickly.
+                await sleep(RETRY_BACKOFF_MS);
+                result = await fetchAirportDepartures(
                     code,
                     date,
                     apiKey
-                )
-            )
-        );
+                );
+            }
+
+            results.push(result);
+
+            await sleep(REQUEST_SPACING_MS);
+        }
 
         const flights =
             deduplicateFlights(results);

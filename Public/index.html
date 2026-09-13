@@ -46,12 +46,15 @@
         ===================================================== */
 
         .hero {
-            height: 700px;
-            min-height: 620px;
+            height: 760px;
+            min-height: 680px;
             position: relative;
             overflow: hidden;
             color: white;
         }
+
+
+        /* Background slideshow */
 
         .hero-slides {
             position: absolute;
@@ -82,34 +85,30 @@
         }
 
 
-        /* =====================================================
-           HERO BACKGROUND IMAGES
-        ===================================================== */
+        /* Kerala images */
 
         .slide:nth-child(1) {
             background-image:
-                url("https://commons.wikimedia.org/wiki/Special:FilePath/Houseboats%20in%20Alleppey%20Backwaters.jpg?width=2200");
+                url("https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&w=2200&q=90");
         }
 
         .slide:nth-child(2) {
             background-image:
-                url("https://images.unsplash.com/photo-1742106856193-5cc3424ac450?auto=format&fit=crop&w=2200&q=90");
+                url("https://images.unsplash.com/photo-1593693411515-c20261bcad6e?auto=format&fit=crop&w=2200&q=90");
         }
 
         .slide:nth-child(3) {
             background-image:
-                url("https://images.unsplash.com/photo-1701793035486-c6b4368aa842?auto=format&fit=crop&w=2200&q=90");
+                url("https://images.unsplash.com/photo-1590050752117-23a9d3f6c4c9?auto=format&fit=crop&w=2200&q=90");
         }
 
         .slide:nth-child(4) {
             background-image:
-                url("https://commons.wikimedia.org/wiki/Special:FilePath/Cheenavala%20Fort%20Kochi.jpg?width=2200");
+                url("https://images.unsplash.com/photo-1609920658906-8223bd289001?auto=format&fit=crop&w=2200&q=90");
         }
 
 
-        /* =====================================================
-           DARK OVERLAY
-        ===================================================== */
+        /* Dark overlay */
 
         .hero::after {
             content: "";
@@ -119,9 +118,9 @@
             background:
                 linear-gradient(
                     90deg,
-                    rgba(3, 20, 34, 0.82) 0%,
-                    rgba(3, 20, 34, 0.52) 40%,
-                    rgba(3, 20, 34, 0.15) 75%
+                    rgba(3, 20, 34, 0.78) 0%,
+                    rgba(3, 20, 34, 0.45) 40%,
+                    rgba(3, 20, 34, 0.10) 75%
                 );
 
             z-index: 1;
@@ -193,9 +192,7 @@
         }
 
 
-        /* =====================================================
-           NAVIGATION
-        ===================================================== */
+        /* Navigation */
 
         .nav-links {
             display: flex;
@@ -228,9 +225,7 @@
         }
 
 
-        /* =====================================================
-           LOGIN
-        ===================================================== */
+        /* Login */
 
         .login-btn {
             border: 1px solid rgba(255,255,255,0.55);
@@ -273,7 +268,7 @@
 
             margin: 0 auto;
 
-            padding: 165px 5% 0;
+            padding: 175px 5% 0;
         }
 
         .hero-eyebrow {
@@ -281,11 +276,11 @@
 
             letter-spacing: 5px;
 
-            font-weight: 600;
+            font-weight: 500;
 
             margin-bottom: 18px;
 
-            color: var(--air-gold);
+            color: rgba(255,255,255,0.9);
         }
 
         .hero-title {
@@ -297,7 +292,7 @@
 
             margin: 0;
 
-            max-width: 750px;
+            max-width: 650px;
         }
 
         .hero-title strong {
@@ -305,7 +300,7 @@
         }
 
         .hero-description {
-            max-width: 560px;
+            max-width: 550px;
 
             font-size: 16px;
 
@@ -318,56 +313,6 @@
 
 
         /* =====================================================
-           HERO CTA
-        ===================================================== */
-
-        .hero-actions {
-            display: flex;
-            gap: 12px;
-            margin-top: 30px;
-            flex-wrap: wrap;
-        }
-
-        .hero-btn {
-            display: inline-block;
-
-            text-decoration: none;
-
-            padding: 13px 24px;
-
-            border-radius: 4px;
-
-            font-size: 12px;
-
-            font-weight: 700;
-
-            transition: 0.3s;
-        }
-
-        .hero-btn-primary {
-            background: white;
-            color: var(--air-dark);
-        }
-
-        .hero-btn-primary:hover {
-            background: var(--air-blue);
-            color: white;
-        }
-
-        .hero-btn-secondary {
-            border: 1px solid rgba(255,255,255,0.55);
-            color: white;
-            background: rgba(255,255,255,0.08);
-            backdrop-filter: blur(5px);
-        }
-
-        .hero-btn-secondary:hover {
-            background: white;
-            color: var(--air-dark);
-        }
-
-
-        /* =====================================================
            SLIDE LABEL
         ===================================================== */
 
@@ -375,7 +320,7 @@
             position: absolute;
 
             left: 5%;
-            bottom: 75px;
+            bottom: 170px;
 
             z-index: 7;
 
@@ -396,7 +341,7 @@
         .slider-arrow {
             position: absolute;
 
-            top: 45%;
+            top: 48%;
 
             z-index: 8;
 
@@ -438,14 +383,12 @@
         }
 
 
-        /* =====================================================
-           SLIDER DOTS
-        ===================================================== */
+        /* Dots */
 
         .slider-dots {
             position: absolute;
 
-            bottom: 40px;
+            bottom: 108px;
 
             left: 5%;
 
@@ -475,11 +418,183 @@
 
 
         /* =====================================================
-           INTRO
+           FLIGHT SEARCH BOX
+        ===================================================== */
+
+        .search-wrapper {
+            position: absolute;
+
+            bottom: -1px;
+
+            left: 50%;
+
+            transform: translateX(-50%);
+
+            width: min(1180px, 90%);
+
+            z-index: 10;
+        }
+
+        .search-card {
+            background: white;
+
+            color: #17202a;
+
+            border-radius: 5px 5px 0 0;
+
+            box-shadow:
+                0 -10px 40px rgba(0,0,0,0.18);
+        }
+
+
+        /* Search tabs */
+
+        .search-tabs {
+            display: flex;
+
+            border-bottom: 1px solid #e5e7eb;
+
+            padding: 0 25px;
+        }
+
+        .search-tab {
+            padding: 17px 22px;
+
+            border: none;
+
+            background: transparent;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            color: #68717d;
+
+            cursor: pointer;
+
+            position: relative;
+        }
+
+        .search-tab.active {
+            color: var(--air-blue);
+        }
+
+        .search-tab.active::after {
+            content: "";
+
+            position: absolute;
+
+            bottom: -1px;
+            left: 0;
+            right: 0;
+
+            height: 3px;
+
+            background: var(--air-blue);
+        }
+
+
+        /* Search fields */
+
+        .search-fields {
+            display: grid;
+
+            grid-template-columns:
+                1.3fr
+                1.3fr
+                1.1fr
+                0.9fr
+                180px;
+
+            gap: 0;
+
+            padding: 20px;
+        }
+
+        .field {
+            padding: 4px 20px;
+
+            border-right: 1px solid #e5e7eb;
+        }
+
+        .field:last-of-type {
+            border-right: none;
+        }
+
+        .field-label {
+            display: block;
+
+            font-size: 10px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 1.5px;
+
+            font-weight: 700;
+
+            color: #69727e;
+
+            margin-bottom: 8px;
+        }
+
+        .field-input {
+            width: 100%;
+
+            border: none;
+
+            outline: none;
+
+            font-size: 15px;
+
+            font-weight: 600;
+
+            color: #17202a;
+
+            background: transparent;
+
+            cursor: pointer;
+        }
+
+        .field-input::placeholder {
+            color: #9ca3af;
+        }
+
+
+        /* Search button */
+
+        .search-button {
+            border: none;
+
+            background: var(--air-blue);
+
+            color: white;
+
+            border-radius: 3px;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition: 0.3s;
+
+            margin-left: 15px;
+        }
+
+        .search-button:hover {
+            background: #0565b0;
+
+            transform: translateY(-1px);
+        }
+
+
+        /* =====================================================
+           INTRO SECTION
         ===================================================== */
 
         .intro-section {
-            padding: 90px 5% 80px;
+            padding: 90px 5% 70px;
 
             max-width: 1250px;
 
@@ -513,7 +628,7 @@
         }
 
         .section-description {
-            max-width: 700px;
+            max-width: 650px;
 
             color: #6b7280;
 
@@ -628,27 +743,24 @@
             transition: 0.5s;
         }
 
-
-        /* Destination images */
-
         .destination-card:nth-child(1)::before {
             background-image:
-                url("https://commons.wikimedia.org/wiki/Special:FilePath/Houseboats%20in%20Alleppey%20Backwaters.jpg?width=1200");
+                url("https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&w=900&q=85");
         }
 
         .destination-card:nth-child(2)::before {
             background-image:
-                url("https://images.unsplash.com/photo-1742106856193-5cc3424ac450?auto=format&fit=crop&w=900&q=85");
+                url("https://images.unsplash.com/photo-1593693411515-c20261bcad6e?auto=format&fit=crop&w=900&q=85");
         }
 
         .destination-card:nth-child(3)::before {
             background-image:
-                url("https://images.unsplash.com/photo-1701793035486-c6b4368aa842?auto=format&fit=crop&w=900&q=85");
+                url("https://images.unsplash.com/photo-1590050752117-23a9d3f6c4c9?auto=format&fit=crop&w=900&q=85");
         }
 
         .destination-card:nth-child(4)::before {
             background-image:
-                url("https://commons.wikimedia.org/wiki/Special:FilePath/Cheenavala%20Fort%20Kochi.jpg?width=1200");
+                url("https://images.unsplash.com/photo-1609920658906-8223bd289001?auto=format&fit=crop&w=900&q=85");
         }
 
         .destination-card:hover::before {
@@ -849,16 +961,32 @@
                 display: none;
             }
 
+            .search-fields {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .field {
+                border-bottom: 1px solid #e5e7eb;
+
+                padding: 15px;
+            }
+
+            .search-button {
+                min-height: 50px;
+
+                margin: 15px;
+            }
+
             .destination-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
 
-            .features {
-                grid-template-columns: 1fr;
+            .hero {
+                height: 820px;
             }
 
-            .hero {
-                height: 700px;
+            .features {
+                grid-template-columns: 1fr;
             }
         }
 
@@ -875,17 +1003,16 @@
 
             .login-btn {
                 padding: 8px 12px;
-                margin-left: 0;
             }
 
             .hero {
-                min-height: 700px;
+                min-height: 900px;
                 height: auto;
             }
 
             .hero-content {
-                padding-top: 130px;
-                padding-bottom: 150px;
+                padding-top: 140px;
+                padding-bottom: 350px;
             }
 
             .hero-title {
@@ -896,9 +1023,20 @@
                 font-size: 14px;
             }
 
-            .hero-actions {
-                flex-direction: column;
-                align-items: flex-start;
+            .search-wrapper {
+                width: 94%;
+            }
+
+            .search-tabs {
+                overflow-x: auto;
+            }
+
+            .search-fields {
+                grid-template-columns: 1fr;
+            }
+
+            .field {
+                border-right: none;
             }
 
             .destination-grid {
@@ -940,21 +1078,23 @@
 
 <section class="hero">
 
+
     <!-- Background slideshow -->
 
     <div class="hero-slides">
 
         <div class="slide active"></div>
+
         <div class="slide"></div>
+
         <div class="slide"></div>
+
         <div class="slide"></div>
 
     </div>
 
 
-    <!-- =================================================
-         NAVBAR
-    ================================================= -->
+    <!-- NAVBAR -->
 
     <header class="navbar-air">
 
@@ -993,6 +1133,10 @@
                 Manage Booking
             </a>
 
+            <a href="#">
+                Check-in
+            </a>
+
             <a href="flights.html">
                 Flight Status
             </a>
@@ -1020,112 +1164,212 @@
     </header>
 
 
-    <!-- =================================================
-         HERO CONTENT
-    ================================================= -->
+    <!-- HERO TEXT -->
 
     <div class="hero-content">
 
         <div class="hero-eyebrow">
-            AIR KERALA
+            EXPERIENCE THE LAND OF GOD'S OWN COUNTRY
         </div>
 
         <h1 class="hero-title">
 
-            Fly <strong>beyond.</strong><br>
+            Discover <strong>Kerala.</strong><br>
 
-            From Kerala to the <strong>world.</strong>
+            Fly with <strong>Air Kerala.</strong>
 
         </h1>
 
         <p class="hero-description">
 
-            Born in Kerala, built for the journey ahead.
-            Air Kerala connects you across India today,
-            with the world on our horizon.
+            From tranquil backwaters to mist-covered mountains,
+            experience the beauty of Kerala and travel beyond
+            with Air Kerala.
 
         </p>
-
-
-        <!-- Booking actions -->
-
-        <div class="hero-actions">
-
-            <a href="flights.html" class="hero-btn hero-btn-primary">
-                BOOK A FLIGHT →
-            </a>
-
-            <a href="booking.html" class="hero-btn hero-btn-secondary">
-                MANAGE BOOKING
-            </a>
-
-        </div>
 
     </div>
 
 
-    <!-- =================================================
-         SLIDE LOCATION
-    ================================================= -->
+    <!-- SLIDE LOCATION -->
 
     <div class="slide-location" id="slideLocation">
         ALLEPPEY · KERALA
     </div>
 
 
-    <!-- =================================================
-         SLIDER ARROWS
-    ================================================= -->
+    <!-- SLIDER ARROWS -->
 
-    <button
-        class="slider-arrow prev"
-        onclick="changeSlide(-1)"
-        aria-label="Previous slide">
-
+    <button class="slider-arrow prev" onclick="changeSlide(-1)">
         ‹
-
     </button>
 
-
-    <button
-        class="slider-arrow next"
-        onclick="changeSlide(1)"
-        aria-label="Next slide">
-
+    <button class="slider-arrow next" onclick="changeSlide(1)">
         ›
-
     </button>
 
 
-    <!-- =================================================
-         SLIDER DOTS
-    ================================================= -->
+    <!-- SLIDER DOTS -->
 
     <div class="slider-dots">
 
-        <button
-            class="dot active"
-            onclick="goToSlide(0)"
-            aria-label="Slide 1">
-        </button>
+        <button class="dot active" onclick="goToSlide(0)"></button>
 
-        <button
-            class="dot"
-            onclick="goToSlide(1)"
-            aria-label="Slide 2">
-        </button>
+        <button class="dot" onclick="goToSlide(1)"></button>
 
-        <button
-            class="dot"
-            onclick="goToSlide(2)"
-            aria-label="Slide 3">
-        </button>
+        <button class="dot" onclick="goToSlide(2)"></button>
 
-        <button
-            class="dot"
-            onclick="goToSlide(3)"
-            aria-label="Slide 4">
-        </button>
+        <button class="dot" onclick="goToSlide(3)"></button>
+
+    </div>
+
+
+    <!-- =====================================================
+         FLIGHT SEARCH
+    ===================================================== -->
+
+    <div class="search-wrapper">
+
+        <div class="search-card">
+
+
+            <!-- Search tabs -->
+
+            <div class="search-tabs">
+
+                <button class="search-tab active">
+                    One Way
+                </button>
+
+                <button class="search-tab">
+                    Round Trip
+                </button>
+
+                <button class="search-tab">
+                    Multi-City
+                </button>
+
+            </div>
+
+
+            <!-- Search fields -->
+
+            <div class="search-fields">
+
+
+                <div class="field">
+
+                    <label class="field-label">
+                        From
+                    </label>
+
+                    <select class="field-input" id="fromField">
+                        <option value="all">Any airport</option>
+                        <option value="COK">Kochi</option>
+                        <option value="TRV">Thiruvananthapuram</option>
+                        <option value="CCJ">Kozhikode</option>
+                        <option value="CNN">Kannur</option>
+                        <option value="BLR">Bengaluru</option>
+                        <option value="MAA">Chennai</option>
+                        <option value="HYD">Hyderabad</option>
+                        <option value="BOM">Mumbai</option>
+                        <option value="DEL">Delhi</option>
+                        <option value="CCU">Kolkata</option>
+                        <option value="PNQ">Pune</option>
+                        <option value="GOI">Goa</option>
+                        <option value="AMD">Ahmedabad</option>
+                        <option value="JAI">Jaipur</option>
+                        <option value="LKO">Lucknow</option>
+                        <option value="IXC">Chandigarh</option>
+                        <option value="BBI">Bhubaneswar</option>
+                        <option value="PAT">Patna</option>
+                        <option value="GAU">Guwahati</option>
+                        <option value="IXE">Mangaluru</option>
+                    </select>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label class="field-label">
+                        To
+                    </label>
+
+                    <select class="field-input" id="toField">
+                        <option value="all">Any destination</option>
+                        <option value="COK">Kochi</option>
+                        <option value="TRV">Thiruvananthapuram</option>
+                        <option value="CCJ">Kozhikode</option>
+                        <option value="CNN">Kannur</option>
+                        <option value="BLR">Bengaluru</option>
+                        <option value="MAA">Chennai</option>
+                        <option value="HYD">Hyderabad</option>
+                        <option value="BOM">Mumbai</option>
+                        <option value="DEL">Delhi</option>
+                        <option value="CCU">Kolkata</option>
+                        <option value="PNQ">Pune</option>
+                        <option value="GOI">Goa</option>
+                        <option value="AMD">Ahmedabad</option>
+                        <option value="JAI">Jaipur</option>
+                        <option value="LKO">Lucknow</option>
+                        <option value="IXC">Chandigarh</option>
+                        <option value="BBI">Bhubaneswar</option>
+                        <option value="PAT">Patna</option>
+                        <option value="GAU">Guwahati</option>
+                        <option value="IXE">Mangaluru</option>
+                    </select>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label class="field-label">
+                        Departure
+                    </label>
+
+                    <input
+                        class="field-input"
+                        id="departureDate"
+                        type="date">
+
+                </div>
+
+
+                <div class="field">
+
+                    <label class="field-label">
+                        Passengers
+                    </label>
+
+                    <select class="field-input">
+
+                        <option>1 Adult</option>
+
+                        <option>2 Adults</option>
+
+                        <option>3 Adults</option>
+
+                        <option>4 Adults</option>
+
+                    </select>
+
+                </div>
+
+
+                <button
+                    class="search-button"
+                    onclick="searchFlights()">
+
+                    Search Flights →
+
+                </button>
+
+
+            </div>
+
+        </div>
 
     </div>
 
@@ -1144,21 +1388,21 @@
     </span>
 
     <h2 class="section-title">
-        Born in Kerala. <strong>Built to go beyond.</strong>
+        Your journey starts <strong>here.</strong>
     </h2>
 
     <p class="section-description">
 
-        Air Kerala begins its journey with domestic connections
-        across India, bringing dependable service, simple
-        booking and a comfortable way to travel. As we grow,
-        our horizon extends beyond India to destinations around
-        the world.
+        Whether you're travelling across Kerala or flying
+        beyond the horizon, Air Kerala brings together
+        effortless booking, reliable service and a journey
+        designed around you.
 
     </p>
 
 
     <div class="features">
+
 
         <div class="feature">
 
@@ -1185,7 +1429,7 @@
             </div>
 
             <h3>
-                Safe &amp; Secure
+                Safe & Secure
             </h3>
 
             <p>
@@ -1213,6 +1457,7 @@
 
         </div>
 
+
     </div>
 
 </section>
@@ -1220,7 +1465,7 @@
 
 
 <!-- =====================================================
-     DESTINATIONS
+     KERALA DESTINATIONS
 ===================================================== -->
 
 <section class="destinations-section">
@@ -1228,7 +1473,7 @@
     <div class="destinations-container">
 
         <span class="section-label">
-            OUR HOME
+            EXPLORE KERALA
         </span>
 
         <h2 class="section-title">
@@ -1237,6 +1482,7 @@
 
 
         <div class="destination-grid">
+
 
             <div class="destination-card">
 
@@ -1260,7 +1506,7 @@
                 <div class="destination-info">
 
                     <small>
-                        Hills &amp; Tea
+                        Hills & Tea
                     </small>
 
                     <h3>
@@ -1305,6 +1551,7 @@
 
             </div>
 
+
         </div>
 
     </div>
@@ -1327,6 +1574,7 @@
 
         <div class="modal-content">
 
+
             <div class="modal-header-custom">
 
                 <h3 id="authTitle">
@@ -1337,6 +1585,7 @@
 
 
             <div class="modal-body">
+
 
                 <!-- LOGIN -->
 
@@ -1387,7 +1636,7 @@
 
                         <a
                             href="#"
-                            onclick="toggleAuth(true); return false;"
+                            onclick="toggleAuth(true)"
                             class="text-primary fw-bold">
 
                             Create an account
@@ -1405,6 +1654,7 @@
                 <div
                     id="signupForm"
                     style="display:none;">
+
 
                     <div class="mb-3">
 
@@ -1451,7 +1701,7 @@
 
                         <a
                             href="#"
-                            onclick="toggleAuth(false); return false;"
+                            onclick="toggleAuth(false)"
                             class="text-primary fw-bold">
 
                             Login
@@ -1459,6 +1709,7 @@
                         </a>
 
                     </p>
+
 
                 </div>
 
@@ -1480,6 +1731,7 @@
 
     <div class="footer-container">
 
+
         <div class="footer-top">
 
             <div class="footer-brand">
@@ -1494,15 +1746,15 @@
                 </a>
 
                 <a href="flights.html">
-                    Book Flight
+                    Flights
                 </a>
 
                 <a href="booking.html">
                     Manage Booking
                 </a>
 
-                <a href="flights.html">
-                    Flight Status
+                <a href="cancel.html">
+                    Cancellation
                 </a>
 
                 <a href="#">
@@ -1532,9 +1784,7 @@
 
 
 
-<!-- =====================================================
-     BOOTSTRAP
-===================================================== -->
+<!-- Bootstrap -->
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -1542,29 +1792,20 @@
 <script>
 
 /* =====================================================
-   AIR KERALA SLIDESHOW
+   KERALA SLIDESHOW
 ===================================================== */
 
-const slides =
-    document.querySelectorAll(".slide");
-
-const dots =
-    document.querySelectorAll(".dot");
+const slides = document.querySelectorAll(".slide");
+const dots = document.querySelectorAll(".dot");
 
 const locations = [
-
     "ALLEPPEY · KERALA",
-
     "MUNNAR · KERALA",
-
     "KOVALAM · KERALA",
-
     "FORT KOCHI · KERALA"
-
 ];
 
 let currentSlide = 0;
-
 let slideTimer;
 
 
@@ -1578,32 +1819,22 @@ function showSlide(index) {
         index = slides.length - 1;
     }
 
-
     slides.forEach(slide => {
-
         slide.classList.remove("active");
-
     });
-
 
     dots.forEach(dot => {
-
         dot.classList.remove("active");
-
     });
-
 
     slides[index].classList.add("active");
 
     dots[index].classList.add("active");
 
-
     document.getElementById("slideLocation").innerText =
         locations[index];
 
-
     currentSlide = index;
-
 }
 
 
@@ -1612,7 +1843,6 @@ function changeSlide(direction) {
     showSlide(currentSlide + direction);
 
     restartTimer();
-
 }
 
 
@@ -1621,7 +1851,6 @@ function goToSlide(index) {
     showSlide(index);
 
     restartTimer();
-
 }
 
 
@@ -1650,7 +1879,34 @@ startSlideshow();
 
 
 /* =====================================================
-   LOGIN STATE
+   SEARCH FLIGHTS
+   Passes what the user actually entered through to the
+   flights page as query params, so it runs immediately
+   against the live feed instead of landing on a blank form.
+===================================================== */
+
+function searchFlights() {
+
+    const from = document.getElementById('fromField').value;
+    const to = document.getElementById('toField').value;
+    const date = document.getElementById('departureDate').value;
+
+    const params = new URLSearchParams();
+
+    if (from && from !== 'all') params.set('from', from);
+    if (to && to !== 'all') params.set('to', to);
+    if (date) params.set('date', date);
+
+    const query = params.toString();
+
+    window.location.href = 'flights.html' + (query ? ('?' + query) : '');
+
+}
+
+
+
+/* =====================================================
+   LOGIN
 ===================================================== */
 
 window.onload = function() {
@@ -1660,7 +1916,6 @@ window.onload = function() {
 
     const userName =
         localStorage.getItem("userName");
-
 
     if (isLoggedIn === "true") {
 
@@ -1683,12 +1938,10 @@ function toggleAuth(showSignup) {
             ? "Create Account"
             : "User Login";
 
-
     document.getElementById("loginForm").style.display =
         showSignup
             ? "none"
             : "block";
-
 
     document.getElementById("signupForm").style.display =
         showSignup
@@ -1708,10 +1961,8 @@ function handleLogin() {
     const id =
         document.getElementById("loginID").value.trim();
 
-
     const pass =
         document.getElementById("loginPass").value;
-
 
     const storedPass =
         localStorage.getItem("user_pass_" + id);
@@ -1740,18 +1991,14 @@ function handleSignup() {
     const id =
         document.getElementById("newID").value.trim();
 
-
     const pass =
         document.getElementById("newPass").value;
 
 
     if (id && pass) {
 
-        if (
-            localStorage.getItem(
-                "user_pass_" + id
-            )
-        ) {
+
+        if (localStorage.getItem("user_pass_" + id)) {
 
             alert(
                 "Username already taken. Please choose another."
@@ -1777,14 +2024,12 @@ function handleSignup() {
 
         document.getElementById("newPass").value = "";
 
-
         toggleAuth(false);
+
 
     } else {
 
-        alert(
-            "Please fill all fields."
-        );
+        alert("Please fill all fields.");
 
     }
 
@@ -1803,12 +2048,10 @@ function successLogin(name) {
         "true"
     );
 
-
     localStorage.setItem(
         "userName",
         name
     );
-
 
     location.reload();
 
@@ -1848,17 +2091,16 @@ function logout() {
         "isLoggedIn"
     );
 
-
     localStorage.removeItem(
         "userName"
     );
-
 
     location.reload();
 
 }
 
 </script>
+
 
 </body>
 </html>
