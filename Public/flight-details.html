@@ -3,14 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flight Details | AIR KERALA</title>
+    <title>Book Flight | AIR KERALA</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+
         :root {
             --air-blue: #0878d1;
             --air-dark: #071b2e;
             --air-gold: #d7b56d;
+            --white: #ffffff;
+            --light: #f5f7fa;
         }
 
         * { box-sizing: border-box; }
@@ -18,9 +21,42 @@
         body {
             margin: 0;
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background: #ffffff;
             color: #17202a;
+            background: #f7fbfe;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
         }
+
+        /* Light, premium background for the live-flight results page */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            pointer-events: none;
+            background:
+                radial-gradient(circle at 8% 18%, rgba(126,196,235,0.20), transparent 27%),
+                radial-gradient(circle at 92% 22%, rgba(215,181,109,0.13), transparent 24%),
+                radial-gradient(circle at 72% 82%, rgba(147,214,239,0.18), transparent 30%),
+                linear-gradient(135deg, #f8fcff 0%, #edf7fc 48%, #ffffff 100%);
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            background:
+                radial-gradient(ellipse at 18% 42%, rgba(255,255,255,0.9) 0 5%, transparent 19%),
+                radial-gradient(ellipse at 82% 58%, rgba(255,255,255,0.75) 0 6%, transparent 20%);
+        }
+
+        /* =====================================================
+           NAVBAR (solid variant of the homepage navbar)
+        ===================================================== */
 
         .navbar-solid {
             background: var(--air-dark);
@@ -47,13 +83,28 @@
             align-items: center;
             justify-content: center;
             background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
             font-size: 21px;
         }
 
         .brand-name {
-            font-size: 20px;
+            font-size: 23px;
             font-weight: 700;
             letter-spacing: 3px;
+        }
+
+        .brand-subtitle {
+            display: block;
+            font-size: 8px;
+            letter-spacing: 2px;
+            color: rgba(255,255,255,0.75);
+            margin-top: 2px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .nav-links a {
@@ -63,20 +114,48 @@
             font-size: 13px;
             font-weight: 500;
             border-radius: 4px;
+            transition: 0.25s;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255,255,255,0.13);
+            color: white;
         }
 
         .nav-links a.active {
             border-bottom: 2px solid var(--air-gold);
         }
 
-        .hero-band {
-            background: var(--air-dark);
+        .login-btn {
+            border: 1px solid rgba(255,255,255,0.55);
+            background: rgba(255,255,255,0.08);
             color: white;
-            padding: 40px 5%;
-            text-align: center;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            backdrop-filter: blur(8px);
+            cursor: pointer;
+            transition: 0.3s;
         }
 
-        .hero-eyebrow {
+        .login-btn:hover {
+            background: white;
+            color: var(--air-dark);
+        }
+
+        /* =====================================================
+           SEARCH BAND — continues the homepage search-card style
+        ===================================================== */
+
+        .search-band {
+            background: var(--air-dark);
+            color: white;
+            padding: 45px 5% 0;
+            position: relative;
+        }
+
+        .search-eyebrow {
             font-size: 11px;
             letter-spacing: 3px;
             text-transform: uppercase;
@@ -84,361 +163,491 @@
             font-weight: 700;
         }
 
-        .hero-title {
-            font-size: 28px;
+        .search-title {
+            font-size: 32px;
             font-weight: 300;
-            margin: 8px 0 4px;
+            margin: 10px 0 6px;
         }
 
-        .hero-subtitle {
+        .search-title strong {
+            font-weight: 700;
+        }
+
+        .search-subtitle {
             color: rgba(255,255,255,0.75);
             font-size: 14px;
+            margin-bottom: 25px;
         }
 
-        .detail-card {
+        /* The card protrudes out of the dark band into the light
+           results section below, with a strong shadow and a gold
+           top accent so it reads as a raised, floating panel. */
+        .search-wrapper {
+            max-width: 1180px;
+            margin: 0 auto;
+            transform: translateY(58px);
+            position: relative;
+            z-index: 5;
+        }
+
+        .search-card {
             background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 5px;
-            padding: 30px;
-            margin-bottom: 20px;
+            color: #17202a;
+            border-radius: 8px;
+            border-top: 4px solid var(--air-gold);
+            box-shadow: 0 30px 70px rgba(7,27,46,0.35), 0 8px 20px rgba(7,27,46,0.15);
         }
 
-        .card-heading {
-            font-size: 17px;
+        .search-fields {
+            display: grid;
+            grid-template-columns: 1.1fr 1.1fr 1fr 180px;
+            gap: 0;
+            padding: 24px;
+        }
+
+        .field {
+            padding: 4px 20px;
+            border-right: 1px solid #e5e7eb;
+        }
+
+        .field:last-of-type {
+            border-right: none;
+        }
+
+        .field-label {
+            display: block;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 700;
+            color: #69727e;
+            margin-bottom: 8px;
+        }
+
+        .field-input {
+            width: 100%;
+            border: none;
+            outline: none;
+            font-size: 15px;
+            font-weight: 600;
+            color: #17202a;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        .search-button {
+            border: none;
+            background: var(--air-blue);
+            color: white;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-left: 15px;
+            width: 100%;
+        }
+
+        .search-button:hover {
+            background: #0565b0;
+            transform: translateY(-1px);
+        }
+
+        /* =====================================================
+           RESULTS
+        ===================================================== */
+
+        .results-section {
+            width: 100%;
+            max-width: none;
+            margin: 108px 0 0;
+            padding: 42px 5% 80px;
+            flex: 1;
+            position: relative;
+            z-index: 1;
+            background:
+                linear-gradient(180deg, rgba(248,252,255,0.78) 0%, rgba(238,248,253,0.92) 52%, rgba(255,255,255,0.96) 100%);
+            border-top: 1px solid rgba(170,202,221,0.18);
+        }
+
+        .results-section #flightResults {
+            max-width: 1180px;
+            margin: 0 auto;
+        }
+
+        .results-heading {
+            font-size: 20px;
             font-weight: 700;
             color: #10283e;
-            margin-bottom: 22px;
+            margin-bottom: 25px;
         }
 
-        .timeline { display: flex; align-items: center; gap: 15px; }
-        .timeline-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--air-blue); flex-shrink: 0; }
-        .timeline-line { flex: 1; height: 1px; background: #dce2e8; }
+        .airport-heading {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--air-blue);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 35px 0 15px;
+        }
 
-        .info-row {
+        .flight-card {
+            background: rgba(255,255,255,0.88);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(214,229,239,0.95);
+            border-radius: 14px;
+            padding: 22px 24px;
+            margin-bottom: 14px;
             display: flex;
             justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid #f1f5f9;
-            font-size: 14px;
+            align-items: center;
+            gap: 15px;
+            transition: 0.3s;
+            box-shadow: 0 10px 28px rgba(39,92,126,0.07);
         }
-        .info-row:last-child { border-bottom: none; }
 
-        .class-card {
-            cursor: pointer;
-            border-radius: 4px;
-            border: 1px solid #e5e7eb;
-            padding: 20px;
-            text-align: center;
-            transition: 0.2s;
+        .flight-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(8,120,209,0.25);
+            box-shadow: 0 14px 32px rgba(39,92,126,0.11);
         }
-        .class-card.selected {
-            border-color: var(--air-blue);
-            background: #eaf3fc;
-        }
-        .class-card:hover { border-color: var(--air-blue); }
 
-        .seat-badge {
-            display: inline-block;
-            padding: 8px 16px;
+        .flight-name {
+            font-weight: 700;
+            font-size: 16px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 170px;
+            color: #10283e;
+        }
+
+        .status-badge {
+            padding: 6px 14px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .status-departed { background: #e6f4ea; color: #1f7a3d; }
+        .status-gateclosed { background: #fdf1de; color: #9a6a13; }
+        .status-default { background: #eef1f4; color: #4b5563; }
+
+        .btn-view {
+            border: none;
+            background: var(--air-dark);
+            color: white;
+            padding: 10px 22px;
             border-radius: 3px;
             font-weight: 700;
             font-size: 13px;
-            margin: 5px;
-            cursor: pointer;
-            border: 1px solid transparent;
-            transition: 0.2s;
-            background: #eaf3fc;
-            color: var(--air-blue);
+            text-decoration: none;
+            transition: 0.3s;
         }
-        .seat-selected {
-            outline: 2px solid var(--air-dark);
-            transform: scale(1.06);
-        }
-        .seat-badge:hover { transform: translateY(-2px); }
 
-        .btn-book {
+        .btn-view:hover {
             background: var(--air-blue);
             color: white;
-            padding: 15px 40px;
-            border-radius: 3px;
-            font-weight: 700;
-            border: none;
-            transition: 0.3s;
-            font-size: 16px;
         }
-        .btn-book:hover { background: #0565b0; transform: translateY(-2px); }
+
+        .empty-state {
+            color: #737b84;
+            font-size: 14px;
+            padding: 20px 0;
+        }
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
 
         footer {
             background: var(--air-dark);
-            color: rgba(255,255,255,0.6);
-            padding: 30px 5%;
-            font-size: 12px;
-            text-align: center;
+            color: white;
+            padding: 35px 5%;
+            position: relative;
+            z-index: 1;
         }
+
+        .footer-container {
+            max-width: 1250px;
+            margin: auto;
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
+        }
+
+        @media (max-width: 900px) {
+            .nav-links { display: none; }
+            .search-fields { grid-template-columns: 1fr 1fr; }
+            .field { border-right: none; border-bottom: 1px solid #e5e7eb; padding: 14px; }
+            .search-wrapper { transform: none; margin-top: 20px; }
+            .results-section { margin-top: 40px; }
+            .flight-card { flex-direction: column; align-items: flex-start; }
+        }
+
     </style>
 </head>
 <body>
 
-<header class="navbar-solid">
-    <a href="index.html" class="brand">
-        <div class="brand-symbol">✈</div>
-        <div class="brand-name">AIR KERALA</div>
-    </a>
-    <nav class="nav-links">
-        <a href="index.html">Home</a>
-        <a href="flights.html" class="active">Book Flight</a>
-        <a href="booking.html">Manage Booking</a>
-        <a href="payment.html">Payment</a>
-    </nav>
-</header>
+    <header class="navbar-solid">
 
-<div class="hero-band">
-    <div class="hero-eyebrow">FLIGHT DETAILS</div>
-    <h1 class="hero-title" id="heroTitle">Flight Details</h1>
-    <p class="hero-subtitle" id="heroSubtitle">Review your flight before booking</p>
-</div>
-
-<div class="container my-5" style="max-width: 900px;">
-
-    <!-- Flight Summary -->
-    <div class="detail-card">
-        <div class="card-heading">✈️ Flight Summary</div>
-        <div class="timeline mb-4">
+        <a href="index.html" class="brand">
+            <div class="brand-symbol">✈</div>
             <div>
-                <div class="fw-bold fs-4" id="depTime">-</div>
-                <div class="text-muted small" id="originCity">-</div>
+                <div class="brand-name">AIR KERALA</div>
+                <span class="brand-subtitle">FLY BEYOND</span>
             </div>
-            <div class="timeline-line"></div>
-            <div class="timeline-dot"></div>
-            <div class="text-center">
-                <div class="small text-muted fw-bold">DIRECT</div>
-                <div class="small text-muted" id="aircraftModel">-</div>
-            </div>
-            <div class="timeline-dot"></div>
-            <div class="timeline-line"></div>
-            <div class="text-end">
-                <div class="fw-bold fs-4" id="arrTime">-</div>
-                <div class="text-muted small" id="destCity">-</div>
+        </a>
+
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="flights.html" class="active">Book Flight</a>
+            <a href="booking.html">Manage Booking</a>
+            <a href="payment.html">Payment</a>
+        </nav>
+
+        <button class="login-btn" onclick="window.location.href='index.html'">👤 Account</button>
+
+    </header>
+
+    <section class="search-band">
+
+        <div class="search-eyebrow">FIND YOUR FLIGHT</div>
+        <h1 class="search-title">Search <strong>domestic availability.</strong></h1>
+        <p class="search-subtitle">Live flights across India, sourced in real time.</p>
+
+        <div class="search-wrapper">
+            <div class="search-card">
+                <div class="search-fields">
+
+                    <div class="field">
+                        <label class="field-label">From</label>
+                        <select id="fromFilter" class="field-input" onchange="filterByDate()">
+                            <option value="COK">Kochi</option>
+                            <option value="TRV">Thiruvananthapuram</option>
+                            <option value="CCJ">Kozhikode</option>
+                            <option value="CNN">Kannur</option>
+                            <option value="BLR">Bengaluru</option>
+                            <option value="MAA">Chennai</option>
+                            <option value="HYD">Hyderabad</option>
+                            <option value="BOM">Mumbai</option>
+                            <option value="DEL">Delhi</option>
+                            <option value="CCU">Kolkata</option>
+                            <option value="PNQ">Pune</option>
+                            <option value="GOI">Goa</option>
+                            <option value="AMD">Ahmedabad</option>
+                            <option value="JAI">Jaipur</option>
+                            <option value="LKO">Lucknow</option>
+                            <option value="IXC">Chandigarh</option>
+                            <option value="BBI">Bhubaneswar</option>
+                            <option value="PAT">Patna</option>
+                            <option value="GAU">Guwahati</option>
+                            <option value="IXE">Mangaluru</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label class="field-label">To</label>
+                        <select id="toFilter" class="field-input" onchange="filterByDate()">
+                            <option value="all">All Destinations</option>
+                            <option value="COK">Kochi</option>
+                            <option value="TRV">Thiruvananthapuram</option>
+                            <option value="CCJ">Kozhikode</option>
+                            <option value="CNN">Kannur</option>
+                            <option value="BLR">Bengaluru</option>
+                            <option value="MAA">Chennai</option>
+                            <option value="HYD">Hyderabad</option>
+                            <option value="BOM">Mumbai</option>
+                            <option value="DEL">Delhi</option>
+                            <option value="CCU">Kolkata</option>
+                            <option value="PNQ">Pune</option>
+                            <option value="GOI">Goa</option>
+                            <option value="AMD">Ahmedabad</option>
+                            <option value="JAI">Jaipur</option>
+                            <option value="LKO">Lucknow</option>
+                            <option value="IXC">Chandigarh</option>
+                            <option value="BBI">Bhubaneswar</option>
+                            <option value="PAT">Patna</option>
+                            <option value="GAU">Guwahati</option>
+                            <option value="IXE">Mangaluru</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label class="field-label">Travel Date</label>
+                        <input type="date" id="travelDate" class="field-input" onchange="filterByDate()">
+                    </div>
+
+                    <button class="search-button" onclick="filterByDate()">Search Flights →</button>
+
+                </div>
             </div>
         </div>
-        <div class="info-row"><span class="text-muted">Flight Number</span><span class="fw-bold" id="infoFlight">-</span></div>
-        <div class="info-row"><span class="text-muted">Airline</span><span class="fw-bold" id="infoAirline">-</span></div>
-        <div class="info-row"><span class="text-muted">Aircraft</span><span class="fw-bold" id="infoAircraft">-</span></div>
-        <div class="info-row"><span class="text-muted">Status</span><span class="fw-bold" id="infoStatus">-</span></div>
-    </div>
 
-    <!-- Cabin Class Selection -->
-    <div class="detail-card">
-        <div class="card-heading">🪑 Select Cabin Class</div>
-        <div class="row g-3 mb-4">
-            <div class="col-md-4">
-                <div class="class-card selected" id="class-Economy" onclick="selectClass('Economy')">
-                    <div class="fw-bold fs-5">Economy Class</div>
-                    <div class="text-muted small" id="seatsLeft-Economy">Loading…</div>
-                    <div class="fw-bold mt-1" style="color: var(--air-blue);" id="price-Economy">—</div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="class-card" id="class-Business" onclick="selectClass('Business')">
-                    <div class="fw-bold fs-5">Business Class</div>
-                    <div class="text-muted small" id="seatsLeft-Business">Loading…</div>
-                    <div class="fw-bold mt-1" style="color: var(--air-blue);" id="price-Business">—</div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="class-card" id="class-First" onclick="selectClass('First')">
-                    <div class="fw-bold fs-5">First Class</div>
-                    <div class="text-muted small" id="seatsLeft-First">Loading…</div>
-                    <div class="fw-bold mt-1" style="color: var(--air-blue);" id="price-First">—</div>
-                </div>
-            </div>
+    </section>
+
+    <section class="results-section">
+        <div id="flightResults"></div>
+    </section>
+
+    <footer>
+        <div class="footer-container">
+            <span>© 2026 Air Kerala. All rights reserved.</span>
+            <span>Fly beyond.</span>
         </div>
+    </footer>
 
-        <h6 class="fw-bold mb-3">Select Seat</h6>
-        <div id="seatMap" class="mb-3"></div>
-        <div class="mt-2 text-muted small">Selected Seat: <strong id="selectedSeatLabel">12A</strong></div>
-    </div>
-
-    <!-- Price Summary -->
-    <div class="detail-card">
-        <div class="card-heading">💰 Price Summary</div>
-        <div class="info-row"><span class="text-muted">Base Fare</span><span id="baseFare" class="fw-bold">₹ 5,500</span></div>
-        <div class="info-row"><span class="text-muted">Taxes & Fees (18%)</span><span id="taxFare" class="fw-bold">₹ 990</span></div>
-        <div class="info-row"><span class="text-muted fw-bold">Total</span><span id="totalFare" class="fw-bold fs-5" style="color: var(--air-blue);">₹ 6,490</span></div>
-    </div>
-
-    <!-- Book Button -->
-    <div class="text-center mt-4">
-        <button class="btn-book shadow-sm" onclick="bookFlight()">
-            🎫 Book Ticket Now
-        </button>
-    </div>
-
-</div>
-
-<footer>© 2026 Air Kerala. All rights reserved. · Fly beyond.</footer>
-
-<script>
+    <script>
     if (localStorage.getItem('isLoggedIn') !== 'true') {
         alert("🔒 Access Denied. Please login first.");
         window.location.href = "index.html";
     }
 
-    const params = new URLSearchParams(window.location.search);
-    const flightNum = params.get('number') || '';
-    const airline = params.get('airline') || '';
-    const origin = params.get('origin') || '';
-    const dest = params.get('dest') || '';
-    const dep = params.get('dep') || '';
-    const arr = params.get('arr') || '';
-    const aircraft = params.get('aircraft') || 'TBD';
-    const status = params.get('status') || 'Unknown';
-    const searchDate = params.get('date') || new Date().toISOString().split('T')[0];
-
-    // Placeholder seat labels shown while live inventory loads. Once the
-    // /api/flights/ensure call returns, these stay as display labels —
-    // the actual booked seat is assigned server-side from real inventory.
-    const seatOptions = {
-        Economy: ['12A','12B','12C','14A','14B','15C','16A','17B'],
-        Business: ['2A','2B','3A','3B','4A','4B'],
-        First: ['1A','1B','1C','1D']
+    const airportNames = {
+        COK: '🇮🇳 Kochi', TRV: '🇮🇳 Thiruvananthapuram', CCJ: '🇮🇳 Kozhikode',
+        CNN: '🇮🇳 Kannur', BLR: '🇮🇳 Bengaluru', MAA: '🇮🇳 Chennai',
+        HYD: '🇮🇳 Hyderabad', BOM: '🇮🇳 Mumbai', DEL: '🇮🇳 Delhi',
+        CCU: '🇮🇳 Kolkata', PNQ: '🇮🇳 Pune', GOI: '🇮🇳 Goa',
+        AMD: '🇮🇳 Ahmedabad', JAI: '🇮🇳 Jaipur', LKO: '🇮🇳 Lucknow',
+        IXC: '🇮🇳 Chandigarh', BBI: '🇮🇳 Bhubaneswar', PAT: '🇮🇳 Patna',
+        GAU: '🇮🇳 Guwahati', IXE: '🇮🇳 Mangaluru'
     };
 
-    let selectedClass = 'Economy';
-    let selectedSeat = seatOptions.Economy[0];
-    let liveFlightId = null;
-    let livePrices = { Economy: 5500, Business: 12500, First: 25000 }; // fallback until live data loads
-    let liveSeatCounts = {};
-
-    document.getElementById('heroTitle').textContent = airline + ' · ' + flightNum;
-    document.getElementById('heroSubtitle').textContent = origin + ' → ' + dest;
-    document.getElementById('depTime').textContent = dep;
-    document.getElementById('originCity').textContent = origin;
-    document.getElementById('arrTime').textContent = arr;
-    document.getElementById('destCity').textContent = dest;
-    document.getElementById('infoFlight').textContent = flightNum;
-    document.getElementById('infoAirline').textContent = airline;
-    document.getElementById('infoAircraft').textContent = aircraft;
-    document.getElementById('infoStatus').textContent = status;
-    document.getElementById('aircraftModel').textContent = aircraft;
-
-    function toDateTime(timeStr) {
-        // dep/arr are "HH:MM" strings; combine with the search date for a real DATETIME
-        if (!timeStr || timeStr === 'N/A') return searchDate + ' 00:00:00';
-        return searchDate + ' ' + timeStr + ':00';
+    function cityName(code) {
+        return airportNames[code] ? airportNames[code].split(' ').slice(1).join(' ') : code;
     }
 
-    async function loadLiveInventory() {
+    async function filterByDate() {
+        const date = document.getElementById('travelDate').value;
+        const toDest = document.getElementById('toFilter').value;
+        const fromFilter = document.getElementById('fromFilter').value;
+        const container = document.getElementById('flightResults');
+        container.innerHTML = `<p class="empty-state">Loading live domestic flights...</p>`;
+
         try {
-            const res = await fetch('/api/flights/ensure', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    flight_number: flightNum || (airline + '-' + dep),
-                    airline_name: airline,
-                    origin: origin,
-                    destination: dest,
-                    departure_time: toDateTime(dep),
-                    arrival_time: toDateTime(arr)
-                })
-            });
-            const data = await res.json();
+            const today = date || new Date().toISOString().split('T')[0];
 
-            if (data.success) {
-                liveFlightId = data.flight_id;
-                data.seats.forEach(function(row) {
-                    livePrices[row.CLASS] = row.price;
-                    liveSeatCounts[row.CLASS] = row.available;
+            // The backend now only queries the single airport the user
+            // picked, instead of scanning all 20 on every search — that
+            // scan was what burned through the whole monthly API quota.
+            const liveRes = await fetch(
+                '/api/live-flights?date=' + encodeURIComponent(today) +
+                '&from=' + encodeURIComponent(fromFilter)
+            );
+            const liveData = await liveRes.json();
+
+            if (!liveData.success) {
+                container.innerHTML = '<p class="text-danger">Error loading flights: ' +
+                    (liveData.message || 'Unknown error') + '</p>';
+                return;
+            }
+
+            // liveData.flights is a flat, deduplicated list of domestic
+            // departures from the single 'from' airport requested.
+            let flights = liveData.flights || [];
+
+            if (toDest !== 'all') {
+                flights = flights.filter(function(f) {
+                    const code = f.arrival && f.arrival.airport && (f.arrival.airport.iata || '').toUpperCase();
+                    return code === toDest;
                 });
             }
+
+            // Group client-side by departure airport for display headings
+            const grouped = {};
+            flights.forEach(function(f) {
+                const code = (f.departure && f.departure.airport && f.departure.airport.iata)
+                    ? f.departure.airport.iata.toUpperCase()
+                    : 'OTHER';
+                if (!grouped[code]) grouped[code] = [];
+                grouped[code].push(f);
+            });
+
+            container.innerHTML = '<h2 class="results-heading">🇮🇳 Live Domestic Flights for: ' + today + '</h2>';
+
+            if (liveData.airportError) {
+                container.innerHTML += '<p class="text-danger">Note: live data for ' +
+                    (airportNames[fromFilter] || fromFilter) + ' could not be fully retrieved (' +
+                    liveData.airportError + ').</p>';
+            }
+
+            let totalShown = 0;
+
+            Object.keys(grouped).forEach(function(code) {
+                const list = grouped[code];
+                if (!list.length) return;
+
+                container.innerHTML += '<div class="airport-heading">' + (airportNames[code] || code) + ' Airport</div>';
+
+                list.slice(0, 10).forEach(function(f) {
+                    const dep = (f.departure && f.departure.scheduledTime && f.departure.scheduledTime.local) ? f.departure.scheduledTime.local.slice(11, 16) : 'N/A';
+                    const arr = (f.arrival && f.arrival.scheduledTime && f.arrival.scheduledTime.local) ? f.arrival.scheduledTime.local.slice(11, 16) : 'N/A';
+                    const destCode = (f.arrival && f.arrival.airport && f.arrival.airport.iata) ? f.arrival.airport.iata.toUpperCase() : '';
+                    const dest = destCode ? cityName(destCode) : ((f.arrival && f.arrival.airport && f.arrival.airport.name) || 'Unknown');
+                    const airlineName = (f.airline && f.airline.name) ? f.airline.name : 'Unknown';
+                    const aircraftModel = (f.aircraft && f.aircraft.model) ? f.aircraft.model : '';
+                    const flightNum = f.number || '';
+                    const status = f.status || 'Unknown';
+                    const statusClass = status === 'Departed' ? 'status-departed' : status === 'GateClosed' ? 'status-gateclosed' : 'status-default';
+                    const originCity = cityName(code);
+
+                    const detailsUrl = 'flight-details.html?number=' + encodeURIComponent(flightNum) +
+                        '&airline=' + encodeURIComponent(airlineName) +
+                        '&origin=' + encodeURIComponent(originCity) +
+                        '&dest=' + encodeURIComponent(dest) +
+                        '&dep=' + encodeURIComponent(dep) +
+                        '&arr=' + encodeURIComponent(arr) +
+                        '&aircraft=' + encodeURIComponent(aircraftModel) +
+                        '&status=' + encodeURIComponent(status) +
+                        '&date=' + encodeURIComponent(today);
+
+                    const actionBtn = status === 'Departed'
+                        ? '<span class="text-muted small fst-italic">Flight departed</span>'
+                        : '<a href="' + detailsUrl + '" class="btn-view">View Flight</a>';
+
+                    container.innerHTML += `
+                        <div class="flight-card">
+                            <div style="min-width:150px;">
+                                <small class="text-muted fw-bold">${flightNum}</small>
+                                <div class="flight-name">${airlineName}</div>
+                                <small class="text-muted">${aircraftModel}</small>
+                            </div>
+                            <div class="text-center flex-grow-1">
+                                <div class="fw-bold h6 mb-1">${originCity} ➔ ${dest}</div>
+                                <div class="small text-muted">🕒 Dep: ${dep} | Arr: ${arr}</div>
+                            </div>
+                            <span class="status-badge ${statusClass}">${status}</span>
+                            ${actionBtn}
+                        </div>`;
+                    totalShown++;
+                });
+            });
+
+            if (totalShown === 0) {
+                container.innerHTML += '<p class="empty-state">No flights found for selected filters.</p>';
+            }
+
         } catch (err) {
-            console.error('Live inventory error:', err);
+            container.innerHTML = '<p class="text-danger">Error loading flights: ' + err.message + '</p>';
         }
-
-        ['Economy','Business','First'].forEach(function(c) {
-            const count = liveSeatCounts[c];
-            document.getElementById('seatsLeft-' + c).textContent =
-                (count !== undefined ? count : '—') + ' seats left';
-            document.getElementById('price-' + c).textContent =
-                '₹ ' + livePrices[c].toLocaleString();
-        });
-
-        updatePrice();
     }
 
-    function renderSeats() {
-        const map = document.getElementById('seatMap');
-        map.innerHTML = '';
-        seatOptions[selectedClass].forEach(function(s) {
-            const span = document.createElement('span');
-            span.className = 'seat-badge';
-            span.textContent = s;
-            if (s === selectedSeat) span.classList.add('seat-selected');
-            span.addEventListener('click', function() {
-                selectedSeat = s;
-                document.getElementById('selectedSeatLabel').textContent = s;
-                document.querySelectorAll('.seat-badge').forEach(function(b) {
-                    b.classList.remove('seat-selected');
-                });
-                span.classList.add('seat-selected');
-            });
-            map.appendChild(span);
-        });
-        document.getElementById('selectedSeatLabel').textContent = selectedSeat;
-    }
+    // Pick up whatever was entered on the homepage search box and
+    // run the live search immediately with those values pre-filled.
+    window.onload = function() {
+        const params = new URLSearchParams(window.location.search);
+        const from = params.get('from');
+        const to = params.get('to');
+        const date = params.get('date');
 
-    function selectClass(cls) {
-        selectedClass = cls;
-        selectedSeat = seatOptions[cls][0];
+        if (from) document.getElementById('fromFilter').value = from;
+        if (to) document.getElementById('toFilter').value = to;
+        if (date) document.getElementById('travelDate').value = date;
 
-        ['Economy','Business','First'].forEach(function(c) {
-            const el = document.getElementById('class-' + c);
-            if (c === cls) {
-                el.classList.add('selected');
-            } else {
-                el.classList.remove('selected');
-            }
-        });
-
-        updatePrice();
-        renderSeats();
-    }
-
-    function updatePrice() {
-        const base = livePrices[selectedClass];
-        const tax = Math.round(base * 0.18);
-        const total = base + tax;
-        document.getElementById('baseFare').textContent = '₹ ' + base.toLocaleString();
-        document.getElementById('taxFare').textContent = '₹ ' + tax.toLocaleString();
-        document.getElementById('totalFare').textContent = '₹ ' + total.toLocaleString();
-    }
-
-    function bookFlight() {
-        if (!liveFlightId) {
-            alert('Still loading live seat availability — please wait a moment and try again.');
-            return;
-        }
-
-        const base = livePrices[selectedClass];
-        const total = base + Math.round(base * 0.18);
-
-        localStorage.setItem('flightId', liveFlightId);
-        localStorage.setItem('flightNum', flightNum);
-        localStorage.setItem('airline', airline);
-        localStorage.setItem('origin', origin);
-        localStorage.setItem('dest', dest);
-        localStorage.setItem('dep', dep);
-        localStorage.setItem('arr', arr);
-        localStorage.setItem('cabinClass', selectedClass);
-        localStorage.setItem('selectedSeat', selectedSeat);
-        localStorage.setItem('bookingTotal', total);
-
-        window.location.href = 'booking.html';
-    }
-
-    renderSeats();
-    loadLiveInventory();
-</script>
-
+        filterByDate();
+    };
+    </script>
 </body>
 </html>

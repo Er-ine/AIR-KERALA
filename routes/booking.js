@@ -20,7 +20,7 @@ router.post('/passenger', async (req, res) => {
 });
 
 // Assigns a real available seat from the flight's live inventory instead
-// of fabricating a new one. Price now comes from the DB, not the client.
+// of fabricating a new one. Price comes from the DB, not the client.
 router.post('/seat', async (req, res) => {
     const { flight_id, class: cls } = req.body;
 
@@ -56,38 +56,49 @@ router.post('/seat', async (req, res) => {
 router.post('/booking', async (req, res) => {
   const { agent_id, flight_id, booking_date, passenger_id, seat_id, meal_preference, wheelchair_required, special_assistance, infant_bassinet_required } = req.body;
 
+  if (!flight_id || !passenger_id || !seat_id) {
+    return res.status(400).json({ success: false, message: 'flight_id, passenger_id and seat_id are required' });
+  }
+
+  const conn = await db.getConnection();
+
   try {
-    const [seats] = await db.query(
-      `SELECT * FROM SEAT WHERE SEAT_ID = ? AND AVAILABILITY = 1`,
+    await conn.beginTransaction();
+
+    // Atomically claim the seat — this UPDATE only affects a row if the
+    // seat is still AVAILABILITY = 1, so two simultaneous requests for
+    // the same seat can't both succeed.
+    const [claim] = await conn.query(
+      `UPDATE SEAT SET AVAILABILITY = 0 WHERE SEAT_ID = ? AND AVAILABILITY = 1`,
       [seat_id]
     );
 
-    if (!seats.length) {
+    if (claim.affectedRows === 0) {
+      await conn.rollback();
       return res.status(400).json({ success: false, message: 'Seat not available' });
     }
 
-    const [booking] = await db.query(
+    const [booking] = await conn.query(
       `INSERT INTO BOOKINGS (AGENT_ID, FLIGHT_ID, BOOKING_DATE, STATUS_)
        VALUES (?, ?, ?, 'CONFIRMED')`,
       [agent_id, flight_id, booking_date]
     );
 
-    await db.query(
+    await conn.query(
       `INSERT INTO Booking_Passenger
        (BOOKING_ID, PASSENGER_ID, SEAT_ID, MEAL_PREFERENCE, WHEELCHAIR_REQUIRED, SPECIAL_ASSISTANCE, INFANT_BASSINET_REQUIRED)
        VALUES (?, ?, ?, ?, ?, ?, ?)`,
       [booking.insertId, passenger_id, seat_id, meal_preference, wheelchair_required, special_assistance, infant_bassinet_required]
     );
 
-    await db.query(
-      `UPDATE SEAT SET AVAILABILITY = 0 WHERE SEAT_ID = ?`,
-      [seat_id]
-    );
-
+    await conn.commit();
     res.json({ success: true, booking_id: booking.insertId, message: 'Booking successful' });
   } catch (err) {
+    await conn.rollback();
     console.error('BOOKING INSERT ERROR:', err);
     res.status(500).json({ success: false, message: err.message, code: err.code });
+  } finally {
+    conn.release();
   }
 });
 
@@ -108,12 +119,16 @@ router.put('/cancel-booking', async (req, res) => {
       return res.status(400).json({ success: false, message: 'Already cancelled' });
     }
 
-
     await db.query(`
       UPDATE SEAT SET AVAILABILITY = 1
       WHERE SEAT_ID IN (
         SELECT SEAT_ID FROM Booking_Passenger WHERE BOOKING_ID = ?
       )`, [booking_id]
+    );
+
+    await db.query(
+      `UPDATE BOOKINGS SET STATUS_ = 'CANCELLED' WHERE BOOKING_ID = ?`,
+      [booking_id]
     );
 
     await db.query(
@@ -146,6 +161,7 @@ router.get('/booking-details/:booking_id', async (req, res) => {
       JOIN Booking_Passenger BP ON B.BOOKING_ID = BP.BOOKING_ID
       JOIN PASSENGER P ON BP.PASSENGER_ID = P.PASSENGER_ID
       JOIN SEAT S ON BP.SEAT_ID = S.SEAT_ID
+      LEFT JOIN PAYMENT PAY ON B.BOOKING_ID = PAY.BOOKING_ID
       WHERE B.BOOKING_ID = ?
     `, [booking_id]);
 

@@ -2,49 +2,36 @@ const express = require('express');
 const router = express.Router();
 
 /*
- * Indian airports we currently want to monitor.
+ * Indian airports we know about — used for validating the 'from'
+ * param and for the domestic-destination fallback filter.
  */
 const airports = [
-    'COK', // Kochi
-    'TRV', // Thiruvananthapuram
-    'CCJ', // Kozhikode
-    'CNN', // Kannur
-    'BLR', // Bengaluru
-    'MAA', // Chennai
-    'HYD', // Hyderabad
-    'BOM', // Mumbai
-    'DEL', // Delhi
-    'CCU', // Kolkata
-    'PNQ', // Pune
-    'GOI', // Goa
-    'AMD', // Ahmedabad
-    'JAI', // Jaipur
-    'LKO', // Lucknow
-    'IXC', // Chandigarh
-    'BBI', // Bhubaneswar
-    'PAT', // Patna
-    'GAU', // Guwahati
-    'IXE'  // Mangaluru
+    'COK', 'TRV', 'CCJ', 'CNN', 'BLR', 'MAA', 'HYD', 'BOM', 'DEL',
+    'CCU', 'PNQ', 'GOI', 'AMD', 'JAI', 'LKO', 'IXC', 'BBI', 'PAT',
+    'GAU', 'IXE'
 ];
 
-const AERODATABOX_HOST =
-    'aerodatabox.p.rapidapi.com';
-
+const AERODATABOX_HOST = 'aerodatabox.p.rapidapi.com';
 const REQUEST_TIMEOUT_MS = 10000;
-
-// AeroDataBox's free RapidAPI tier allows only a few requests per
-// second. Space sequential requests out to stay under that limit,
-// and back off briefly before a single retry if one still gets 429.
 const REQUEST_SPACING_MS = 1100;
 const RETRY_BACKOFF_MS = 2000;
+
+// Your BASIC plan caps a single request window at 12 hours, so a full
+// day has to be split into two half-day windows.
+const HALF_DAY_WINDOWS = [
+    { start: '00:00', end: '11:59' },
+    { start: '12:00', end: '23:59' }
+];
+
+// Cache successful (or genuinely-empty) results for a few minutes so
+// page reloads and repeat searches don't re-spend API quota.
+const CACHE_TTL_MS = 5 * 60 * 1000;
+const cache = new Map();
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-/*
- * Get today's date in India.
- */
 function getIndiaDate() {
     return new Intl.DateTimeFormat('en-CA', {
         timeZone: 'Asia/Kolkata',
@@ -55,143 +42,102 @@ function getIndiaDate() {
 }
 
 /*
- * Fetch one airport with a hard timeout.
+ * Fetch ONE half-day window for ONE airport.
  */
-async function fetchAirportDepartures(code, date, apiKey) {
-
+async function fetchAirportWindow(code, date, window, apiKey) {
     const url =
         `https://${AERODATABOX_HOST}/flights/airports/iata/${code}/` +
-        `${date}T00:00/${date}T23:59` +
+        `${date}T${window.start}/${date}T${window.end}` +
         `?withLeg=true&direction=Departure&withCancelled=false`;
 
     const controller = new AbortController();
-
-    const timeout = setTimeout(() => {
-        controller.abort();
-    }, REQUEST_TIMEOUT_MS);
+    const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 
     try {
-
         const response = await fetch(url, {
             method: 'GET',
-
             headers: {
                 'X-RapidAPI-Key': apiKey,
                 'X-RapidAPI-Host': AERODATABOX_HOST
             },
-
             signal: controller.signal
         });
 
         if (!response.ok) {
-
             const body = await response.text().catch(() => '');
-
-            console.error(
-                `AeroDataBox ${code}: HTTP ${response.status}`,
-                body
-            );
-
-            return {
-                airport: code,
-                departures: [],
-                error: `HTTP ${response.status}`
-            };
+            console.error(`AeroDataBox ${code} [${window.start}-${window.end}]: HTTP ${response.status}`, body);
+            return { departures: [], error: `HTTP ${response.status}` };
         }
 
         const data = await response.json();
+        let departures = Array.isArray(data.departures) ? data.departures : [];
 
-        let departures = Array.isArray(data.departures)
-            ? data.departures
-            : [];
-
-        /*
-         * Keep only domestic Indian destinations.
-         */
         departures = departures.filter(flight => {
+            const arrivalAirport = flight?.arrival?.airport;
+            if (!arrivalAirport) return false;
 
-            const arrivalAirport =
-                flight?.arrival?.airport;
-
-            if (!arrivalAirport) {
-                return false;
-            }
-
-            /*
-             * Best case: AeroDataBox provides countryCode.
-             */
             if (arrivalAirport.countryCode) {
-
-                return (
-                    arrivalAirport.countryCode
-                        .toUpperCase() === 'IN'
-                );
+                return arrivalAirport.countryCode.toUpperCase() === 'IN';
             }
 
-            /*
-             * Fallback to our known Indian airport list.
-             */
-            const destinationCode =
-                String(
-                    arrivalAirport.iata || ''
-                ).toUpperCase();
-
+            const destinationCode = String(arrivalAirport.iata || '').toUpperCase();
             return airports.includes(destinationCode);
         });
 
-        return {
-            airport: code,
-            departures,
-            error: null
-        };
+        return { departures, error: null };
 
     } catch (error) {
-
         if (error.name === 'AbortError') {
-
-            console.error(
-                `AeroDataBox ${code}: request timed out`
-            );
-
-            return {
-                airport: code,
-                departures: [],
-                error: 'TIMEOUT'
-            };
+            console.error(`AeroDataBox ${code} [${window.start}-${window.end}]: request timed out`);
+            return { departures: [], error: 'TIMEOUT' };
         }
-
-        console.error(
-            `AeroDataBox ${code}:`,
-            error.message
-        );
-
-        return {
-            airport: code,
-            departures: [],
-            error: error.message
-        };
+        console.error(`AeroDataBox ${code} [${window.start}-${window.end}]:`, error.message);
+        return { departures: [], error: error.message };
 
     } finally {
-
         clearTimeout(timeout);
     }
 }
 
 /*
- * Remove duplicate flights.
+ * Fetch a full day for ONE airport by combining two 12-hour windows.
  */
+async function fetchAirportFullDay(code, date, apiKey) {
+    const allDepartures = [];
+    let lastError = null;
+
+    for (const window of HALF_DAY_WINDOWS) {
+        let result = await fetchAirportWindow(code, date, window, apiKey);
+
+        if (result.error === 'HTTP 429' && !result.isMonthlyQuotaError) {
+        await sleep(RETRY_BACKOFF_MS);
+        result = await fetchAirportWindow(code, date, window, apiKey);
+        }
+
+        if (result.error) {
+            lastError = result.error;
+        } else {
+            allDepartures.push(...result.departures);
+        }
+
+        await sleep(REQUEST_SPACING_MS);
+    }
+
+    // Only report an error if BOTH windows failed — a single half-day
+    // failure still leaves us with real data from the other half.
+    const bothFailed = allDepartures.length === 0 && lastError;
+
+    return {
+        airport: code,
+        departures: allDepartures,
+        error: bothFailed ? lastError : null
+    };
+}
+
 function deduplicateFlights(results) {
-
     const map = new Map();
-
     for (const airportResult of results) {
-
         for (const flight of airportResult.departures) {
-
-            /*
-             * Prefer a real flight identifier.
-             * Fall back to a combination of fields.
-             */
             const key =
                 flight?.number ||
                 [
@@ -202,164 +148,78 @@ function deduplicateFlights(results) {
                     flight?.departure?.scheduledTime?.local
                 ].join('|');
 
-            if (!map.has(key)) {
-                map.set(key, flight);
-            }
+            if (!map.has(key)) map.set(key, flight);
         }
     }
-
     return Array.from(map.values());
 }
 
-
 router.get('/live-flights', async (req, res) => {
-
     const startedAt = Date.now();
 
     try {
-
-        const apiKey =
-            process.env.RAPIDAPI_KEY;
-
+        const apiKey = process.env.RAPIDAPI_KEY;
         if (!apiKey) {
-
-            return res.status(500).json({
-                success: false,
-                message:
-                    'RAPIDAPI_KEY is not configured.'
-            });
+            return res.status(500).json({ success: false, message: 'RAPIDAPI_KEY is not configured.' });
         }
 
-        /*
-         * Allow an explicit date, otherwise use
-         * today's date in India.
-         */
-        const date =
-            req.query.date || getIndiaDate();
-
-        /*
-         * Basic date validation.
-         */
+        const date = req.query.date || getIndiaDate();
         if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+            return res.status(400).json({ success: false, message: 'Invalid date. Use YYYY-MM-DD.' });
+        }
 
+        // IMPORTANT: only query the airport the user actually searched
+        // for, not all 20 every time. This is what was burning through
+        // the monthly quota on every single page load.
+        const from = String(req.query.from || '').toUpperCase();
+
+        if (!from || !airports.includes(from)) {
             return res.status(400).json({
                 success: false,
-                message:
-                    'Invalid date. Use YYYY-MM-DD.'
+                message: 'A valid "from" airport code is required, e.g. ?from=TRV'
             });
         }
 
-        console.log(
-            `Fetching domestic flights for ${date}`
-        );
+        const cacheKey = `${from}_${date}`;
+        const cached = cache.get(cacheKey);
 
-        /*
-         * IMPORTANT:
-         *
-         * AeroDataBox's free RapidAPI tier only allows a small
-         * number of requests per second. Firing all 20 airport
-         * requests at once (Promise.all) trips its rate limit
-         * immediately, so every request comes back HTTP 429.
-         *
-         * Instead, we go through the airports ONE AT A TIME with
-         * a short delay between each. This is slower (roughly
-         * airports.length * REQUEST_SPACING_MS), but it actually
-         * gets data back instead of failing outright.
-         *
-         * There is still no retry loop or recursive search —
-         * each airport gets exactly one attempt, plus a single
-         * automatic retry if that attempt is rate-limited.
-         */
-        const results = [];
-
-        for (const code of airports) {
-
-            let result = await fetchAirportDepartures(
-                code,
-                date,
-                apiKey
-            );
-
-            if (result.error === 'HTTP 429') {
-                // Back off and retry this one airport once —
-                // a single burst of 429s usually clears quickly.
-                await sleep(RETRY_BACKOFF_MS);
-                result = await fetchAirportDepartures(
-                    code,
-                    date,
-                    apiKey
-                );
-            }
-
-            results.push(result);
-
-            await sleep(REQUEST_SPACING_MS);
+        if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
+            return res.json({ ...cached.data, cached: true });
         }
 
-        const flights =
-            deduplicateFlights(results);
+        console.log(`Fetching domestic flights for ${from} on ${date}`);
 
-        const successfulAirports =
-            results.filter(
-                result => !result.error
-            ).length;
+        const result = await fetchAirportFullDay(from, date, apiKey);
+        const flights = deduplicateFlights([result]);
 
-        const failedAirports =
-            results.filter(
-                result => result.error
-            ).length;
-
-        return res.json({
-
+        const responseBody = {
             success: true,
-
             domesticOnly: true,
-
             date,
+            from,
+            generatedAt: new Date().toISOString(),
+            processingTimeMs: Date.now() - startedAt,
+            airportError: result.error,
+            flightCount: flights.length,
+            flights
+        };
 
-            generatedAt:
-                new Date().toISOString(),
+        // Cache successful responses (including genuinely-empty ones)
+        // so retries and reloads don't cost more quota.
+        if (!result.error) {
+            cache.set(cacheKey, { timestamp: Date.now(), data: responseBody });
+        }
 
-            processingTimeMs:
-                Date.now() - startedAt,
-
-            airportsRequested:
-                airports.length,
-
-            airportsSuccessful:
-                successfulAirports,
-
-            airportsFailed:
-                failedAirports,
-
-            flightCount:
-                flights.length,
-
-            flights,
-
-            airportResults:
-                results
-        });
+        return res.json(responseBody);
 
     } catch (error) {
-
-        console.error(
-            'LIVE FLIGHTS ERROR:',
-            error
-        );
-
+        console.error('LIVE FLIGHTS ERROR:', error);
         return res.status(500).json({
-
             success: false,
-
-            message:
-                'Unable to retrieve live flight data.',
-
-            error:
-                error.message
+            message: 'Unable to retrieve live flight data.',
+            error: error.message
         });
     }
 });
-
 
 module.exports = router;

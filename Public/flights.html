@@ -406,7 +406,6 @@
                     <div class="field">
                         <label class="field-label">From</label>
                         <select id="fromFilter" class="field-input" onchange="filterByDate()">
-                            <option value="all">All Airports</option>
                             <option value="COK">Kochi</option>
                             <option value="TRV">Thiruvananthapuram</option>
                             <option value="CCJ">Kozhikode</option>
@@ -510,7 +509,14 @@
 
         try {
             const today = date || new Date().toISOString().split('T')[0];
-            const liveRes = await fetch('/api/live-flights?date=' + today);
+
+            // The backend now only queries the single airport the user
+            // picked, instead of scanning all 20 on every search — that
+            // scan was what burned through the whole monthly API quota.
+            const liveRes = await fetch(
+                '/api/live-flights?date=' + encodeURIComponent(today) +
+                '&from=' + encodeURIComponent(fromFilter)
+            );
             const liveData = await liveRes.json();
 
             if (!liveData.success) {
@@ -519,16 +525,9 @@
                 return;
             }
 
-            // liveData.flights is a flat, deduplicated, already
-            // domestic-only list of flight objects (not grouped by airport).
+            // liveData.flights is a flat, deduplicated list of domestic
+            // departures from the single 'from' airport requested.
             let flights = liveData.flights || [];
-
-            if (fromFilter !== 'all') {
-                flights = flights.filter(function(f) {
-                    const code = f.departure && f.departure.airport && (f.departure.airport.iata || '').toUpperCase();
-                    return code === fromFilter;
-                });
-            }
 
             if (toDest !== 'all') {
                 flights = flights.filter(function(f) {
@@ -548,6 +547,12 @@
             });
 
             container.innerHTML = '<h2 class="results-heading">🇮🇳 Live Domestic Flights for: ' + today + '</h2>';
+
+            if (liveData.airportError) {
+                container.innerHTML += '<p class="text-danger">Note: live data for ' +
+                    (airportNames[fromFilter] || fromFilter) + ' could not be fully retrieved (' +
+                    liveData.airportError + ').</p>';
+            }
 
             let totalShown = 0;
 
