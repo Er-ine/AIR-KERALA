@@ -858,43 +858,51 @@
         }
 
         .footer-top {
-            display: flex;
-
-            justify-content: space-between;
-
-            align-items: center;
-
+            display: grid;
+            grid-template-columns: 1fr 1.5fr 1fr;
+            gap: 40px;
             padding-bottom: 35px;
-
             border-bottom: 1px solid rgba(255,255,255,0.15);
         }
 
         .footer-brand {
             font-size: 21px;
-
             font-weight: 700;
-
             letter-spacing: 3px;
+        }
+
+        .footer-heading {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            color: var(--air-gold);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .contact-item {
+            font-size: 13px;
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 8px;
+            line-height: 1.5;
         }
 
         .footer-links {
             display: flex;
-
-            gap: 25px;
+            flex-direction: column;
+            gap: 8px;
         }
 
         .footer-links a {
             color: rgba(255,255,255,0.65);
-
             text-decoration: none;
-
-            font-size: 12px;
-
+            font-size: 13px;
             transition: 0.2s;
         }
 
         .footer-links a:hover {
             color: white;
+            padding-left: 3px;
         }
 
 
@@ -1176,24 +1184,11 @@
         </a>
 
 
-        <nav class="nav-links"><nav class="nav-links">
-
-            <a href="index.html" class="active">
-                Home
-            </a>
-
-            <a href="flights.html">
-                Book Flight
-            </a>
-
-            <a href="booking.html">
-                Manage Booking
-            </a>
-
-            <a href="#contact">
-                Contact
-            </a>
-
+        <nav class="nav-links">
+            <a href="index.html" class="active">Home</a>
+            <a href="flights.html">Book Ticket</a>
+            <a href="Manage booking.html">Manage My Booking</a>
+            <a href="#contact">Contact</a>
         </nav>
 
 
@@ -1633,132 +1628,85 @@
 
 
             <div class="modal-body">
+                <div id="authAlert" class="alert alert-danger d-none p-2 mb-3 small text-center" role="alert"></div>
 
 
                 <!-- LOGIN -->
-
                 <div id="loginForm">
-
                     <div class="mb-3">
-
                         <label class="form-label small fw-bold text-muted">
-                            USERNAME
+                            EMAIL ADDRESS
                         </label>
-
                         <input
-                            type="text"
-                            id="loginID"
+                            type="email"
+                            id="loginEmail"
                             class="form-control"
-                            placeholder="Enter your username">
-
+                            placeholder="Enter your email address">
                     </div>
 
-
                     <div class="mb-4">
-
                         <label class="form-label small fw-bold text-muted">
                             PASSWORD
                         </label>
-
                         <input
                             type="password"
                             id="loginPass"
                             class="form-control"
                             placeholder="Enter your password">
-
                     </div>
-
 
                     <button
                         onclick="handleLogin()"
                         class="modal-btn mb-3">
-
                         Login to Air Kerala
-
                     </button>
 
-
                     <p class="text-center small">
-
                         New here?
-
                         <a
                             href="#"
                             onclick="toggleAuth(true)"
                             class="text-primary fw-bold">
-
                             Create an account
-
                         </a>
-
                     </p>
-
                 </div>
 
-
-
                 <!-- SIGNUP -->
-
-                <div
-                    id="signupForm"
-                    style="display:none;">
-
-
+                <div id="signupForm" style="display:none;">
                     <div class="mb-3">
-
-                        <label class="form-label small fw-bold text-muted">
-                            CHOOSE USERNAME
-                        </label>
-
-                        <input
-                            type="text"
-                            id="newID"
-                            class="form-control"
-                            placeholder="Pick a username">
-
+                        <label class="form-label small fw-bold text-muted">FULL NAME</label>
+                        <input type="text" id="newName" class="form-control" placeholder="Full name as per ID">
                     </div>
-
-
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted">DATE OF BIRTH</label>
+                        <input type="date" id="newDOB" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted">PHONE NUMBER</label>
+                        <input type="tel" id="newPhone" class="form-control" placeholder="+91 9876543210">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted">EMAIL ADDRESS</label>
+                        <input type="email" id="newEmail" class="form-control" placeholder="name@example.com">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted">PASSWORD</label>
+                        <input type="password" id="newPass" class="form-control" placeholder="Create a password">
+                    </div>
                     <div class="mb-4">
-
-                        <label class="form-label small fw-bold text-muted">
-                            CREATE PASSWORD
-                        </label>
-
-                        <input
-                            type="password"
-                            id="newPass"
-                            class="form-control"
-                            placeholder="Create a password">
-
+                        <label class="form-label small fw-bold text-muted">CONFIRM PASSWORD</label>
+                        <input type="password" id="newConfirmPass" class="form-control" placeholder="Re-enter password">
                     </div>
 
-
-                    <button
-                        onclick="handleSignup()"
-                        class="modal-btn mb-3">
-
+                    <button onclick="handleSignup()" class="modal-btn mb-3">
                         Create Account
-
                     </button>
 
-
                     <p class="text-center small">
-
                         Already have an account?
-
-                        <a
-                            href="#"
-                            onclick="toggleAuth(false)"
-                            class="text-primary fw-bold">
-
-                            Login
-
-                        </a>
-
+                        <a href="#" onclick="toggleAuth(false)" class="text-primary fw-bold">Login</a>
                     </p>
-
-
                 </div>
 
             </div>
@@ -1776,41 +1724,31 @@
 ===================================================== -->
 
 <footer id="contact">
-
     <div class="footer-container">
-
-
         <div class="footer-top">
-
-            <div class="footer-brand">
-                AIR KERALA
+            <div class="footer-brand-col">
+                <div class="footer-brand">AIR KERALA</div>
+                <p class="small text-muted mt-2" style="color: rgba(255,255,255,0.65) !important;">
+                    Fly Beyond — Experience warm hospitality and seamless domestic flight booking.
+                </p>
             </div>
 
-
-            <div class="footer-links">
-
-                <a href="index.html">
-                    Home
-                </a>
-
-                <a href="flights.html">
-                    Flights
-                </a>
-
-                <a href="booking.html">
-                    Manage Booking
-                </a>
-
-                <a href="cancel.html">
-                    Cancellation
-                </a>
-
-                <a href="#">
-                    Contact
-                </a>
-
+            <div class="footer-contact-col">
+                <div class="footer-heading">Contact Us</div>
+                <div class="contact-item">📍 <strong>Office Address:</strong> [Placeholder] Air Kerala Headquarters, Cochin International Airport Complex, Nedumbassery, Kochi, Kerala 683111, India</div>
+                <div class="contact-item">📞 <strong>Phone:</strong> [Placeholder] +91 484 261 0115 / Toll Free: 1800 425 0333</div>
+                <div class="contact-item">✉️ <strong>Email:</strong> [Placeholder] support@airkerala.com</div>
             </div>
 
+            <div class="footer-links-col">
+                <div class="footer-heading">Quick Links</div>
+                <div class="footer-links">
+                    <a href="index.html">Home</a>
+                    <a href="flights.html">Book Ticket</a>
+                    <a href="Manage booking.html">Manage My Booking</a>
+                    <a href="#contact">Contact</a>
+                </div>
+            </div>
         </div>
 
 
@@ -1965,194 +1903,176 @@ function searchFlights() {
    LOGIN
 ===================================================== */
 
-window.onload = function() {
-
-    const isLoggedIn =
-        localStorage.getItem("isLoggedIn");
-
-    const userName =
-        localStorage.getItem("userName");
-
-    if (isLoggedIn === "true") {
-
-        updateUI(userName);
-
+window.onload = async function() {
+    try {
+        const res = await fetch('/api/auth/me');
+        const data = await res.json();
+        if (data.success && data.authenticated && data.user) {
+            localStorage.setItem("isLoggedIn", "true");
+            localStorage.setItem("userName", data.user.name);
+            localStorage.setItem("userEmail", data.user.email);
+            localStorage.setItem("userId", data.user.id);
+            updateUI(data.user.name);
+        } else {
+            localStorage.removeItem("isLoggedIn");
+            localStorage.removeItem("userName");
+            localStorage.removeItem("userEmail");
+            localStorage.removeItem("userId");
+            showAuthModal();
+        }
+    } catch (e) {
+        console.error("Session check error:", e);
+        showAuthModal();
     }
-
 };
 
+function showAuthModal() {
+    const modalEl = document.getElementById('loginModal');
+    if (modalEl && typeof bootstrap !== 'undefined') {
+        const modal = new bootstrap.Modal(modalEl);
+        modal.show();
+    }
+}
 
+function showAuthError(msg) {
+    const alertEl = document.getElementById('authAlert');
+    if (alertEl) {
+        alertEl.textContent = msg;
+        alertEl.classList.remove('d-none');
+    }
+}
+
+function clearAuthError() {
+    const alertEl = document.getElementById('authAlert');
+    if (alertEl) {
+        alertEl.textContent = '';
+        alertEl.classList.add('d-none');
+    }
+}
 
 /* =====================================================
    LOGIN / SIGNUP TOGGLE
 ===================================================== */
 
 function toggleAuth(showSignup) {
-
+    clearAuthError();
     document.getElementById("authTitle").innerText =
-        showSignup
-            ? "Create Account"
-            : "User Login";
+        showSignup ? "Create Account" : "User Login";
 
     document.getElementById("loginForm").style.display =
-        showSignup
-            ? "none"
-            : "block";
+        showSignup ? "none" : "block";
 
     document.getElementById("signupForm").style.display =
-        showSignup
-            ? "block"
-            : "none";
-
+        showSignup ? "block" : "none";
 }
-
-
 
 /* =====================================================
    LOGIN
 ===================================================== */
 
-function handleLogin() {
+async function handleLogin() {
+    clearAuthError();
+    const email = document.getElementById("loginEmail").value.trim();
+    const password = document.getElementById("loginPass").value;
 
-    const id =
-        document.getElementById("loginID").value.trim();
-
-    const pass =
-        document.getElementById("loginPass").value;
-
-    const storedPass =
-        localStorage.getItem("user_pass_" + id);
-
-
-    if (storedPass && storedPass === pass) {
-
-        successLogin(id);
-
-    } else {
-
-        alert("Invalid Credentials.");
-
+    if (!email || !password) {
+        showAuthError("Please enter your email and password.");
+        return;
     }
 
+    try {
+        const res = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (data.success) {
+            localStorage.setItem("isLoggedIn", "true");
+            localStorage.setItem("userName", data.user.name);
+            localStorage.setItem("userEmail", data.user.email);
+            localStorage.setItem("userId", data.user.id);
+            location.reload();
+        } else {
+            showAuthError(data.message || "Invalid credentials.");
+        }
+    } catch (err) {
+        showAuthError("Login failed: " + err.message);
+    }
 }
-
-
 
 /* =====================================================
    SIGNUP
 ===================================================== */
 
-function handleSignup() {
+async function handleSignup() {
+    clearAuthError();
+    const name = document.getElementById("newName").value.trim();
+    const dateOfBirth = document.getElementById("newDOB").value;
+    const phoneNumber = document.getElementById("newPhone").value.trim();
+    const email = document.getElementById("newEmail").value.trim();
+    const password = document.getElementById("newPass").value;
+    const confirmPassword = document.getElementById("newConfirmPass").value;
 
-    const id =
-        document.getElementById("newID").value.trim();
-
-    const pass =
-        document.getElementById("newPass").value;
-
-
-    if (id && pass) {
-
-
-        if (localStorage.getItem("user_pass_" + id)) {
-
-            alert(
-                "Username already taken. Please choose another."
-            );
-
-            return;
-
-        }
-
-
-        localStorage.setItem(
-            "user_pass_" + id,
-            pass
-        );
-
-
-        alert(
-            "Account created! Please login."
-        );
-
-
-        document.getElementById("newID").value = "";
-
-        document.getElementById("newPass").value = "";
-
-        toggleAuth(false);
-
-
-    } else {
-
-        alert("Please fill all fields.");
-
+    if (!name || !dateOfBirth || !phoneNumber || !email || !password || !confirmPassword) {
+        showAuthError("Please fill in all required fields.");
+        return;
     }
 
+    if (password !== confirmPassword) {
+        showAuthError("Passwords do not match.");
+        return;
+    }
+
+    try {
+        const res = await fetch('/api/auth/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, dateOfBirth, phoneNumber, email, password, confirmPassword })
+        });
+        const data = await res.json();
+        if (data.success) {
+            localStorage.setItem("isLoggedIn", "true");
+            localStorage.setItem("userName", data.user.name);
+            localStorage.setItem("userEmail", data.user.email);
+            localStorage.setItem("userId", data.user.id);
+            location.reload();
+        } else {
+            showAuthError(data.message || "Account creation failed.");
+        }
+    } catch (err) {
+        showAuthError("Signup failed: " + err.message);
+    }
 }
-
-
-
-/* =====================================================
-   LOGIN SUCCESS
-===================================================== */
-
-function successLogin(name) {
-
-    localStorage.setItem(
-        "isLoggedIn",
-        "true"
-    );
-
-    localStorage.setItem(
-        "userName",
-        name
-    );
-
-    location.reload();
-
-}
-
-
 
 /* =====================================================
    UPDATE USER UI
 ===================================================== */
 
 function updateUI(name) {
-
-    document.getElementById("authArea").innerHTML = `
-
-        <button
-            onclick="logout()"
-            class="login-btn">
-
-            🚪 ${name}
-
-        </button>
-
-    `;
-
+    const authArea = document.getElementById("authArea");
+    if (authArea) {
+        authArea.innerHTML = `
+            <button onclick="logout()" class="login-btn">
+                🚪 ${name}
+            </button>
+        `;
+    }
 }
-
-
 
 /* =====================================================
    LOGOUT
 ===================================================== */
 
-function logout() {
-
-    localStorage.removeItem(
-        "isLoggedIn"
-    );
-
-    localStorage.removeItem(
-        "userName"
-    );
-
+async function logout() {
+    try {
+        await fetch('/api/auth/logout', { method: 'POST' });
+    } catch (e) {}
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("userEmail");
+    localStorage.removeItem("userId");
     location.reload();
-
 }
 
 </script>

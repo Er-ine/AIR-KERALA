@@ -1,28 +1,30 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../db');
+const Flight = require('../models/Flight');
 
 router.get('/flights', async (req, res) => {
   try {
-    const [flights] = await db.query(`
-      SELECT F.FLIGHT_ID, F.AIRLINE_NAME, F.ORIGIN, F.DESTINATION,
-             F.DEPARTURE_TIME, F.ARRIVAL_TIME,
-             COUNT(S.SEAT_ID) AS AVAILABLE_SEATS
-      FROM FLIGHT F
-      JOIN SEAT S ON F.FLIGHT_ID = S.FLIGHT_ID
-      WHERE S.AVAILABILITY = 1
-      GROUP BY F.FLIGHT_ID, F.AIRLINE_NAME, F.ORIGIN,
-               F.DESTINATION, F.DEPARTURE_TIME, F.ARRIVAL_TIME
-    `);
-    res.json({ success: true, data: flights });
+    const flights = await Flight.find();
+    const data = flights.map(f => {
+      const availableSeats = f.seats ? f.seats.filter(s => s.availability).length : 0;
+      return {
+        FLIGHT_ID: f._id,
+        flight_id: f._id,
+        FLIGHT_NUMBER: f.flight_number,
+        AIRLINE_NAME: f.airline_name,
+        ORIGIN: f.origin,
+        DESTINATION: f.destination,
+        DEPARTURE_TIME: f.departure_time,
+        ARRIVAL_TIME: f.arrival_time,
+        AVAILABLE_SEATS: availableSeats
+      };
+    });
+    res.json({ success: true, data });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
 });
 
-// Seat inventory pricing — base fare per class. Live flights get a small
-// deterministic variation based on their flight number so prices don't
-// look identical across every flight, without needing external pricing data.
 const CLASS_TEMPLATE = [
   { name: 'Economy', count: 42, basePrice: 5500 },
   { name: 'Business', count: 12, basePrice: 12500 },
@@ -34,14 +36,10 @@ function priceVariance(flightNumber, basePrice) {
   for (let i = 0; i < flightNumber.length; i++) {
     hash = (hash * 31 + flightNumber.charCodeAt(i)) % 1000;
   }
-  // +/- up to ~8% of base price, deterministic per flight number
-  const swing = (hash % 800) - 400; // -400..399
+  const swing = (hash % 800) - 400;
   return Math.round(basePrice + (basePrice * swing) / 5000);
 }
 
-// Finds an existing DB flight matching this live flight number, or creates
-// one and seeds real seat inventory for it. Always returns live seat
-// counts and prices per class.
 router.post('/flights/ensure', async (req, res) => {
   const { flight_number, airline_name, origin, destination, departure_time, arrival_time } = req.body;
 
@@ -50,54 +48,52 @@ router.post('/flights/ensure', async (req, res) => {
   }
 
   try {
-    const [existing] = await db.query(
-      `SELECT FLIGHT_ID FROM FLIGHT WHERE FLIGHT_NUMBER = ?`,
-      [flight_number]
-    );
+    let flight = await Flight.findOne({ flight_number });
 
-    let flightId;
-
-    if (existing.length) {
-      flightId = existing[0].FLIGHT_ID;
-    } else {
-      const [result] = await db.query(
-        `INSERT INTO FLIGHT (FLIGHT_NUMBER, AIRLINE_NAME, ORIGIN, DESTINATION, DEPARTURE_TIME, ARRIVAL_TIME)
-         VALUES (?, ?, ?, ?, ?, ?)`,
-        [flight_number, airline_name, origin, destination, departure_time, arrival_time]
-      );
-      flightId = result.insertId;
-
+    if (!flight) {
+      const seats = [];
       for (const cls of CLASS_TEMPLATE) {
         const price = priceVariance(flight_number, cls.basePrice);
-        const rows = [];
-        const values = [];
-
         for (let i = 1; i <= cls.count; i++) {
           const seatLetter = ['A', 'B', 'C', 'D'][i % 4];
           const seatNumber = `${Math.ceil(i / 4) + (cls.name === 'First' ? 0 : cls.name === 'Business' ? 3 : 10)}${seatLetter}`;
-          rows.push('(?, ?, ?, 1, ?)');
-          values.push(flightId, seatNumber, cls.name, price);
+          seats.push({
+            seat_number: seatNumber,
+            class: cls.name,
+            availability: true,
+            price: price
+          });
         }
+      }
 
-        await db.query(
-          `INSERT INTO SEAT (FLIGHT_ID, SEAT_NUMBER, CLASS, AVAILABILITY, PRICE) VALUES ${rows.join(',')}`,
-          values
-        );
+      flight = await Flight.create({
+        flight_number,
+        airline_name,
+        origin,
+        destination,
+        departure_time,
+        arrival_time,
+        seats
+      });
+    }
+
+    const classSummaryMap = {};
+    for (const s of flight.seats) {
+      if (s.availability) {
+        if (!classSummaryMap[s.class]) {
+          classSummaryMap[s.class] = { CLASS: s.class, available: 0, price: s.price };
+        }
+        classSummaryMap[s.class].available++;
+        classSummaryMap[s.class].price = Math.min(classSummaryMap[s.class].price, s.price);
       }
     }
 
-    const [seatSummary] = await db.query(
-      `SELECT CLASS, COUNT(*) AS available, MIN(PRICE) AS price
-       FROM SEAT
-       WHERE FLIGHT_ID = ? AND AVAILABILITY = 1
-       GROUP BY CLASS`,
-      [flightId]
-    );
+    const seatSummary = Object.values(classSummaryMap);
 
-    res.json({ success: true, flight_id: flightId, seats: seatSummary });
+    res.json({ success: true, flight_id: flight._id, seats: seatSummary });
   } catch (err) {
     console.error('FLIGHT ENSURE ERROR:', err);
-    res.status(500).json({ success: false, message: err.message, code: err.code });
+    res.status(500).json({ success: false, message: err.message });
   }
 });
 
