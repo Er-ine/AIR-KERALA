@@ -49,6 +49,8 @@
 
         /* =====================================
            NAVBAR
+           (Old navbar styles — now unused. The navbar is provided
+            by site-common.js / site-common.css.)
         ===================================== */
 
         .navbar {
@@ -463,22 +465,6 @@
 
         @media (max-width: 750px) {
 
-            .navbar {
-                padding: 0 5%;
-            }
-
-            .logo img {
-                width: 125px;
-            }
-
-            .nav {
-                gap: 14px;
-            }
-
-            .nav a {
-                font-size: 10px;
-            }
-
             .page {
                 padding:
                     27px 5% 35px;
@@ -504,21 +490,6 @@
 
         @media (max-width: 500px) {
 
-            .navbar {
-                height: auto;
-                min-height: 65px;
-                padding: 13px 5%;
-
-                flex-direction: column;
-                gap: 12px;
-            }
-
-            .nav {
-                width: 100%;
-                justify-content: space-between;
-                gap: 5px;
-            }
-
             .page {
                 padding-top: 25px;
             }
@@ -528,44 +499,15 @@
             }
         }
     </style>
+
+    <!-- Shared navbar + footer styles -->
+    <link rel="stylesheet" href="site-common.css">
 </head>
 
 <body>
 
-    <!-- =====================================
-         NAVBAR
-    ====================================== -->
-
-    <header class="navbar">
-
-        <a href="index.html" class="logo">
-            <img
-                src="airkerala-logo.png"
-                alt="Air Kerala"
-            >
-        </a>
-
-        <nav class="nav">
-
-            <a href="index.html">
-                Home
-            </a>
-
-            <a href="flights.html">
-                Book Flight
-            </a>
-
-            <a href="booking.html">
-                Manage Booking
-            </a>
-
-            <a href="index.html#contact">
-                Contact
-            </a>
-
-        </nav>
-
-    </header>
+    <!-- Shared navbar + footer (injects header at the top and footer at the bottom) -->
+    <script src="site-common.js" data-page="book" data-auth="none"></script>
 
 
     <!-- =====================================

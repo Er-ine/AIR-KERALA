@@ -140,9 +140,9 @@
         </a>
         <nav class="nav-links">
             <a href="index.html">Home</a>
-            <a href="flights.html">Book Flight</a>
+            <a href="liveflights.html">Book Flight</a>
             <a href="payment.html" class="active">Payment</a>
-            <a href="cancel.html">Cancel</a>
+            <a href="manage-booking.html">Manage Booking</a>
         </nav>
     </header>
 
@@ -235,6 +235,7 @@
             <div class="no-print text-center pt-4 border-top">
                 <button class="btn px-5 py-3 fw-bold rounded-pill shadow-sm me-2" style="background: var(--air-blue); color: white; border: none;" onclick="downloadTicketPDF()">⬇️ Download Ticket (PDF)</button>
                 <button class="btn px-5 py-3 fw-bold rounded-pill shadow-sm" style="background: var(--air-dark); color: white; border: none;" onclick="window.print()">🖨️ Print This Receipt</button>
+                <a href="manage-booking.html" class="btn px-5 py-3 fw-bold rounded-pill shadow-sm mt-2 mt-md-0" style="background: white; color: var(--air-dark); border: 2px solid var(--air-dark);">📋 Manage Booking</a>
                 <p class="mt-4"><a href="index.html" class="text-muted text-decoration-none small">Done? Go back to Home</a></p>
             </div>
         </div>
@@ -294,7 +295,7 @@ async function handleTransaction() {
             const data = await res.json();
 
             if (data.success) {
-                const pnr = "TRV" + Math.floor(100000 + Math.random() * 900000);
+                const pnr = 'TRV' + String(booking_id).padStart(6, '0'); // same reference Manage Booking shows
                 document.getElementById('recName').innerText = name.toUpperCase();
                 document.getElementById('recPNR').innerText = pnr;
                 document.getElementById('recClass').innerText = cls;

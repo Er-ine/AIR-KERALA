@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Passenger Booking | AIR KERALA</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --air-blue: #0878d1;
+            --air-dark: #071b2e;
+            --air-gold: #d7b56d;
+            --bg-light: #f8fafc;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-light);
+            color: #17202a;
+        }
+
+        .navbar-solid {
+            background: var(--air-dark);
+            padding: 22px 5%;
+            border-bottom: 1px solid rgba(255,255,255,0.12);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .brand-symbol {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.15);
+            font-size: 21px;
+        }
+
+        .brand-name {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 3px;
+        }
+
+        .nav-links a {
+            color: rgba(255,255,255,0.9);
+            text-decoration: none;
+            padding: 10px 17px;
+            font-size: 13px;
+            font-weight: 500;
+            border-radius: 4px;
+        }
+
+        .nav-links a.active {
+            border-bottom: 2px solid var(--air-gold);
+        }
+
+        .login-btn {
+            border: 1px solid rgba(255,255,255,0.55);
+            background: rgba(255,255,255,0.08);
+            color: white;
+            padding: 9px 18px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .login-btn:hover {
+            background: white;
+            color: var(--air-dark);
+        }
+
+        .booking-container {
+            max-width: 900px;
+            margin: 50px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 5px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .section-header {
+            border-left: 4px solid var(--air-gold);
+            padding-left: 15px;
+            margin-bottom: 25px;
+            font-weight: 700;
+            color: var(--air-dark);
+        }
+
+        .form-label {
+            font-weight: 700;
+            font-size: 11px;
+            letter-spacing: 1px;
+            color: #64748b;
+            text-transform: uppercase;
+        }
+
+        .form-control,
+        .form-select {
+            border-radius: 3px;
+            padding: 12px;
+            border: 1.5px solid #e2e8f0;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--air-blue);
+            box-shadow: none;
+        }
+
+        .price-card {
+            background: #f1f5f9;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: right;
+            border: 1px dashed var(--air-dark);
+        }
+
+        .flight-summary {
+            background: #eaf3fc;
+            border: 1px solid #cfe4f8;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .btn-pay {
+            background: var(--air-blue);
+            color: white;
+            padding: 15px;
+            border-radius: 3px;
+            width: 100%;
+            font-weight: 700;
+            border: none;
+            transition: 0.3s;
+            margin-top: 20px;
+            font-size: 16px;
+        }
+
+        .btn-pay:hover {
+            background: #0565b0;
+            transform: translateY(-2px);
+        }
+
+        .ssr-box {
+            background: #fdfaf3;
+            padding: 20px;
+            border-radius: 5px;
+            border: 1px solid #f3e8cc;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <header class="navbar-solid">
+        <a href="index.html" class="brand">
+            <div class="brand-symbol">✈</div>
+            <div class="brand-name">AIR KERALA</div>
+        </a>
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="liveflights.html" class="active">Book Flight</a>
+            <a href="manage-booking.html">Manage Booking</a>
+            <a href="payment.html">Payment</a>
+        </nav>
+        <button onclick="logout()" class="login-btn">🚪 Logout</button>
+    </header>
+
+    <div class="container">
+        <div class="booking-container">
+
+            <!-- Flight selection (live flights from the existing /api/live-flights) -->
+            <h3 class="section-header">Select Your Flight</h3>
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <label class="form-label">From</label>
+                    <select id="fromSel" class="form-select" onchange="loadFlights()"></select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">To</label>
+                    <select id="toSel" class="form-select" onchange="renderFlightOptions()"></select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Date</label>
+                    <input type="date" id="dateSel" class="form-control" onchange="loadFlights()">
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Flight</label>
+                    <select id="flightSel" class="form-select" onchange="onFlightChange()" disabled>
+                        <option value="">Select a departure airport first</option>
+                    </select>
+                    <div id="flightMsg" class="small text-muted mt-2"></div>
+                </div>
+            </div>
+
+            <!-- Flight Summary -->
+            <div class="flight-summary">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="fw-bold" style="color: var(--air-blue);" id="bannerAirline">Flight Details</div>
+                        <div class="fw-bold fs-5" id="bannerRoute">Choose a flight above</div>
+                        <div class="small text-muted" id="bannerTime"></div>
+                    </div>
+
+                    <div class="text-end">
+                        <div class="small text-muted fw-bold">CABIN CLASS</div>
+                        <select id="cabinSelect" class="form-select form-select-sm" onchange="onCabinChange()">
+                            <option value="Economy">Economy</option>
+                            <option value="Business">Business</option>
+                            <option value="First">First</option>
+                        </select>
+
+                        <div class="small text-muted fw-bold mt-1">SEAT</div>
+                        <div class="fw-bold" id="bannerSeat">Assigned on booking</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Passenger Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="section-header mb-0">Passenger Details</h3>
+
+                <div class="price-card">
+                    <small class="fw-bold text-muted">TOTAL FARE</small>
+                    <h2 class="fw-bold mb-0" id="livePrice">—</h2>
+                </div>
+            </div>
+
+            <!-- Form -->
+            <form id="mainBookingForm">
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label">Passenger Name</label>
+                        <input type="text" id="pName" class="form-control"
+                               placeholder="Full name as per ID" required>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label">Age</label>
+                        <input type="number" id="pAge" class="form-control"
+                               min="1" max="120" required>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label">Gender</label>
+                        <select id="pGender" class="form-select">
+                            <option>Male</option>
+                            <option>Female</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label">Passport / ID Number</label>
+                        <input type="text" id="pID" class="form-control"
+                               placeholder="e.g. P1234567" required>
+                    </div>
+                </div>
+
+                <!-- SSR -->
+                <h5 class="section-header">Special Service Requests</h5>
+
+                <div class="ssr-box mb-4">
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+                            <label class="form-label">Food Preference</label>
+
+                            <select id="mealPref" class="form-select">
+                                <option value="None">No Meal Required</option>
+                                <option value="Veg">Vegetarian (Veg)</option>
+                                <option value="Non-Veg">Non-Vegetarian (Non-Veg)</option>
+                                <option value="Vegan">Vegan / Jain Meal</option>
+                                <option value="Hindu Non-Veg">Hindu Non-Vegetarian</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Additional Assistance</label>
+
+                            <div class="d-flex gap-3 mt-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="ssrWheelchair">
+                                    <label class="form-check-label small fw-bold">Wheelchair</label>
+                                </div>
+
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="ssrInfant">
+                                    <label class="form-check-label small fw-bold">Infant Bassinet</label>
+                                </div>
+
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="ssrMedical">
+                                    <label class="form-check-label small fw-bold">Medical Support</label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-pay shadow-sm">
+                    Proceed to Payment Gateway ➔
+                </button>
+            </form>
+
+        </div>
+    </div>
+
+    <script>
+        // Login check
+        if (localStorage.getItem('isLoggedIn') !== 'true') {
+            window.location.href = 'index.html';
+        }
+
+        const airportNames = {
+            COK: 'Kochi', TRV: 'Thiruvananthapuram', CCJ: 'Kozhikode', CNN: 'Kannur',
+            BLR: 'Bengaluru', MAA: 'Chennai', HYD: 'Hyderabad', BOM: 'Mumbai',
+            DEL: 'Delhi', CCU: 'Kolkata', PNQ: 'Pune', GOI: 'Goa',
+            AMD: 'Ahmedabad', JAI: 'Jaipur', LKO: 'Lucknow', IXC: 'Chandigarh',
+            BBI: 'Bhubaneswar', PAT: 'Patna', GAU: 'Guwahati', IXE: 'Mangaluru'
+        };
+
+        function cityName(code) { return airportNames[code] || code; }
+
+        // Fresh booking session: nothing from an earlier flight carries over
+        ['flightId', 'selectedSeat', 'bookingTotal', 'flightNum', 'airline',
+         'origin', 'dest', 'dep', 'arr'].forEach(function (k) { localStorage.removeItem(k); });
+        localStorage.setItem('cabinClass', 'Economy');
+
+        const qp = new URLSearchParams(window.location.search);
+        const today = new Date().toISOString().split('T')[0];
+
+        let liveFlights = [];      // real flights from /api/live-flights
+        let selectedFlight = null; // the one the user picked
+        let livePrices = {};
+        let liveSeatCounts = {};
+        let inventoryReady = false;
+
+        // ---- selectors ----
+        const fromSel = document.getElementById('fromSel');
+        const toSel = document.getElementById('toSel');
+        const dateSel = document.getElementById('dateSel');
+        const flightSel = document.getElementById('flightSel');
+        const flightMsg = document.getElementById('flightMsg');
+
+        fromSel.innerHTML = '<option value="">Select departure airport</option>' +
+            Object.keys(airportNames).map(function (c) {
+                return '<option value="' + c + '">' + airportNames[c] + ' (' + c + ')</option>';
+            }).join('');
+        toSel.innerHTML = '<option value="all">Any destination</option>' +
+            Object.keys(airportNames).map(function (c) {
+                return '<option value="' + c + '">' + airportNames[c] + ' (' + c + ')</option>';
+            }).join('');
+
+        dateSel.min = today;
+        dateSel.value = qp.get('date') || today;
+        if (qp.get('from')) fromSel.value = qp.get('from');
+        if (qp.get('to')) toSel.value = qp.get('to');
+
+        // ---- live flights ----
+        async function loadFlights() {
+            resetSelection();
+            const from = fromSel.value;
+            const date = dateSel.value || today;
+            liveFlights = [];
+
+            if (!from) {
+                flightSel.innerHTML = '<option value="">Select a departure airport first</option>';
+                flightSel.disabled = true;
+                flightMsg.textContent = '';
+                return;
+            }
+
+            flightSel.innerHTML = '<option value="">Loading live flights…</option>';
+            flightSel.disabled = true;
+            flightMsg.textContent = '';
+
+            try {
+                const res = await fetch('/api/live-flights?date=' + encodeURIComponent(date) +
+                                        '&from=' + encodeURIComponent(from));
+                const data = await res.json();
+
+                if (!data.success) {
+                    flightSel.innerHTML = '<option value="">Could not load flights</option>';
+                    flightMsg.textContent = data.message || 'Unable to load live flights.';
+                    return;
+                }
+
+                liveFlights = (data.flights || []).map(function (f) {
+                    const depLocal = f.departure && f.departure.scheduledTime && f.departure.scheduledTime.local;
+                    const arrLocal = f.arrival && f.arrival.scheduledTime && f.arrival.scheduledTime.local;
+                    const destCode = (f.arrival && f.arrival.airport && f.arrival.airport.iata || '').toUpperCase();
+                    return {
+                        number: f.number || '',
+                        airline: (f.airline && f.airline.name) || 'Unknown',
+                        status: f.status || 'Unknown',
+                        originCode: from,
+                        origin: cityName(from),
+                        destCode: destCode,
+                        dest: destCode ? cityName(destCode) : ((f.arrival && f.arrival.airport && f.arrival.airport.name) || 'Unknown'),
+                        dep: depLocal ? depLocal.slice(11, 16) : 'N/A',
+                        arr: arrLocal ? arrLocal.slice(11, 16) : 'N/A',
+                        date: date
+                    };
+                }).filter(function (f) { return f.number && f.status !== 'Departed'; });
+
+                renderFlightOptions();
+            } catch (err) {
+                flightSel.innerHTML = '<option value="">Could not load flights</option>';
+                flightMsg.textContent = 'Error loading flights: ' + err.message;
+            }
+        }
+
+        function renderFlightOptions() {
+            resetSelection();
+            const to = toSel.value;
+            const list = liveFlights.filter(function (f) { return to === 'all' || f.destCode === to; });
+
+            if (!list.length) {
+                flightSel.innerHTML = '<option value="">No flights available for these filters</option>';
+                flightSel.disabled = true;
+                return;
+            }
+
+            flightSel.innerHTML = '<option value="">Select a flight</option>' +
+                list.map(function (f) {
+                    return '<option value="' + liveFlights.indexOf(f) + '">' +
+                        f.number + ' · ' + f.airline + ' · ' + f.origin + ' → ' + f.dest +
+                        ' · Dep ' + f.dep + '</option>';
+                }).join('');
+            flightSel.disabled = false;
+            flightMsg.textContent = list.length + ' upcoming flight(s) found.';
+        }
+
+        function resetSelection() {
+            selectedFlight = null;
+            inventoryReady = false;
+            livePrices = {};
+            liveSeatCounts = {};
+            localStorage.removeItem('flightId');
+            document.getElementById('bannerAirline').textContent = 'No flight selected';
+            document.getElementById('bannerRoute').textContent = 'Choose a flight above';
+            document.getElementById('bannerTime').textContent = '';
+            document.getElementById('livePrice').innerText = '—';
+        }
+
+        async function onFlightChange() {
+            const idx = flightSel.value;
+            if (idx === '') { resetSelection(); return; }
+
+            const f = liveFlights[parseInt(idx)];
+            resetSelection();
+            selectedFlight = f;
+
+            localStorage.setItem('flightNum', f.number);
+            localStorage.setItem('airline', f.airline);
+            localStorage.setItem('origin', f.origin);
+            localStorage.setItem('dest', f.dest);
+            localStorage.setItem('dep', f.dep);
+            localStorage.setItem('arr', f.arr);
+
+            document.getElementById('bannerAirline').textContent = f.airline + ' · ' + f.number;
+            document.getElementById('bannerRoute').textContent = f.origin + ' → ' + f.dest;
+            document.getElementById('bannerTime').textContent =
+                'Date: ' + f.date + ' | Departure: ' + f.dep + ' | Arrival: ' + f.arr;
+
+            await loadLiveInventory(f);
+        }
+
+        function toDateTime(dateStr, timeStr) {
+            if (!timeStr || timeStr === 'N/A') return dateStr + ' 00:00:00';
+            return dateStr + ' ' + timeStr + ':00';
+        }
+
+        // Existing /api/flights/ensure: finds/creates the DB flight and returns real seats + prices
+        async function loadLiveInventory(f) {
+            try {
+                const res = await fetch('/api/flights/ensure', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        flight_number: f.number,
+                        airline_name: f.airline,
+                        origin: f.origin,
+                        destination: f.dest,
+                        departure_time: toDateTime(f.date, f.dep),
+                        arrival_time: toDateTime(f.date, f.arr)
+                    })
+                });
+                const data = await res.json();
+
+                if (!data.success) {
+                    alert('Could not load this flight: ' + (data.message || 'Unknown error'));
+                    return;
+                }
+                if (selectedFlight !== f) return; // user picked another flight meanwhile
+
+                localStorage.setItem('flightId', data.flight_id);
+                data.seats.forEach(function (row) {
+                    livePrices[row.CLASS] = row.price;
+                    liveSeatCounts[row.CLASS] = row.available;
+                });
+
+                const cabin = document.getElementById('cabinSelect');
+                Array.from(cabin.options).forEach(function (opt) {
+                    const n = liveSeatCounts[opt.value] || 0;
+                    opt.textContent = opt.value + ' (' + n + ' left)';
+                    opt.disabled = n === 0;
+                });
+
+                inventoryReady = true;
+                calculatePrice();
+            } catch (err) {
+                console.error('Live inventory error:', err);
+                alert('Could not load live seat availability: ' + err.message);
+            }
+        }
+
+        // Price shown = live DB base fare for the chosen class + 18% tax
+        function calculatePrice() {
+            const cls = document.getElementById('cabinSelect').value;
+            const base = livePrices[cls];
+            if (base) {
+                const total = base + Math.round(base * 0.18);
+                document.getElementById('livePrice').innerText = '₹ ' + total.toLocaleString();
+                localStorage.setItem('bookingTotal', total);
+            }
+        }
+
+        function onCabinChange() {
+            localStorage.setItem('cabinClass', document.getElementById('cabinSelect').value);
+            calculatePrice();
+        }
+
+        // Remember which bookings belong to the logged-in user (in this browser)
+        function rememberBooking(id) {
+            const key = 'myBookings:' + (localStorage.getItem('userName') || 'guest');
+            let list = [];
+            try { list = JSON.parse(localStorage.getItem(key) || '[]'); } catch (e) { list = []; }
+            if (list.indexOf(id) === -1) list.push(id);
+            localStorage.setItem(key, JSON.stringify(list));
+        }
+
+        // Booking submit
+        document.getElementById('mainBookingForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('pName').value;
+            const age = document.getElementById('pAge').value;
+            const gender = document.getElementById('pGender').value.toUpperCase();
+            const passport = document.getElementById('pID').value;
+            const cabin = document.getElementById('cabinSelect').value; // must match SEAT.CLASS exactly
+            const realFlightId = localStorage.getItem('flightId');
+
+            if (!passport) {
+                alert('Please enter Passport / ID Number');
+                return;
+            }
+
+            if (!selectedFlight) {
+                alert('Please select a flight first.');
+                return;
+            }
+
+            if (!inventoryReady || !realFlightId) {
+                alert('Still loading live seat availability — please try again in a moment.');
+                return;
+            }
+
+            try {
+                // Passenger
+                const pRes = await fetch('/api/passenger', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name,
+                        age,
+                        gender,
+                        passport_number: passport
+                    })
+                });
+
+                const pData = await pRes.json();
+
+                if (!pData.success) {
+                    alert('Passenger error: ' + pData.message);
+                    return;
+                }
+
+                // Seat — assigned from real live inventory; price comes back from the DB
+                const sRes = await fetch('/api/seat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        flight_id: realFlightId,
+                        class: cabin
+                    })
+                });
+
+                const sData = await sRes.json();
+
+                if (!sData.success) {
+                    alert('Seat error: ' + sData.message);
+                    return;
+                }
+
+                const total = Math.round(sData.price * 1.18); // base fare + 18% tax, sourced from DB
+                localStorage.setItem('selectedSeat', sData.seat_number);
+                localStorage.setItem('bookingTotal', total);
+
+                // Booking
+                const bRes = await fetch('/api/booking', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        agent_id: 1,
+                        flight_id: realFlightId,
+                        booking_date: new Date().toISOString().split('T')[0],
+                        passenger_id: pData.passenger_id,
+                        seat_id: sData.seat_id,
+                        meal_preference: document.getElementById('mealPref').value,
+                        wheelchair_required:
+                            document.getElementById('ssrWheelchair').checked ? 'YES' : 'NO',
+                        special_assistance:
+                            document.getElementById('ssrMedical').checked ? 'MEDICAL SUPPORT' : null,
+                        infant_bassinet_required:
+                            document.getElementById('ssrInfant').checked ? 'YES' : 'NO'
+                    })
+                });
+
+                const bData = await bRes.json();
+
+                if (!bData.success) {
+                    alert('Booking failed: ' + bData.message);
+                    return;
+                }
+
+                localStorage.setItem('booking_id', bData.booking_id);
+                rememberBooking(bData.booking_id);
+                localStorage.setItem('passengerName', name);
+                localStorage.setItem('passengerID', passport);
+                localStorage.setItem('bookingTotal', total);
+
+                window.location.href = 'payment.html';
+
+            } catch (err) {
+                alert('Error: ' + err.message);
+                console.error(err);
+            }
+        });
+
+        function logout() {
+            localStorage.removeItem('isLoggedIn');
+            window.location.href = 'index.html';
+        }
+
+        window.onload = function () { if (fromSel.value) loadFlights(); };
+    </script>
+
+</body>
+</html>

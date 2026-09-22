@@ -56,14 +56,11 @@
 
         .navbar-solid {
             background: var(--air-dark);
-            padding: 18px 5%;
+            padding: 22px 5%;
             border-bottom: 1px solid rgba(255,255,255,0.12);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
         }
 
         .brand {
@@ -376,6 +373,7 @@
 <body>
 
     <header class="navbar-solid">
+
         <a href="index.html" class="brand">
             <div class="brand-symbol">✈</div>
             <div>
@@ -386,14 +384,13 @@
 
         <nav class="nav-links">
             <a href="index.html">Home</a>
-            <a href="flights.html" class="active">Book Ticket</a>
-            <a href="Manage booking.html">Manage My Booking</a>
-            <a href="index.html#contact">Contact</a>
+            <a href="flights.html" class="active">Book Flight</a>
+            <a href="booking.html">Manage Booking</a>
+            <a href="payment.html">Payment</a>
         </nav>
 
-        <div id="authArea">
-            <button class="login-btn" onclick="window.location.href='index.html'">👤 Account</button>
-        </div>
+        <button class="login-btn" onclick="window.location.href='index.html'">👤 Account</button>
+
     </header>
 
     <section class="search-band">
@@ -577,7 +574,7 @@
                     const statusClass = status === 'Departed' ? 'status-departed' : status === 'GateClosed' ? 'status-gateclosed' : 'status-default';
                     const originCity = cityName(code);
 
-                    const detailsUrl = 'flight-details.html?number=' + encodeURIComponent(flightNum) +
+                    const bookingUrl = 'booking.html?number=' + encodeURIComponent(flightNum) +
                         '&airline=' + encodeURIComponent(airlineName) +
                         '&origin=' + encodeURIComponent(originCity) +
                         '&dest=' + encodeURIComponent(dest) +
@@ -589,7 +586,7 @@
 
                     const actionBtn = status === 'Departed'
                         ? '<span class="text-muted small fst-italic">Flight departed</span>'
-                        : '<a href="' + detailsUrl + '" class="btn-view">View Flight</a>';
+                        : '<a href="' + bookingUrl + '" class="btn-view">View Flights</a>';
 
                     container.innerHTML += `
                         <div class="flight-card">
@@ -618,59 +615,9 @@
         }
     }
 
-    <footer id="contact" style="background:#071b2e; color:white; padding: 40px 5% 20px; margin-top: auto;">
-        <div style="max-width:1250px; margin:auto;">
-            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap:30px; padding-bottom:25px; border-bottom:1px solid rgba(255,255,255,0.15);">
-                <div>
-                    <div style="font-size:20px; font-weight:700; letter-spacing:2px; color:white;">AIR KERALA</div>
-                    <p style="font-size:13px; color:rgba(255,255,255,0.65); margin-top:8px;">Fly Beyond — Connecting Kerala to the World.</p>
-                </div>
-                <div>
-                    <div style="font-size:13px; font-weight:700; letter-spacing:1px; color:#d7b56d; text-transform:uppercase; margin-bottom:10px;">Contact Us</div>
-                    <div style="font-size:13px; color:rgba(255,255,255,0.8); margin-bottom:6px;">📍 <strong>Office Address:</strong> [Placeholder] Air Kerala Headquarters, Cochin International Airport Complex, Nedumbassery, Kochi, Kerala 683111, India</div>
-                    <div style="font-size:13px; color:rgba(255,255,255,0.8); margin-bottom:6px;">📞 <strong>Phone:</strong> [Placeholder] +91 484 261 0115 / Toll Free: 1800 425 0333</div>
-                    <div style="font-size:13px; color:rgba(255,255,255,0.8);">✉️ <strong>Email:</strong> [Placeholder] support@airkerala.com</div>
-                </div>
-                <div>
-                    <div style="font-size:13px; font-weight:700; letter-spacing:1px; color:#d7b56d; text-transform:uppercase; margin-bottom:10px;">Quick Links</div>
-                    <div style="display:flex; flex-direction:column; gap:6px;">
-                        <a href="index.html" style="color:rgba(255,255,255,0.7); text-decoration:none; font-size:13px;">Home</a>
-                        <a href="flights.html" style="color:rgba(255,255,255,0.7); text-decoration:none; font-size:13px;">Book Ticket</a>
-                        <a href="Manage booking.html" style="color:rgba(255,255,255,0.7); text-decoration:none; font-size:13px;">Manage My Booking</a>
-                        <a href="index.html#contact" style="color:rgba(255,255,255,0.7); text-decoration:none; font-size:13px;">Contact</a>
-                    </div>
-                </div>
-            </div>
-            <div style="display:flex; justify-content:space-between; padding-top:15px; font-size:11px; color:rgba(255,255,255,0.5);">
-                <span>© 2026 Air Kerala. All rights reserved.</span>
-                <span>Fly beyond.</span>
-            </div>
-        </div>
-    </footer>
-
-    <script>
-    async function checkAuthSession() {
-        try {
-            const res = await fetch('/api/auth/me');
-            const data = await res.json();
-            const authArea = document.getElementById('authArea');
-            if (data.success && data.authenticated && data.user) {
-                if (authArea) {
-                    authArea.innerHTML = `<button onclick="logout()" class="login-btn">🚪 ${data.user.name}</button>`;
-                }
-            }
-        } catch (e) {}
-    }
-
-    async function logout() {
-        try { await fetch('/api/auth/logout', { method: 'POST' }); } catch (e) {}
-        localStorage.removeItem('isLoggedIn');
-        localStorage.removeItem('userName');
-        location.reload();
-    }
-
+    // Pick up whatever was entered on the homepage search box and
+    // run the live search immediately with those values pre-filled.
     window.onload = function() {
-        checkAuthSession();
         const params = new URLSearchParams(window.location.search);
         const from = params.get('from');
         const to = params.get('to');
