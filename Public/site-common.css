@@ -1,291 +1,472 @@
-/* =====================================================
-   AIR KERALA — shared navbar + footer
-   Loaded by every page. Classes are prefixed "ak-" so they
-   never clash with each page's existing styles.
-===================================================== */
+/* =========================================================
+   AIR KERALA - SHARED WEBSITE STYLES
+   ========================================================= */
 
 :root {
-    --ak-dark: #071b2e;
+    --ak-blue: #0878d1;
+    --ak-blue-dark: #0565b0;
+    --ak-navy: #071b2e;
+    --ak-navy-light: #102d45;
     --ak-gold: #d7b56d;
-    --ak-nav-h: 72px;
+    --ak-white: #ffffff;
+    --ak-text: #17202a;
+    --ak-muted: #64748b;
+    --ak-border: #e2e8f0;
+    --ak-light: #f5f8fb;
 }
 
-/* ---------- HEADER ---------- */
 
-.ak-header {
+/* =========================================================
+   RESET
+   ========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    font-family: "Plus Jakarta Sans", Arial, sans-serif;
+    color: var(--ak-text);
+}
+
+
+/* =========================================================
+   SHARED NAVBAR
+   ========================================================= */
+
+.ak-navbar {
     position: sticky;
     top: 0;
-    z-index: 1000;
-    height: var(--ak-nav-h);
-    padding: 0 5%;
+    z-index: 5000;
+
+    width: 100%;
+
+    min-height: 76px;
+
+    padding: 12px 5%;
+
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 24px;
-    background: var(--ak-dark);
-    border-bottom: 1px solid rgba(255,255,255,0.12);
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    transition: background 0.3s, box-shadow 0.3s;
+
+    gap: 25px;
+
+    background: rgba(7, 27, 46, 0.98);
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+
+    box-shadow:
+        0 5px 22px rgba(0, 0, 0, 0.12);
+
+    backdrop-filter: blur(14px);
 }
 
-.ak-header.ak-scrolled {
-    box-shadow: 0 6px 24px rgba(0,0,0,0.25);
-}
 
-/* Homepage: transparent over the hero, turns solid once scrolled */
-.ak-header--overlay {
-    position: fixed;
-    left: 0;
-    right: 0;
-    top: 0;
-    background: transparent;
-    border-bottom-color: rgba(255,255,255,0.22);
-}
-
-.ak-header--overlay.ak-scrolled {
-    background: rgba(7,27,46,0.96);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
-}
+/* =========================================================
+   LOGO
+   ========================================================= */
 
 .ak-brand {
     display: flex;
     align-items: center;
-    flex-shrink: 0;
+
     text-decoration: none;
+
+    min-width: 190px;
 }
 
-.ak-brand img {
-    height: 40px;
-    width: auto;
+.ak-logo {
     display: block;
+
+    width: auto;
+    height: 48px;
+
+    max-width: 190px;
+
+    object-fit: contain;
 }
 
-.ak-links {
+.ak-logo-fallback {
     display: flex;
     align-items: center;
-    gap: 6px;
+
+    gap: 10px;
+
+    color: white;
 }
 
-.ak-links a {
-    color: rgba(255,255,255,0.88);
-    text-decoration: none;
-    padding: 10px 17px;
-    font-size: 13px;
-    font-weight: 500;
-    border-radius: 4px;
-    border-bottom: 2px solid transparent;
-    transition: 0.25s;
-}
-
-.ak-links a:hover {
-    background: rgba(255,255,255,0.13);
-    color: #fff;
-}
-
-.ak-links a.active {
-    color: #fff;
-    font-weight: 600;
-    border-bottom-color: var(--ak-gold);
-    border-radius: 4px 4px 0 0;
-}
-
-.ak-right {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-shrink: 0;
-}
-
-.ak-header .login-btn {
-    margin: 0;
-    padding: 10px 20px;
-    border: 1px solid rgba(255,255,255,0.55);
-    background: rgba(255,255,255,0.08);
-    color: #fff;
-    border-radius: 4px;
-    font-family: inherit;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.ak-header .login-btn:hover {
-    background: #fff;
-    color: var(--ak-dark);
-}
-
-.ak-burger {
-    display: none;
-    flex-direction: column;
-    justify-content: center;
-    gap: 5px;
+.ak-logo-symbol {
     width: 40px;
     height: 40px;
-    padding: 9px;
-    background: transparent;
-    border: 1px solid rgba(255,255,255,0.4);
-    border-radius: 4px;
-    cursor: pointer;
+
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(255, 255, 255, 0.13);
+
+    color: white;
+
+    font-size: 20px;
 }
 
-.ak-burger span {
-    display: block;
+.ak-logo-text {
+    color: white;
+
+    font-size: 19px;
+
+    font-weight: 700;
+
+    letter-spacing: 3px;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+
+.ak-nav {
+    display: flex;
+    align-items: center;
+
+    gap: 5px;
+}
+
+.ak-nav-link {
+    position: relative;
+
+    color: rgba(255, 255, 255, 0.88);
+
+    text-decoration: none;
+
+    padding: 11px 17px;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    border-radius: 5px;
+
+    transition:
+        color 0.25s ease,
+        background 0.25s ease;
+}
+
+.ak-nav-link:hover {
+    color: white;
+
+    background:
+        rgba(255, 255, 255, 0.08);
+}
+
+.ak-nav-link.active {
+    color: white;
+}
+
+.ak-nav-link.active::after {
+    content: "";
+
+    position: absolute;
+
+    left: 16px;
+    right: 16px;
+
+    bottom: 3px;
+
     height: 2px;
-    background: #fff;
-    border-radius: 2px;
+
+    background: var(--ak-gold);
+
+    border-radius: 10px;
 }
 
-/* ---------- FOOTER ---------- */
+
+/* =========================================================
+   MOBILE MENU BUTTON
+   ========================================================= */
+
+.ak-menu-button {
+    display: none;
+
+    width: 42px;
+    height: 42px;
+
+    border: 1px solid rgba(255, 255, 255, 0.2);
+
+    border-radius: 6px;
+
+    background:
+        rgba(255, 255, 255, 0.08);
+
+    color: white;
+
+    cursor: pointer;
+
+    font-size: 20px;
+}
+
+
+/* =========================================================
+   PAGE OFFSET
+   ========================================================= */
+
+.ak-page {
+    width: 100%;
+}
+
+
+/* =========================================================
+   SHARED FOOTER
+   ========================================================= */
 
 .ak-footer {
-    margin-top: auto;
-    padding: 56px 5% 24px;
-    background: var(--ak-dark);
-    color: #fff;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    position: relative;
-    z-index: 1;
-    scroll-margin-top: var(--ak-nav-h);
+    background: var(--ak-navy);
+
+    color: white;
+
+    padding: 55px 6% 25px;
+
+    margin-top: 0;
 }
 
-.ak-footer-inner {
-    max-width: 1250px;
+.ak-footer-container {
+    max-width: 1200px;
+
     margin: 0 auto;
-}
 
-.ak-footer-grid {
     display: grid;
-    grid-template-columns: 1.1fr 1.6fr 1fr;
-    gap: 40px;
-    padding-bottom: 36px;
-    border-bottom: 1px solid rgba(255,255,255,0.15);
+
+    grid-template-columns:
+        1.3fr 1fr 1fr;
+
+    gap: 50px;
 }
 
-.ak-footer-logo {
-    height: 38px;
-    width: auto;
-    display: block;
-    margin-bottom: 14px;
-}
+.ak-footer-brand {
+    font-size: 21px;
 
-.ak-footer-about {
-    margin: 0;
-    max-width: 300px;
-    font-size: 13px;
-    line-height: 1.7;
-    color: rgba(255,255,255,0.65);
-}
-
-.ak-footer-heading {
-    margin-bottom: 14px;
-    font-size: 13px;
     font-weight: 700;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--ak-gold);
-}
 
-.ak-contact-item {
-    display: flex;
-    gap: 10px;
+    letter-spacing: 2px;
+
     margin-bottom: 12px;
-    font-size: 13px;
-    line-height: 1.6;
-    color: rgba(255,255,255,0.8);
 }
 
-.ak-contact-item strong {
-    display: block;
-    font-size: 11px;
-    letter-spacing: 1px;
+.ak-footer-description {
+    color:
+        rgba(255, 255, 255, 0.68);
+
+    font-size: 13px;
+
+    line-height: 1.8;
+
+    max-width: 400px;
+}
+
+.ak-footer-title {
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: 1.5px;
+
     text-transform: uppercase;
-    color: rgba(255,255,255,0.5);
-}
 
-.ak-contact-item a {
-    color: rgba(255,255,255,0.9);
-    text-decoration: none;
-}
-
-.ak-contact-item a:hover {
     color: var(--ak-gold);
+
+    margin-bottom: 15px;
 }
 
-.ak-footer-links {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
+.ak-footer-text {
+    color:
+        rgba(255, 255, 255, 0.72);
 
-.ak-footer-links a {
-    color: rgba(255,255,255,0.65);
-    text-decoration: none;
     font-size: 13px;
+
+    line-height: 1.8;
+
+    margin: 0;
+}
+
+.ak-footer-link {
+    color:
+        rgba(255, 255, 255, 0.75);
+
+    text-decoration: none;
+
+    font-size: 13px;
+
+    display: block;
+
+    margin-bottom: 9px;
+
     transition: 0.2s;
 }
 
-.ak-footer-links a:hover {
-    color: #fff;
-    padding-left: 3px;
+.ak-footer-link:hover {
+    color: white;
 }
 
 .ak-footer-bottom {
+    max-width: 1200px;
+
+    margin: 40px auto 0;
+
+    padding-top: 20px;
+
+    border-top:
+        1px solid
+        rgba(255, 255, 255, 0.12);
+
     display: flex;
+
     justify-content: space-between;
-    gap: 12px;
-    padding-top: 22px;
+
+    gap: 20px;
+
+    color:
+        rgba(255, 255, 255, 0.45);
+
     font-size: 11px;
-    color: rgba(255,255,255,0.45);
 }
 
-/* ---------- RESPONSIVE ---------- */
 
-@media (max-width: 900px) {
-    .ak-burger { display: flex; }
+/* =========================================================
+   GENERAL BUTTONS
+   ========================================================= */
 
-    .ak-links {
+.ak-primary-btn {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+
+    background: var(--ak-blue);
+
+    color: white;
+
+    text-decoration: none;
+
+    padding: 13px 22px;
+
+    border-radius: 5px;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        background 0.25s ease,
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.ak-primary-btn:hover {
+    background: var(--ak-blue-dark);
+
+    color: white;
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 8px 20px
+        rgba(8, 120, 209, 0.2);
+}
+
+
+/* =========================================================
+   CONTACT ANCHOR
+   ========================================================= */
+
+#contact {
+    scroll-margin-top: 80px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 850px) {
+
+    .ak-navbar {
+        min-height: 68px;
+
+        padding:
+            10px 18px;
+
+        flex-wrap: wrap;
+    }
+
+    .ak-brand {
+        min-width: auto;
+    }
+
+    .ak-logo {
+        height: 42px;
+
+        max-width: 160px;
+    }
+
+    .ak-menu-button {
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+    }
+
+    .ak-nav {
         display: none;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
+
+        width: 100%;
+
         flex-direction: column;
+
         align-items: stretch;
-        gap: 0;
-        padding: 6px 5% 14px;
-        background: var(--ak-dark);
-        border-bottom: 1px solid rgba(255,255,255,0.12);
-        box-shadow: 0 14px 24px rgba(0,0,0,0.3);
+
+        gap: 2px;
+
+        padding-top: 8px;
     }
 
-    .ak-header.ak-open .ak-links { display: flex; }
-
-    .ak-links a {
-        padding: 14px 10px;
-        border-bottom: 1px solid rgba(255,255,255,0.08);
-        border-radius: 0;
+    .ak-nav.open {
+        display: flex;
     }
 
-    .ak-links a.active {
-        border-bottom-color: rgba(255,255,255,0.08);
-        border-left: 3px solid var(--ak-gold);
-        border-radius: 0;
+    .ak-nav-link {
+        width: 100%;
+
+        text-align: center;
+
+        padding: 12px;
     }
 
-    .ak-footer-grid { grid-template-columns: 1fr 1fr; }
-    .ak-footer-grid > :first-child { grid-column: 1 / -1; }
-}
+    .ak-nav-link.active::after {
+        display: none;
+    }
 
-@media (max-width: 600px) {
-    .ak-brand img { height: 32px; }
-    .ak-header .login-btn { padding: 8px 12px; }
-    .ak-footer { padding-top: 44px; }
-    .ak-footer-grid { grid-template-columns: 1fr; gap: 30px; }
-    .ak-footer-bottom { flex-direction: column; }
-}
+    .ak-footer-container {
+        grid-template-columns: 1fr;
 
-@media print {
-    .ak-header, .ak-footer { display: none !important; }
+        gap: 30px;
+    }
+
+    .ak-footer-bottom {
+        flex-direction: column;
+
+        gap: 7px;
+    }
 }

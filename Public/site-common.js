@@ -1,146 +1,484 @@
-/* =====================================================
-   AIR KERALA — shared navbar + footer
-   Usage (first thing inside <body>):
-   <script src="site-common.js" data-page="home" data-auth="modal" data-overlay></script>
-
-   data-page    home | book | manage   (which nav item is highlighted)
-   data-auth    modal | account | logout | none   (default content of #authArea;
-                each page's own script still updates #authArea as before)
-   data-overlay homepage only: transparent over the hero, solid after scrolling
-===================================================== */
+/* =========================================================
+   AIR KERALA - SHARED NAVBAR + FOOTER
+   ========================================================= */
 
 (function () {
 
-    /* ---------- EDIT CONTACT DETAILS HERE (footer, all pages) ---------- */
-    var AK_CONTACT = {
-        address:  'Air Kerala Headquarters, Cochin International Airport Complex, Nedumbassery, Kochi, Kerala 683111, India',
-        phone:    '+91 484 261 0115',
-        tollFree: '1800 425 0333',
-        email:    'support@airkerala.com'
-    };
+    "use strict";
 
-    var LOGO = 'airkerala-logo.png';
 
-    var LINKS = [
-        { key: 'home',   label: 'Home',              href: 'index.html' },
-        { key: 'book',   label: 'Book Ticket',       href: 'flights.html' },
-        { key: 'manage', label: 'Manage My Booking', href: 'Manage%20booking.html' },
-        { key: 'contact', label: 'Contact',          href: '#contact' }
-    ];
+    /* =====================================================
+       CONFIGURATION
+       ===================================================== */
 
-    var script  = document.currentScript;
-    var page    = (script && script.getAttribute('data-page')) || '';
-    var auth    = (script && script.getAttribute('data-auth')) || 'none';
-    var overlay = !!(script && script.hasAttribute('data-overlay'));
+    const LOGO_PATH =
+        "assets/air-kerala-logo.png";
 
-    var AUTH_HTML = {
-        modal:   '<button class="login-btn" data-bs-toggle="modal" data-bs-target="#loginModal">👤 Login</button>',
-        account: '<button class="login-btn" onclick="window.location.href=\'index.html\'">👤 Account</button>',
-        logout:  '<button class="login-btn" onclick="logout()">🚪 Logout</button>',
-        none:    ''
-    };
+    /*
+       If your Manage Booking page has another filename,
+       change this one line.
+    */
+    const MANAGE_BOOKING_PAGE =
+        "manage-booking.html";
 
-    function linksHTML(cls) {
-        return LINKS.map(function (l) {
-            var active = l.key === page;
-            return '<a href="' + l.href + '"' +
-                (active ? ' class="active" aria-current="page"' : '') + '>' + l.label + '</a>';
-        }).join('');
+
+    /* =====================================================
+       GET CURRENT PAGE
+       ===================================================== */
+
+    const currentScript =
+        document.currentScript;
+
+    const currentPage =
+        currentScript?.dataset?.page || "";
+
+
+    /* =====================================================
+       NAVBAR
+       ===================================================== */
+
+    function createNavbar() {
+
+        const header =
+            document.createElement("header");
+
+        header.className =
+            "ak-navbar";
+
+
+        header.innerHTML = `
+
+            <a
+                href="index.html"
+                class="ak-brand"
+                aria-label="Air Kerala Home"
+            >
+
+                <img
+                    src="${LOGO_PATH}"
+                    class="ak-logo"
+                    alt="Air Kerala"
+                    onerror="
+                        this.style.display='none';
+                        this.nextElementSibling.style.display='flex';
+                    "
+                >
+
+                <div
+                    class="ak-logo-fallback"
+                    style="display:none;"
+                >
+
+                    <div class="ak-logo-symbol">
+                        ✈
+                    </div>
+
+                    <div class="ak-logo-text">
+                        AIR KERALA
+                    </div>
+
+                </div>
+
+            </a>
+
+
+            <button
+                class="ak-menu-button"
+                id="akMenuButton"
+                aria-label="Open navigation menu"
+                aria-expanded="false"
+            >
+                ☰
+            </button>
+
+
+            <nav
+                class="ak-nav"
+                id="akNavigation"
+                aria-label="Main navigation"
+            >
+
+                <a
+                    href="index.html"
+                    class="ak-nav-link"
+                    data-page="home"
+                >
+                    Home
+                </a>
+
+
+                <a
+                    href="flights.html"
+                    class="ak-nav-link"
+                    data-page="flights"
+                >
+                    Book Ticket
+                </a>
+
+
+                <a
+                    href="${MANAGE_BOOKING_PAGE}"
+                    class="ak-nav-link"
+                    data-page="manage"
+                >
+                    Manage My Booking
+                </a>
+
+
+                <a
+                    href="index.html#contact"
+                    class="ak-nav-link"
+                    data-page="contact"
+                >
+                    Contact
+                </a>
+
+            </nav>
+
+        `;
+
+
+        /*
+           Put navbar at the beginning
+           of the body.
+        */
+
+        document.body.prepend(header);
+
+
+        setActiveNavigation();
+
+
+        setupMobileMenu();
+
     }
 
-    /* ---------- HEADER (inserted immediately, no flash) ---------- */
 
-    var header = document.createElement('header');
-    header.id = 'akHeader';
-    header.className = 'ak-header no-print' + (overlay ? ' ak-header--overlay' : '');
-    header.innerHTML =
-        '<a class="ak-brand" href="index.html" aria-label="Air Kerala home">' +
-            '<img src="' + LOGO + '" alt="Air Kerala">' +
-        '</a>' +
-        '<nav class="ak-links" id="akLinks" aria-label="Main">' + linksHTML() + '</nav>' +
-        '<div class="ak-right">' +
-            '<div id="authArea">' + (AUTH_HTML[auth] || '') + '</div>' +
-            '<button class="ak-burger" id="akBurger" type="button" aria-label="Toggle menu" ' +
-                'aria-expanded="false" aria-controls="akLinks"><span></span><span></span><span></span></button>' +
-        '</div>';
+    /* =====================================================
+       ACTIVE NAVIGATION
+       ===================================================== */
 
-    document.body.insertBefore(header, document.body.firstChild);
+    function setActiveNavigation() {
 
-    var burger = header.querySelector('#akBurger');
+        const links =
+            document.querySelectorAll(
+                ".ak-nav-link"
+            );
 
-    function setOpen(open) {
-        header.classList.toggle('ak-open', open);
-        burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+
+        links.forEach(function (link) {
+
+            link.classList.remove(
+                "active"
+            );
+
+
+            const page =
+                link.dataset.page;
+
+
+            if (
+                page &&
+                page === currentPage
+            ) {
+
+                link.classList.add(
+                    "active"
+                );
+
+            }
+
+        });
+
+
+        /*
+           Contact becomes active when the
+           page is index.html#contact.
+        */
+
+        if (
+            currentPage === "home" &&
+            window.location.hash === "#contact"
+        ) {
+
+            const contact =
+                document.querySelector(
+                    '.ak-nav-link[data-page="contact"]'
+                );
+
+
+            if (contact) {
+
+                contact.classList.add(
+                    "active"
+                );
+
+            }
+
+        }
+
     }
 
-    burger.addEventListener('click', function () {
-        setOpen(!header.classList.contains('ak-open'));
-    });
 
-    header.querySelector('#akLinks').addEventListener('click', function (e) {
-        if (e.target.tagName === 'A') setOpen(false);
-    });
+    /* =====================================================
+       MOBILE MENU
+       ===================================================== */
 
-    window.addEventListener('resize', function () {
-        if (window.innerWidth > 900) setOpen(false);
-    });
+    function setupMobileMenu() {
 
-    function onScroll() {
-        header.classList.toggle('ak-scrolled', window.scrollY > 40);
+        const button =
+            document.getElementById(
+                "akMenuButton"
+            );
+
+
+        const navigation =
+            document.getElementById(
+                "akNavigation"
+            );
+
+
+        if (
+            !button ||
+            !navigation
+        ) {
+            return;
+        }
+
+
+        button.addEventListener(
+            "click",
+            function () {
+
+                const opened =
+                    navigation.classList.toggle(
+                        "open"
+                    );
+
+
+                button.setAttribute(
+                    "aria-expanded",
+                    opened ? "true" : "false"
+                );
+
+
+                button.textContent =
+                    opened ? "✕" : "☰";
+
+            }
+        );
+
+
+        /*
+           Close mobile menu after
+           clicking a navigation item.
+        */
+
+        navigation
+            .querySelectorAll("a")
+            .forEach(function (link) {
+
+                link.addEventListener(
+                    "click",
+                    function () {
+
+                        navigation.classList.remove(
+                            "open"
+                        );
+
+                        button.setAttribute(
+                            "aria-expanded",
+                            "false"
+                        );
+
+                        button.textContent =
+                            "☰";
+
+                    }
+                );
+
+            });
+
     }
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
 
-    /* ---------- FOOTER / CONTACT (after the page has parsed) ---------- */
 
-    function tel(n) { return 'tel:' + n.replace(/[^+\d]/g, ''); }
+    /* =====================================================
+       FOOTER
+       ===================================================== */
 
-    function buildFooter() {
-        if (document.getElementById('contact')) return;
+    function createFooter() {
 
-        var c = AK_CONTACT;
-        var footer = document.createElement('footer');
-        footer.id = 'contact';
-        footer.className = 'ak-footer no-print';
-        footer.innerHTML =
-            '<div class="ak-footer-inner">' +
-                '<div class="ak-footer-grid">' +
-                    '<div>' +
-                        '<img class="ak-footer-logo" src="' + LOGO + '" alt="Air Kerala">' +
-                        '<p class="ak-footer-about">Fly Beyond — warm hospitality and seamless domestic flight booking.</p>' +
-                    '</div>' +
-                    '<div>' +
-                        '<div class="ak-footer-heading">Contact Us</div>' +
-                        '<div class="ak-contact-item"><span>📍</span><div><strong>Office Address</strong>' + c.address + '</div></div>' +
-                        '<div class="ak-contact-item"><span>📞</span><div><strong>Phone</strong>' +
-                            '<a href="' + tel(c.phone) + '">' + c.phone + '</a>' +
-                            ' &nbsp;·&nbsp; Toll free: <a href="' + tel(c.tollFree) + '">' + c.tollFree + '</a></div></div>' +
-                        '<div class="ak-contact-item"><span>✉️</span><div><strong>Email</strong>' +
-                            '<a href="mailto:' + c.email + '">' + c.email + '</a></div></div>' +
-                    '</div>' +
-                    '<div>' +
-                        '<div class="ak-footer-heading">Quick Links</div>' +
-                        '<div class="ak-footer-links">' + linksHTML() + '</div>' +
-                    '</div>' +
-                '</div>' +
-                '<div class="ak-credits-slot"></div>' +
-                '<div class="ak-footer-bottom">' +
-                    '<span>© ' + new Date().getFullYear() + ' Air Kerala. All rights reserved.</span>' +
-                    '<span>Fly beyond.</span>' +
-                '</div>' +
-            '</div>';
+        /*
+           Don't create a second footer if the
+           page already has one.
+        */
 
-        document.body.appendChild(footer);
+        if (
+            document.getElementById(
+                "contact"
+            )
+        ) {
+            return;
+        }
 
-        // Homepage: move the existing image-credit block into the footer
-        var credits = document.getElementById('ak-credits');
-        if (credits) footer.querySelector('.ak-credits-slot').appendChild(credits);
+
+        const footer =
+            document.createElement(
+                "footer"
+            );
+
+
+        footer.className =
+            "ak-footer";
+
+
+        footer.id =
+            "contact";
+
+
+        footer.innerHTML = `
+
+            <div class="ak-footer-container">
+
+
+                <div>
+
+                    <div class="ak-footer-brand">
+                        AIR KERALA
+                    </div>
+
+                    <p class="ak-footer-description">
+                        Affordable Air Travel, Redefined.
+                        Connecting Kerala and beyond with
+                        a simple, reliable and comfortable
+                        flying experience.
+                    </p>
+
+                </div>
+
+
+                <div>
+
+                    <div class="ak-footer-title">
+                        Quick Links
+                    </div>
+
+
+                    <a
+                        href="index.html"
+                        class="ak-footer-link"
+                    >
+                        Home
+                    </a>
+
+
+                    <a
+                        href="flights.html"
+                        class="ak-footer-link"
+                    >
+                        Book Ticket
+                    </a>
+
+
+                    <a
+                        href="${MANAGE_BOOKING_PAGE}"
+                        class="ak-footer-link"
+                    >
+                        Manage My Booking
+                    </a>
+
+                </div>
+
+
+                <div>
+
+                    <div class="ak-footer-title">
+                        Contact
+                    </div>
+
+
+                    <p class="ak-footer-text">
+                        Air Kerala
+                    </p>
+
+
+                    <p class="ak-footer-text">
+                        Kerala, India
+                    </p>
+
+
+                    <p class="ak-footer-text">
+                        Email: support@airkerala.com
+                    </p>
+
+
+                    <p class="ak-footer-text">
+                        Phone: +91 XXXXX XXXXX
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="ak-footer-bottom">
+
+                <span>
+                    © ${new Date().getFullYear()}
+                    Air Kerala. All rights reserved.
+                </span>
+
+
+                <span>
+                    Affordable Air Travel, Redefined
+                </span>
+
+            </div>
+
+        `;
+
+
+        document.body.appendChild(
+            footer
+        );
+
     }
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', buildFooter);
-    } else {
-        buildFooter();
+
+    /* =====================================================
+       INITIALIZE
+       ===================================================== */
+
+    function initialize() {
+
+        createNavbar();
+
+        createFooter();
+
+    }
+
+
+    /*
+       The script is loaded inside the body,
+       so DOMContentLoaded is safe and prevents
+       footer from appearing before page content.
+    */
+
+    if (
+        document.readyState === "loading"
+    ) {
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            initialize
+        );
+
+    }
+    else {
+
+        initialize();
+
     }
 
 })();

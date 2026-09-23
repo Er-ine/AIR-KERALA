@@ -2,453 +2,1434 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure Payment | AIR KERALA</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <style>
-        :root {
-            --air-blue: #0878d1;
-            --air-dark: #071b2e;
-            --air-gold: #d7b56d;
-            --success-green: #10b981;
-        }
 
-        * { box-sizing: border-box; }
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Air Kerala - Payment</title>
+
+    <link rel="stylesheet" href="site-common.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
 
         body {
             margin: 0;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #f8fafc;
+            font-family: Arial, Helvetica, sans-serif;
+            background:
+                linear-gradient(
+                    rgba(225, 240, 247, 0.82),
+                    rgba(245, 249, 251, 0.92)
+                ),
+                url("https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=2000&q=85")
+                center / cover fixed no-repeat;
+
             min-height: 100vh;
-            color: #17202a;
+            color: #172b4d;
         }
 
-        .navbar-solid {
-            background: var(--air-dark);
-            padding: 22px 5%;
-            border-bottom: 1px solid rgba(255,255,255,0.12);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+        .payment-page {
+            min-height: 100vh;
+            padding: 120px 20px 60px;
         }
 
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-            color: white;
-        }
-
-        .brand-symbol {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255,255,255,0.15);
-            font-size: 21px;
-        }
-
-        .brand-name {
-            font-size: 20px;
-            font-weight: 700;
-            letter-spacing: 3px;
-        }
-
-        .nav-links a {
-            color: rgba(255,255,255,0.9);
-            text-decoration: none;
-            padding: 10px 17px;
-            font-size: 13px;
-            font-weight: 500;
-            border-radius: 4px;
-        }
-
-        .nav-links a.active {
-            border-bottom: 2px solid var(--air-gold);
-        }
-
-        .payment-card {
-            background: white;
-            border-radius: 5px;
-            padding: 40px;
-            box-shadow: 0 20px 45px rgba(0,0,0,0.08);
-            margin-top: 50px;
-            border: 1px solid #f1f5f9;
-        }
-
-        .btn-pay {
-            background: linear-gradient(90deg, var(--success-green), #059669);
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 3px;
-            font-weight: 700;
+        .payment-container {
             width: 100%;
-            transition: 0.3s;
+            max-width: 1050px;
+            margin: 0 auto;
+
+            display: grid;
+            grid-template-columns: 1fr 1.15fr;
+            gap: 25px;
+        }
+
+        .payment-card,
+        .summary-card {
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 20px;
+            box-shadow: 0 18px 50px rgba(22, 52, 77, 0.16);
+            padding: 32px;
+        }
+
+        .page-title {
+            margin: 0 0 8px;
+            font-size: 30px;
+            color: #12395b;
+        }
+
+        .page-subtitle {
+            margin: 0 0 28px;
+            color: #6b7c8f;
+            font-size: 14px;
+        }
+
+        .section-title {
+            font-size: 19px;
+            margin: 0 0 20px;
+            color: #12395b;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #34495e;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 13px 14px;
+
+            border: 1px solid #d5e0e8;
+            border-radius: 10px;
+
+            font-size: 14px;
+            outline: none;
+
+            background: #fff;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #2487b9;
+            box-shadow: 0 0 0 3px rgba(36, 135, 185, 0.10);
+        }
+
+        .pay-button {
+            width: 100%;
+            border: none;
+            border-radius: 11px;
+
+            padding: 15px 20px;
+
+            background: linear-gradient(
+                135deg,
+                #12395b,
+                #1678a8
+            );
+
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+
             cursor: pointer;
+
+            transition: 0.2s ease;
         }
 
-        .btn-pay:hover {
-            transform: translateY(-2px);
+        .pay-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 25px rgba(18, 57, 91, 0.22);
         }
 
-        /* Receipt Styling */
-        .receipt-box {
-            border: 2px solid var(--air-dark);
-            padding: 30px;
-            border-radius: 5px;
-            margin-top: 20px;
-            display: none;
-            background: white;
-        }
-
-        .pnr-text {
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--air-blue);
-            letter-spacing: 2px;
-        }
-
-        .form-control {
-            border-radius: 3px;
-        }
-
-        .form-control:focus {
-            border-color: var(--air-blue);
+        .pay-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
             box-shadow: none;
         }
 
-        @media print {
-            .no-print { display: none !important; }
-            .receipt-box { display: block !important; border: none; box-shadow: none; margin: 0; padding: 0; }
-            body { background: white; }
-            .container { width: 100%; max-width: 100%; }
+        .summary-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+
+            margin-bottom: 22px;
+        }
+
+        .flight-badge {
+            padding: 7px 12px;
+            border-radius: 20px;
+
+            background: #e8f5fa;
+            color: #1678a8;
+
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .flight-route {
+            font-size: 25px;
+            font-weight: 700;
+            color: #12395b;
+            margin-bottom: 5px;
+        }
+
+        .airline-name {
+            color: #718096;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .detail-box {
+            background: #f6f9fb;
+            border-radius: 12px;
+            padding: 14px;
+        }
+
+        .detail-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #7a8a99;
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #243b53;
+            word-break: break-word;
+        }
+
+        .total-section {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #e4ebf0;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .total-label {
+            font-size: 15px;
+            color: #66788a;
+        }
+
+        .total-amount {
+            font-size: 28px;
+            font-weight: 800;
+            color: #12395b;
+        }
+
+        .success-box {
+            display: none;
+
+            max-width: 700px;
+            margin: 40px auto;
+
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+
+            text-align: center;
+
+            box-shadow: 0 18px 50px rgba(22, 52, 77, 0.16);
+        }
+
+        .success-icon {
+            width: 70px;
+            height: 70px;
+
+            margin: 0 auto 20px;
+
+            border-radius: 50%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #e6f7ed;
+            color: #159447;
+
+            font-size: 35px;
+        }
+
+        .success-box h2 {
+            margin: 0 0 10px;
+            color: #12395b;
+        }
+
+        .success-box p {
+            color: #6b7c8f;
+            margin: 7px 0;
+        }
+
+        .pnr {
+            margin: 20px 0;
+
+            padding: 15px;
+
+            background: #f4f8fa;
+            border-radius: 10px;
+
+            font-size: 22px;
+            font-weight: 800;
+
+            letter-spacing: 2px;
+            color: #12395b;
+        }
+
+        .ticket-button {
+            border: none;
+            border-radius: 10px;
+
+            padding: 13px 22px;
+
+            background: #1678a8;
+            color: white;
+
+            font-weight: 700;
+            cursor: pointer;
+
+            margin-top: 12px;
+        }
+
+        .ticket-button:hover {
+            background: #12698f;
+        }
+
+        .error-message {
+            display: none;
+
+            margin-bottom: 18px;
+            padding: 12px 14px;
+
+            background: #fff0f0;
+            color: #c0392b;
+
+            border: 1px solid #ffd0cc;
+            border-radius: 9px;
+
+            font-size: 13px;
+        }
+
+        @media (max-width: 800px) {
+            .payment-container {
+                grid-template-columns: 1fr;
+            }
+
+            .payment-page {
+                padding-top: 100px;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .payment-card,
+            .summary-card {
+                padding: 22px;
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .flight-route {
+                font-size: 21px;
+            }
         }
     </style>
 </head>
+
 <body>
 
-    <header class="navbar-solid no-print">
-        <a href="index.html" class="brand">
-            <div class="brand-symbol">✈</div>
-            <div class="brand-name">AIR KERALA</div>
-        </a>
-        <nav class="nav-links">
-            <a href="index.html">Home</a>
-            <a href="liveflights.html">Book Flight</a>
-            <a href="payment.html" class="active">Payment</a>
-            <a href="manage-booking.html">Manage Booking</a>
-        </nav>
-    </header>
+    <!-- Shared Air Kerala navigation -->
+    <script
+        src="site-common.js"
+        data-page="payment">
+    </script>
 
-    <div class="container">
-        <div id="paymentSection" class="payment-card no-print">
-            <h4 class="fw-bold mb-4" style="color: var(--air-dark);">💳 Secure Checkout</h4>
-            <div class="row g-4">
-                <div class="col-md-7">
-                    <div class="p-3 border rounded-3 bg-light">
-                        <div class="mb-3">
-                            <label class="small fw-bold text-muted">CARDHOLDER NAME</label>
-                            <input type="text" id="paxName" class="form-control" placeholder="Full Name" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="small fw-bold text-muted">CARD NUMBER</label>
-                            <input type="text" class="form-control" placeholder="XXXX XXXX XXXX XXXX" maxlength="19">
-                        </div>
-                        <div class="row">
-                            <div class="col-6">
-                                <label class="small fw-bold text-muted">EXPIRY DATE</label>
-                                <input type="text" class="form-control" placeholder="MM/YY">
-                            </div>
-                            <div class="col-6">
-                                <label class="small fw-bold text-muted">CVV CODE</label>
-                                <input type="password" class="form-control" placeholder="***" maxlength="3">
-                            </div>
-                        </div>
-                    </div>
-                    <button class="btn-pay mt-4" onclick="handleTransaction()">Pay & Print Receipt ➔</button>
+
+    <main class="payment-page">
+
+        <!-- =====================================================
+             PAYMENT + BOOKING SUMMARY
+        ====================================================== -->
+
+        <div class="payment-container" id="paymentContainer">
+
+            <!-- PAYMENT FORM -->
+
+            <section class="payment-card">
+
+                <h1 class="page-title">
+                    Complete Payment
+                </h1>
+
+                <p class="page-subtitle">
+                    Enter your passenger details and complete your booking.
+                </p>
+
+                <div
+                    id="errorMessage"
+                    class="error-message">
                 </div>
 
-                <div class="col-md-5">
-                    <div class="p-4 rounded-3" style="background: #eaf3fc; border: 1px solid #cfe4f8;">
-                        <h6 class="fw-bold mb-3" style="color: var(--air-blue);">Order Summary</h6>
-                        <div class="d-flex justify-content-between mb-2"><span>Flight</span><span id="summaryRoute">-</span></div>
-<div class="d-flex justify-content-between mb-2"><span>Cabin Class</span><span id="summaryClass">-</span></div>
-<div class="d-flex justify-content-between mb-2"><span>Seat</span><span id="summarySeat">-</span></div>
-<hr>
-<div class="d-flex justify-content-between align-items-center">
-    <span class="h5 fw-bold mb-0">Total</span>
-    <span class="h4 fw-bold mb-0" style="color: var(--air-blue);" id="summaryTotal">₹0</span>
-                        </div>
-                    </div>
+                <h2 class="section-title">
+                    Passenger Details
+                </h2>
+
+                <div class="form-group">
+
+                    <label for="paxName">
+                        Passenger Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="paxName"
+                        placeholder="Enter passenger name"
+                        autocomplete="name"
+                    >
+
                 </div>
-            </div>
+
+
+                <div class="form-group">
+
+                    <label for="paymentMethod">
+                        Payment Method
+                    </label>
+
+                    <select id="paymentMethod">
+
+                        <option value="CARD">
+                            Credit / Debit Card
+                        </option>
+
+                        <option value="UPI">
+                            UPI
+                        </option>
+
+                        <option value="NET_BANKING">
+                            Net Banking
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <button
+                    class="pay-button"
+                    id="payButton"
+                    onclick="handleTransaction()">
+
+                    Pay & Confirm Booking
+
+                </button>
+
+            </section>
+
+
+            <!-- BOOKING SUMMARY -->
+
+            <section class="summary-card">
+
+                <div class="summary-header">
+
+                    <h2 class="section-title" style="margin:0;">
+                        Booking Summary
+                    </h2>
+
+                    <span class="flight-badge">
+                        AIR KERALA
+                    </span>
+
+                </div>
+
+
+                <div
+                    class="flight-route"
+                    id="flightRoute">
+
+                    - → -
+
+                </div>
+
+
+                <div
+                    class="airline-name"
+                    id="airlineName">
+
+                    Air Kerala
+
+                </div>
+
+
+                <div class="details-grid">
+
+                    <div class="detail-box">
+
+                        <div class="detail-label">
+                            Flight
+                        </div>
+
+                        <div
+                            class="detail-value"
+                            id="flightNumber">
+
+                            -
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="detail-box">
+
+                        <div class="detail-label">
+                            Cabin
+                        </div>
+
+                        <div
+                            class="detail-value"
+                            id="cabinClass">
+
+                            Economy
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="detail-box">
+
+                        <div class="detail-label">
+                            Seat
+                        </div>
+
+                        <div
+                            class="detail-value"
+                            id="seatNumber">
+
+                            -
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="detail-box">
+
+                        <div class="detail-label">
+                            Passenger
+                        </div>
+
+                        <div
+                            class="detail-value"
+                            id="summaryPassenger">
+
+                            -
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="detail-box">
+
+                        <div class="detail-label">
+                            Departure
+                        </div>
+
+                        <div
+                            class="detail-value"
+                            id="departureTime">
+
+                            -
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="detail-box">
+
+                        <div class="detail-label">
+                            Arrival
+                        </div>
+
+                        <div
+                            class="detail-value"
+                            id="arrivalTime">
+
+                            -
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="total-section">
+
+                    <span class="total-label">
+                        Total Amount
+                    </span>
+
+                    <span
+                        class="total-amount"
+                        id="totalAmount">
+
+                        ₹0
+
+                    </span>
+
+                </div>
+
+            </section>
+
         </div>
 
-        <div id="receiptSection" class="receipt-box">
-            <div class="text-center border-bottom pb-4 mb-4">
-                <h2 class="fw-bold">✈ AIR KERALA</h2>
-                <p class="text-muted mb-0">Electronic Payment Confirmation</p>
-                <small>PCI-DSS Verified Transaction</small>
+
+        <!-- =====================================================
+             SUCCESS SCREEN
+        ====================================================== -->
+
+        <section
+            class="success-box"
+            id="successBox">
+
+            <div class="success-icon">
+                ✓
             </div>
 
-            <div class="row mb-4">
-                <div class="col-6">
-                    <p class="text-muted small mb-1">PASSENGER NAME</p>
-                    <h5 id="recName" class="fw-bold">GUEST</h5>
-                </div>
-                <div class="col-6 text-end">
-                    <p class="text-muted small mb-1">BOOKING PNR</p>
-                    <h5 id="recPNR" class="pnr-text">PNR-000000</h5>
-                </div>
+            <h2>
+                Booking Confirmed!
+            </h2>
+
+            <p>
+                Your Air Kerala flight has been successfully booked.
+            </p>
+
+            <p>
+                Your payment has been recorded successfully.
+            </p>
+
+            <div class="pnr">
+
+                PNR:
+                <span id="pnrNumber">
+                    -
+                </span>
+
             </div>
 
-            <div class="row mb-4">
-                <div class="col-6">
-                    <p class="text-muted small mb-1">CABIN CLASS</p>
-                    <h6 id="recClass" class="fw-bold">-</h6>
-                </div>
-                <div class="col-6 text-end">
-                    <p class="text-muted small mb-1">SEAT NUMBER</p>
-                    <h6 id="recSeat" class="fw-bold">-</h6>
-                </div>
-            </div>
+            <p>
+                Booking ID:
+                <strong id="confirmedBookingId">
+                    -
+                </strong>
+            </p>
 
-            <table class="table table-bordered mb-4">
-                <thead class="table-light">
-                    <tr><th>Service</th><th class="text-end">Amount</th></tr>
-                </thead>
-                <tbody>
-                    <tr><td id="recRoute">Flight Booking</td><td class="text-end" id="recAmount">₹0.00</td></tr>
-                </tbody>
-            </table>
+            <p>
+                Amount Paid:
+                <strong id="confirmedAmount">
+                    -
+                </strong>
+            </p>
 
-            <div class="text-end mb-5">
-                <h4 class="fw-bold">Total Paid: <span id="recTotal">₹0</span></h4>
-            </div>
+            <button
+                class="ticket-button"
+                onclick="downloadTicketPDF()">
 
-            <div class="no-print text-center pt-4 border-top">
-                <button class="btn px-5 py-3 fw-bold rounded-pill shadow-sm me-2" style="background: var(--air-blue); color: white; border: none;" onclick="downloadTicketPDF()">⬇️ Download Ticket (PDF)</button>
-                <button class="btn px-5 py-3 fw-bold rounded-pill shadow-sm" style="background: var(--air-dark); color: white; border: none;" onclick="window.print()">🖨️ Print This Receipt</button>
-                <a href="manage-booking.html" class="btn px-5 py-3 fw-bold rounded-pill shadow-sm mt-2 mt-md-0" style="background: white; color: var(--air-dark); border: 2px solid var(--air-dark);">📋 Manage Booking</a>
-                <p class="mt-4"><a href="index.html" class="text-muted text-decoration-none small">Done? Go back to Home</a></p>
-            </div>
-        </div>
-    </div>
+                Download Ticket
+
+            </button>
+
+        </section>
+
+    </main>
+
+
+    <!-- jsPDF for ticket generation -->
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">
+    </script>
+
 
     <script>
-    // Load details from localStorage
-window.onload = function() {
-    const total = parseInt(localStorage.getItem('bookingTotal')) || 5310;
-    const origin = localStorage.getItem('origin') || '-';
-    const dest = localStorage.getItem('dest') || '-';
-    const cls = localStorage.getItem('cabinClass') || 'Economy';
-    const seat = localStorage.getItem('selectedSeat') || '-';
-    const passengerName = localStorage.getItem('passengerName') || '';
 
-    document.getElementById('summaryRoute').textContent = `${origin} → ${dest}`;
-    document.getElementById('summaryClass').textContent = cls;
-    document.getElementById('summarySeat').textContent = seat;
-    document.getElementById('summaryTotal').textContent = `₹ ${total.toLocaleString()}`;
-    document.getElementById('paxName').value = passengerName;
-};
+        // =========================================================
+        // GLOBAL BOOKING DATA
+        // =========================================================
 
-// Holds the data for the most recently generated ticket, so the
-// Download button can re-generate the same PDF on demand.
-let lastTicket = null;
+        let lastTicket = null;
 
-async function handleTransaction() {
-    const name = document.getElementById('paxName').value;
-    if (!name) return alert("Please enter Passenger Name");
 
-    const booking_id = localStorage.getItem('booking_id');
-    if (!booking_id) return alert("No booking found! Please book a flight first.");
+        // =========================================================
+        // LOAD BOOKING DATA
+        // =========================================================
 
-    const total = parseInt(localStorage.getItem('bookingTotal')) || 5310;
-    const origin = localStorage.getItem('origin') || '-';
-    const dest = localStorage.getItem('dest') || '-';
-    const cls = localStorage.getItem('cabinClass') || 'Economy';
-    const seat = localStorage.getItem('selectedSeat') || '-';
-    const flightNum = localStorage.getItem('flightNum') || '';
-    const airline = localStorage.getItem('airline') || '';
-    const dep = localStorage.getItem('dep') || '-';
-    const arr = localStorage.getItem('arr') || '-';
+        document.addEventListener('DOMContentLoaded', function () {
 
-    const paymentData = {
-        booking_id: parseInt(booking_id),
-        amount: total,
-        payment_method: 'CARD',
-        payment_date: new Date().toISOString().split('T')[0]
-    };
-        try {
-            const res = await fetch('/api/payment', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(paymentData)
-            });
+            const bookingId =
+                localStorage.getItem('booking_id');
 
-            const data = await res.json();
+            if (!bookingId) {
 
-            if (data.success) {
-                const pnr = 'TRV' + String(booking_id).padStart(6, '0'); // same reference Manage Booking shows
-                document.getElementById('recName').innerText = name.toUpperCase();
-                document.getElementById('recPNR').innerText = pnr;
-                document.getElementById('recClass').innerText = cls;
-                document.getElementById('recSeat').innerText = seat;
-                document.getElementById('recRoute').innerText = `Flight Booking ${airline ? '(' + airline + (flightNum ? ' ' + flightNum : '') + ') ' : ''}(${origin} → ${dest})`;
-                document.getElementById('recAmount').innerText = '₹' + total.toLocaleString() + '.00';
-                document.getElementById('recTotal').innerText = '₹' + total.toLocaleString();
-                document.getElementById('paymentSection').style.display = 'none';
-                document.getElementById('receiptSection').style.display = 'block';
-                window.scrollTo(0, 0);
+                showError(
+                    'No booking found. Please book a flight first.'
+                );
+
+                document.getElementById('payButton').disabled = true;
+
+                return;
+            }
+
+
+            const origin =
+                localStorage.getItem('origin') || '-';
+
+            const dest =
+                localStorage.getItem('dest') || '-';
+
+            const cls =
+                localStorage.getItem('cabinClass') || 'Economy';
+
+            const seat =
+                localStorage.getItem('selectedSeat') || '-';
+
+            const passengerName =
+                localStorage.getItem('passengerName') || '';
+
+            const flightNum =
+                localStorage.getItem('flightNum') || '-';
+
+            const airline =
+                localStorage.getItem('airline') || 'Air Kerala';
+
+            const dep =
+                localStorage.getItem('dep') || '-';
+
+            const arr =
+                localStorage.getItem('arr') || '-';
+
+
+            // Fill passenger name
+            document.getElementById('paxName').value =
+                passengerName;
+
+
+            // Fill summary
+            document.getElementById('flightRoute').textContent =
+                origin + ' → ' + dest;
+
+            document.getElementById('airlineName').textContent =
+                airline;
+
+            document.getElementById('flightNumber').textContent =
+                flightNum;
+
+            document.getElementById('cabinClass').textContent =
+                cls;
+
+            document.getElementById('seatNumber').textContent =
+                seat;
+
+            document.getElementById('summaryPassenger').textContent =
+                passengerName || '-';
+
+            document.getElementById('departureTime').textContent =
+                dep;
+
+            document.getElementById('arrivalTime').textContent =
+                arr;
+
+
+            // Don't trust this value for payment.
+            // It is only used for initial display.
+            const displayTotal =
+                Number(localStorage.getItem('bookingTotal')) || 0;
+
+            document.getElementById('totalAmount').textContent =
+                formatCurrency(displayTotal);
+
+        });
+
+
+        // =========================================================
+        // PAYMENT
+        // =========================================================
+
+        async function handleTransaction() {
+
+            const payButton =
+                document.getElementById('payButton');
+
+            const passengerName =
+                document.getElementById('paxName')
+                    .value
+                    .trim();
+
+            if (!passengerName) {
+
+                showError(
+                    'Please enter Passenger Name.'
+                );
+
+                return;
+            }
+
+
+            /*
+             * IMPORTANT:
+             *
+             * DO NOT use:
+             *
+             * parseInt(booking_id)
+             *
+             * MongoDB booking IDs are ObjectId strings.
+             */
+
+            const booking_id =
+                localStorage.getItem('booking_id');
+
+            if (!booking_id) {
+
+                showError(
+                    'No booking found. Please book a flight first.'
+                );
+
+                return;
+            }
+
+
+            const paymentMethod =
+                document.getElementById('paymentMethod').value;
+
+
+            const origin =
+                localStorage.getItem('origin') || '-';
+
+            const dest =
+                localStorage.getItem('dest') || '-';
+
+            const cls =
+                localStorage.getItem('cabinClass') || 'Economy';
+
+            const seat =
+                localStorage.getItem('selectedSeat') || '-';
+
+            const flightNum =
+                localStorage.getItem('flightNum') || '';
+
+            const airline =
+                localStorage.getItem('airline') || 'Air Kerala';
+
+            const dep =
+                localStorage.getItem('dep') || '-';
+
+            const arr =
+                localStorage.getItem('arr') || '-';
+
+
+            /*
+             * The backend calculates the real amount
+             * from the booked seat.
+             *
+             * We intentionally DO NOT send amount here.
+             */
+
+            const paymentData = {
+
+                booking_id: booking_id,
+
+                payment_method: paymentMethod,
+
+                payment_date: new Date().toISOString()
+
+            };
+
+
+            payButton.disabled = true;
+
+            payButton.textContent =
+                'Processing Payment...';
+
+            hideError();
+
+
+            try {
+
+                const response = await fetch(
+                    '/api/payment',
+                    {
+                        method: 'POST',
+
+                        headers: {
+                            'Content-Type':
+                                'application/json'
+                        },
+
+                        credentials: 'include',
+
+                        body: JSON.stringify(paymentData)
+                    }
+                );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok || !data.success) {
+
+                    throw new Error(
+                        data.message ||
+                        'Payment failed.'
+                    );
+                }
+
+
+                // -------------------------------------------------
+                // Payment successful
+                // -------------------------------------------------
+
+                const actualAmount =
+                    Number(data.amount) || 0;
+
+
+                /*
+                 * Create a readable Air Kerala PNR
+                 * from the MongoDB ObjectId.
+                 */
+
+                const pnr =
+                    'AK' +
+                    String(booking_id)
+                        .slice(-6)
+                        .toUpperCase();
+
+
+                // Save actual amount
+                localStorage.setItem(
+                    'bookingTotal',
+                    String(actualAmount)
+                );
+
 
                 lastTicket = {
-                    pnr, name: name.toUpperCase(), airline, flightNum,
-                    origin, dest, dep, arr, cls, seat, total,
-                    paymentDate: paymentData.payment_date
+
+                    pnr: pnr,
+
+                    bookingId:
+                        String(booking_id),
+
+                    passengerName:
+                        passengerName,
+
+                    origin:
+                        origin,
+
+                    destination:
+                        dest,
+
+                    flightNumber:
+                        flightNum,
+
+                    airline:
+                        airline,
+
+                    cabinClass:
+                        cls,
+
+                    seat:
+                        seat,
+
+                    departure:
+                        dep,
+
+                    arrival:
+                        arr,
+
+                    total:
+                        actualAmount,
+
+                    paymentMethod:
+                        paymentMethod,
+
+                    paymentDate:
+                        paymentData.payment_date
+
                 };
 
-                downloadTicketPDF();
-            } else {
-                alert('Payment failed: ' + data.message);
+
+                // Update success screen
+                document.getElementById(
+                    'pnrNumber'
+                ).textContent = pnr;
+
+
+                document.getElementById(
+                    'confirmedBookingId'
+                ).textContent =
+                    String(booking_id);
+
+
+                document.getElementById(
+                    'confirmedAmount'
+                ).textContent =
+                    formatCurrency(actualAmount);
+
+
+                // Hide payment form
+                document.getElementById(
+                    'paymentContainer'
+                ).style.display = 'none';
+
+
+                // Show success screen
+                document.getElementById(
+                    'successBox'
+                ).style.display = 'block';
+
+
+                /*
+                 * Keep booking_id in localStorage.
+                 *
+                 * Manage Booking can use it later.
+                 */
+
+                localStorage.setItem(
+                    'lastBookingId',
+                    String(booking_id)
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    'PAYMENT ERROR:',
+                    error
+                );
+
+                showError(
+                    error.message ||
+                    'Payment failed. Please try again.'
+                );
+
+                payButton.disabled = false;
+
+                payButton.textContent =
+                    'Pay & Confirm Booking';
+
             }
-        } catch (err) {
-            alert('Error: ' + err.message);
+
         }
-    }
 
-// Builds an e-ticket PDF client-side with jsPDF — no server round trip needed.
-function downloadTicketPDF() {
-    if (!lastTicket) {
-        alert('No completed booking to generate a ticket for yet.');
-        return;
-    }
 
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({ unit: 'pt', format: 'a4' });
-    const t = lastTicket;
+        // =========================================================
+        // CURRENCY
+        // =========================================================
 
-    const pageWidth = doc.internal.pageSize.getWidth();
-    const navy = [7, 27, 46];
-    const gold = [215, 181, 109];
-    const blue = [8, 120, 209];
-    const grey = [100, 116, 139];
+        function formatCurrency(amount) {
 
-    // Header band
-    doc.setFillColor(...navy);
-    doc.rect(0, 0, pageWidth, 90, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(22);
-    doc.text('AIR KERALA', 40, 45);
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(10);
-    doc.setTextColor(...gold);
-    doc.text('FLY BEYOND — E-TICKET / ITINERARY RECEIPT', 40, 65);
+            return new Intl.NumberFormat(
+                'en-IN',
+                {
+                    style: 'currency',
+                    currency: 'INR',
+                    maximumFractionDigits: 0
+                }
+            ).format(amount);
 
-    // PNR box
-    doc.setDrawColor(...blue);
-    doc.setLineWidth(1);
-    doc.rect(pageWidth - 190, 25, 150, 45);
-    doc.setTextColor(...navy);
-    doc.setFontSize(9);
-    doc.text('BOOKING PNR', pageWidth - 175, 42);
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(16);
-    doc.setTextColor(...blue);
-    doc.text(t.pnr, pageWidth - 175, 60);
+        }
 
-    let y = 130;
-    doc.setTextColor(...grey);
-    doc.setFontSize(9);
-    doc.setFont('helvetica', 'bold');
-    doc.text('PASSENGER NAME', 40, y);
-    doc.setTextColor(...navy);
-    doc.setFontSize(14);
-    doc.text(t.name, 40, y + 20);
 
-    y += 55;
-    doc.setDrawColor(220, 226, 232);
-    doc.line(40, y, pageWidth - 40, y);
+        // =========================================================
+        // ERROR MESSAGE
+        // =========================================================
 
-    // Flight route block
-    y += 35;
-    doc.setFontSize(9);
-    doc.setTextColor(...grey);
-    doc.text('FROM', 40, y);
-    doc.text('TO', pageWidth - 120, y);
+        function showError(message) {
 
-    doc.setFontSize(16);
-    doc.setTextColor(...navy);
-    doc.setFont('helvetica', 'bold');
-    doc.text(t.origin, 40, y + 22);
-    doc.text(t.dest, pageWidth - 120, y + 22);
+            const errorBox =
+                document.getElementById('errorMessage');
 
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(10);
-    doc.setTextColor(...grey);
-    doc.text('Departs ' + t.dep, 40, y + 40);
-    doc.text('Arrives ' + t.arr, pageWidth - 120, y + 40);
+            errorBox.textContent =
+                message;
 
-    doc.setDrawColor(...gold);
-    doc.setLineWidth(1.5);
-    doc.line(140, y + 15, pageWidth - 140, y + 15);
+            errorBox.style.display =
+                'block';
 
-    y += 75;
-    doc.setDrawColor(220, 226, 232);
-    doc.line(40, y, pageWidth - 40, y);
+        }
 
-    // Details table
-    const rows = [
-        ['Flight', (t.airline || '-') + (t.flightNum ? ' · ' + t.flightNum : '')],
-        ['Cabin Class', t.cls],
-        ['Seat Number', t.seat],
-        ['Payment Date', t.paymentDate],
-        ['Payment Status', 'CONFIRMED']
-    ];
 
-    y += 30;
-    doc.setFontSize(11);
-    rows.forEach(function(r) {
-        doc.setTextColor(...grey);
-        doc.setFont('helvetica', 'normal');
-        doc.text(r[0], 40, y);
-        doc.setTextColor(...navy);
-        doc.setFont('helvetica', 'bold');
-        doc.text(String(r[1]), 220, y);
-        y += 24;
-    });
+        function hideError() {
 
-    y += 15;
-    doc.setDrawColor(220, 226, 232);
-    doc.line(40, y, pageWidth - 40, y);
+            const errorBox =
+                document.getElementById('errorMessage');
 
-    y += 35;
-    doc.setFontSize(11);
-    doc.setTextColor(...grey);
-    doc.setFont('helvetica', 'normal');
-    doc.text('Total Paid', 40, y);
-    doc.setFontSize(18);
-    doc.setTextColor(...blue);
-    doc.setFont('helvetica', 'bold');
-    doc.text('Rs. ' + t.total.toLocaleString('en-IN'), pageWidth - 160, y + 2);
+            errorBox.style.display =
+                'none';
 
-    // Footer
-    doc.setFillColor(...navy);
-    doc.rect(0, doc.internal.pageSize.getHeight() - 50, pageWidth, 50, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(9);
-    doc.setFont('helvetica', 'normal');
-    doc.text('This is a computer-generated ticket and does not require a signature.', 40, doc.internal.pageSize.getHeight() - 28);
-    doc.text('Air Kerala · Fly beyond.', 40, doc.internal.pageSize.getHeight() - 14);
+            errorBox.textContent =
+                '';
 
-    doc.save('AirKerala_Ticket_' + t.pnr + '.pdf');
-}
-</script>
+        }
+
+
+        // =========================================================
+        // DOWNLOAD TICKET PDF
+        // =========================================================
+
+        function downloadTicketPDF() {
+
+            if (!lastTicket) {
+
+                alert(
+                    'Ticket information is not available.'
+                );
+
+                return;
+            }
+
+
+            if (
+                !window.jspdf ||
+                !window.jspdf.jsPDF
+            ) {
+
+                alert(
+                    'PDF generator is still loading. Please try again.'
+                );
+
+                return;
+            }
+
+
+            const {
+                jsPDF
+            } = window.jspdf;
+
+
+            const doc =
+                new jsPDF();
+
+
+            // -----------------------------------------------------
+            // Header
+            // -----------------------------------------------------
+
+            doc.setFontSize(24);
+
+            doc.setFont(undefined, 'bold');
+
+            doc.text(
+                'AIR KERALA',
+                20,
+                25
+            );
+
+
+            doc.setFontSize(11);
+
+            doc.setFont(undefined, 'normal');
+
+            doc.text(
+                'Affordable Air Travel, Redefined',
+                20,
+                33
+            );
+
+
+            // Divider
+            doc.line(
+                20,
+                40,
+                190,
+                40
+            );
+
+
+            // -----------------------------------------------------
+            // Ticket title
+            // -----------------------------------------------------
+
+            doc.setFontSize(18);
+
+            doc.setFont(undefined, 'bold');
+
+            doc.text(
+                'E-TICKET / BOOKING CONFIRMATION',
+                20,
+                55
+            );
+
+
+            // -----------------------------------------------------
+            // PNR
+            // -----------------------------------------------------
+
+            doc.setFontSize(12);
+
+            doc.setFont(undefined, 'normal');
+
+            doc.text(
+                'PNR',
+                20,
+                70
+            );
+
+
+            doc.setFontSize(18);
+
+            doc.setFont(undefined, 'bold');
+
+            doc.text(
+                lastTicket.pnr,
+                20,
+                79
+            );
+
+
+            // -----------------------------------------------------
+            // Passenger
+            // -----------------------------------------------------
+
+            doc.setFontSize(11);
+
+            doc.setFont(undefined, 'normal');
+
+            doc.text(
+                'Passenger',
+                20,
+                95
+            );
+
+            doc.setFont(undefined, 'bold');
+
+            doc.text(
+                lastTicket.passengerName,
+                20,
+                103
+            );
+
+
+            // -----------------------------------------------------
+            // Flight
+            // -----------------------------------------------------
+
+            doc.setFont(undefined, 'normal');
+
+            doc.text(
+                'Flight',
+                20,
+                119
+            );
+
+            doc.setFont(undefined, 'bold');
+
+            doc.text(
+                lastTicket.flightNumber,
+                20,
+                127
+            );
+
+
+            doc.setFont(undefined, 'normal');
+
+            doc.text(
+                'Airline',
+                100,
+                119
+            );
+
+            doc.setFont(undefined, 'bold');
+
+            doc.text(
+                lastTicket.airline,
+                100,
+                127
+            );
+
+
+            // -----------------------------------------------------
+            // Route
+            // -----------------------------------------------------
+
+            doc.setFont(undefined, 'normal');
+
+            doc.text(
+                'Route',
+                20,
+                143
+            );
+
+            doc.setFont(undefined, 'bold');
+
+            doc.text(
+                lastTicket.origin +
+                '  →  ' +
+                lastTicket.destination,
+                20,
+                151
+            );
+
+
+            // -----------------------------------------------------
+            // Times
+            // -----------------------------------------------------
+
+            doc.setFont(undefined, 'normal');
+
+            doc.text(
+                'Departure',
+                20,
+                167
+            );
+
+            doc.setFont(undefined, 'bold');
+
+            doc.text(
+                lastTicket.departure,
+                20,
+                175
+            );
+
+
+            doc.setFont(undefined, 'normal');
+
+            doc.text(
+                'Arrival',
+                100,
+                167
+            );
+
+            doc.setFont(undefined, 'bold');
+
+            doc.text(
+                lastTicket.arrival,
+                100,
+                175
+            );
+
+
+            // -----------------------------------------------------
+            // Seat / Cabin
+            // -----------------------------------------------------
+
+            doc.setFont(undefined, 'normal');
+
+            doc.text(
+                'Seat',
+                20,
+                191
+            );
+
+            doc.setFont(undefined, 'bold');
+
+            doc.text(
+                lastTicket.seat,
+                20,
+                199
+            );
+
+
+            doc.setFont(undefined, 'normal');
+
+            doc.text(
+                'Cabin',
+                100,
+                191
+            );
+
+            doc.setFont(undefined, 'bold');
+
+            doc.text(
+                lastTicket.cabinClass,
+                100,
+                199
+            );
+
+
+            // -----------------------------------------------------
+            // Payment
+            // -----------------------------------------------------
+
+            doc.setFont(undefined, 'normal');
+
+            doc.text(
+                'Payment Method',
+                20,
+                215
+            );
+
+            doc.setFont(undefined, 'bold');
+
+            doc.text(
+                lastTicket.paymentMethod,
+                20,
+                223
+            );
+
+
+            doc.setFont(undefined, 'normal');
+
+            doc.text(
+                'Amount Paid',
+                100,
+                215
+            );
+
+            doc.setFont(undefined, 'bold');
+
+            doc.text(
+                formatCurrency(lastTicket.total),
+                100,
+                223
+            );
+
+
+            // -----------------------------------------------------
+            // Footer
+            // -----------------------------------------------------
+
+            doc.line(
+                20,
+                240,
+                190,
+                240
+            );
+
+
+            doc.setFontSize(10);
+
+            doc.setFont(undefined, 'normal');
+
+            doc.text(
+                'Thank you for choosing Air Kerala.',
+                20,
+                252
+            );
+
+            doc.text(
+                'Please carry a valid ID during your journey.',
+                20,
+                260
+            );
+
+
+            // -----------------------------------------------------
+            // Download
+            // -----------------------------------------------------
+
+            doc.save(
+                'AirKerala-Ticket-' +
+                lastTicket.pnr +
+                '.pdf'
+            );
+
+        }
+
+    </script>
+
 </body>
 </html>
