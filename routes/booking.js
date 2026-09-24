@@ -1,1657 +1,1153 @@
 const express = require('express');
-const router = express.Router();
 const mongoose = require('mongoose');
 
-const Flight = require('../models/Flight');
-const Passenger = require('../models/Passenger');
 const Booking = require('../models/Booking');
+const Passenger = require('../models/Passenger');
+const Flight = require('../models/Flight');
 const Payment = require('../models/Payment');
 
-const { requireAuth } = require('./auth');
+const router = express.Router();
 
 
-/* =========================================================
-   OLD SINGLE PASSENGER ENDPOINT
-   Kept for compatibility
-========================================================= */
+// ============================================================
+// AUTH MIDDLEWARE
+// ============================================================
 
-router.post('/passenger', async (req, res) => {
+function requireAuth(req, res, next) {
+  if (!req.session || !req.session.user) {
+    return res.status(401).json({
+      success: false,
+      message: 'Please login first.'
+    });
+  }
 
-    const {
-        name,
-        age,
-        gender,
-        passport_number
-    } = req.body;
-
-    try {
-
-        const passenger = await Passenger.create({
-            name,
-            age,
-            gender,
-            passport_number
-        });
-
-        res.json({
-            success: true,
-            passenger_id: passenger._id
-        });
-
-    } catch (err) {
-
-        console.error(
-            'PASSENGER INSERT ERROR:',
-            err
-        );
-
-        res.status(500).json({
-            success: false,
-            message: err.message
-        });
-    }
-});
-
-
-/* =========================================================
-   OLD SEAT LOOKUP ENDPOINT
-========================================================= */
-
-router.post('/seat', async (req, res) => {
-
-    const {
-        flight_id,
-        class: cabinClass
-    } = req.body;
-
-    if (!flight_id || !cabinClass) {
-
-        return res.status(400).json({
-            success: false,
-            message:
-                'flight_id and class are required'
-        });
-    }
-
-    try {
-
-        const flight =
-            await Flight.findById(flight_id).lean();
-
-        if (!flight) {
-
-            return res.status(404).json({
-                success: false,
-                message: 'Flight not found'
-            });
-        }
-
-        const seat =
-            flight.seats.find(
-                s =>
-                    s.class === cabinClass &&
-                    s.availability === true
-            );
-
-        if (!seat) {
-
-            return res.status(400).json({
-                success: false,
-                message:
-                    'No seats available in this class'
-            });
-        }
-
-        res.json({
-            success: true,
-            seat_id: seat._id,
-            seat_number: seat.seat_number,
-            price: seat.price
-        });
-
-    } catch (err) {
-
-        console.error(
-            'SEAT LOOKUP ERROR:',
-            err
-        );
-
-        res.status(500).json({
-            success: false,
-            message: err.message
-        });
-    }
-});
-
-
-/* =========================================================
-   NEW MULTI-PASSENGER BOOKING
-========================================================= */
-
-router.post(
-    '/booking-group',
-    requireAuth,
-    async (req, res) => {
-
-        const {
-            flight_id,
-            cabin_class,
-            passengers,
-            booking_date
-        } = req.body;
-
-        if (!flight_id) {
-
-            return res.status(400).json({
-                success: false,
-                message: 'Flight is required'
-            });
-        }
-
-        if (
-            !mongoose.isValidObjectId(
-                flight_id
-            )
-        ) {
-
-            return res.status(400).json({
-                success: false,
-                message: 'Invalid flight ID'
-            });
-        }
-
-        if (
-            !Array.isArray(passengers) ||
-            passengers.length === 0
-        ) {
-
-            return res.status(400).json({
-                success: false,
-                message:
-                    'At least one passenger is required'
-            });
-        }
-
-        if (passengers.length > 9) {
-
-            return res.status(400).json({
-                success: false,
-                message:
-                    'Maximum 9 passengers per booking'
-            });
-        }
-
-        const cabin =
-            cabin_class || 'Economy';
-
-        const createdPassengerIds = [];
-        const claimedSeats = [];
-
-        try {
-
-            const flight =
-                await Flight.findById(
-                    flight_id
-                );
-
-            if (!flight) {
-
-                return res.status(404).json({
-                    success: false,
-                    message: 'Flight not found'
-                });
-            }
-
-
-            /*
-             * Make sure enough seats exist before
-             * modifying inventory.
-             */
-            const availableSeats =
-                flight.seats.filter(
-                    s =>
-                        s.class === cabin &&
-                        s.availability === true
-                );
-
-            if (
-                availableSeats.length <
-                passengers.length
-            ) {
-
-                return res.status(400).json({
-                    success: false,
-                    message:
-                        `Only ${availableSeats.length} ${cabin} seat(s) are available.`
-                });
-            }
-
-
-            /*
-             * Claim one seat at a time.
-             *
-             * The availability condition makes the
-             * operation safe against simultaneous bookings.
-             */
-            for (
-                let i = 0;
-                i < passengers.length;
-                i++
-            ) {
-
-                const requestedPassenger =
-                    passengers[i];
-
-                if (
-                    !requestedPassenger.name ||
-                    !requestedPassenger.age ||
-                    !requestedPassenger.gender ||
-                    !requestedPassenger.passport_number
-                ) {
-
-                    throw new Error(
-                        `Complete details are required for Passenger ${i + 1}.`
-                    );
-                }
-
-
-                const candidateFlight =
-                    await Flight.findById(
-                        flight_id
-                    ).lean();
-
-                const candidateSeat =
-                    candidateFlight.seats.find(
-                        seat =>
-                            seat.class === cabin &&
-                            seat.availability === true &&
-                            !claimedSeats.some(
-                                claimed =>
-                                    String(
-                                        claimed.seat_id
-                                    ) ===
-                                    String(seat._id)
-                            )
-                    );
-
-                if (!candidateSeat) {
-
-                    throw new Error(
-                        'A seat became unavailable. Please try again.'
-                    );
-                }
-
-
-                /*
-                 * Atomically claim this exact seat.
-                 */
-                const updatedFlight =
-                    await Flight.findOneAndUpdate(
-
-                        {
-                            _id: flight_id,
-                            'seats._id':
-                                candidateSeat._id,
-                            'seats.availability':
-                                true
-                        },
-
-                        {
-                            $set: {
-                                'seats.$.availability':
-                                    false
-                            }
-                        },
-
-                        {
-                            new: true
-                        }
-                    );
-
-                if (!updatedFlight) {
-
-                    throw new Error(
-                        'A selected seat is no longer available.'
-                    );
-                }
-
-
-                const claimedSeat =
-                    updatedFlight.seats.find(
-                        seat =>
-                            String(seat._id) ===
-                            String(candidateSeat._id)
-                    );
-
-                claimedSeats.push({
-                    seat_id:
-                        claimedSeat._id,
-                    seat_number:
-                        claimedSeat.seat_number,
-                    price:
-                        Number(
-                            claimedSeat.price
-                        )
-                });
-
-
-                /*
-                 * Store passenger separately too,
-                 * preserving the existing Passenger collection.
-                 */
-                const passengerDoc =
-                    await Passenger.create({
-
-                        name:
-                            String(
-                                requestedPassenger.name
-                            ).trim(),
-
-                        age:
-                            Number(
-                                requestedPassenger.age
-                            ),
-
-                        gender:
-                            requestedPassenger.gender,
-
-                        passport_number:
-                            String(
-                                requestedPassenger.passport_number
-                            ).trim()
-                    });
-
-                createdPassengerIds.push(
-                    passengerDoc._id
-                );
-            }
-
-
-            /*
-             * Build one booking containing
-             * every passenger.
-             */
-            const passengerEntries =
-                passengers.map(
-                    (passenger, index) => {
-
-                        const seat =
-                            claimedSeats[index];
-
-                        return {
-
-                            passenger_id:
-                                createdPassengerIds[index],
-
-                            name:
-                                String(
-                                    passenger.name
-                                ).trim(),
-
-                            age:
-                                Number(
-                                    passenger.age
-                                ),
-
-                            gender:
-                                passenger.gender,
-
-                            passport_number:
-                                String(
-                                    passenger.passport_number
-                                ).trim(),
-
-                            seat_id:
-                                seat.seat_id,
-
-                            seat_number:
-                                seat.seat_number,
-
-                            meal_preference:
-                                passenger.meal_preference ||
-                                'None',
-
-                            wheelchair_required:
-                                passenger.wheelchair_required ===
-                                'YES'
-                                    ? 'YES'
-                                    : 'NO',
-
-                            special_assistance:
-                                passenger.special_assistance ||
-                                'None',
-
-                            infant_bassinet_required:
-                                passenger.infant_bassinet_required ===
-                                'YES'
-                                    ? 'YES'
-                                    : 'NO'
-                        };
-                    }
-                );
-
-
-            const totalAmount =
-                claimedSeats.reduce(
-                    (sum, seat) =>
-                        sum + Number(seat.price),
-                    0
-                );
-
-
-            const booking =
-                await Booking.create({
-
-                    user:
-                        req.session.userId,
-
-                    flight:
-                        flight_id,
-
-                    passengers:
-                        passengerEntries,
-
-                    /*
-                     * Keep first passenger/seat in
-                     * legacy fields.
-                     */
-                    passenger:
-                        createdPassengerIds[0],
-
-                    seat_id:
-                        claimedSeats[0].seat_id,
-
-                    seat_number:
-                        claimedSeats[0].seat_number,
-
-                    cabin_class:
-                        cabin,
-
-                    booking_date:
-                        booking_date ||
-                        new Date()
-                            .toISOString()
-                            .split('T')[0],
-
-                    payment_status:
-                        'PENDING',
-
-                    status:
-                        'CONFIRMED'
-                });
-
-
-            res.json({
-
-                success: true,
-
-                booking_id:
-                    booking._id.toString(),
-
-                passenger_count:
-                    passengerEntries.length,
-
-                seats:
-                    claimedSeats.map(
-                        s => s.seat_number
-                    ),
-
-                total_amount:
-                    totalAmount,
-
-                payment_status:
-                    'PENDING',
-
-                message:
-                    'Booking created successfully'
-            });
-
-        } catch (err) {
-
-            console.error(
-                'GROUP BOOKING ERROR:',
-                err
-            );
-
-
-            /*
-             * Roll back all seats already claimed.
-             */
-            for (
-                const claimed of claimedSeats
-            ) {
-
-                try {
-
-                    const currentFlight =
-                        await Flight.findById(
-                            flight_id
-                        );
-
-                    if (!currentFlight)
-                        continue;
-
-                    const seatIndex =
-                        currentFlight.seats.findIndex(
-                            s =>
-                                String(s._id) ===
-                                String(
-                                    claimed.seat_id
-                                )
-                        );
-
-                    if (seatIndex !== -1) {
-
-                        await Flight.updateOne(
-                            {
-                                _id:
-                                    flight_id
-                            },
-                            {
-                                $set: {
-                                    [`seats.${seatIndex}.availability`]:
-                                        true
-                                }
-                            }
-                        );
-                    }
-
-                } catch (rollbackError) {
-
-                    console.error(
-                        'SEAT ROLLBACK ERROR:',
-                        rollbackError
-                    );
-                }
-            }
-
-
-            /*
-             * Remove Passenger documents created
-             * before the booking failed.
-             */
-            if (
-                createdPassengerIds.length
-            ) {
-
-                await Passenger.deleteMany({
-                    _id: {
-                        $in:
-                            createdPassengerIds
-                    }
-                }).catch(() => {});
-            }
-
-
-            res.status(500).json({
-
-                success: false,
-
-                message:
-                    err.message ||
-                    'Could not create booking'
-            });
-        }
-    }
-);
-
-
-/* =========================================================
-   LEGACY SINGLE BOOKING
-========================================================= */
-
-router.post(
-    '/booking',
-    requireAuth,
-    async (req, res) => {
-
-        const {
-            flight_id,
-            passenger_id,
-            seat_id,
-            meal_preference,
-            wheelchair_required,
-            special_assistance,
-            infant_bassinet_required
-        } = req.body;
-
-        if (
-            !flight_id ||
-            !passenger_id ||
-            !seat_id
-        ) {
-
-            return res.status(400).json({
-                success: false,
-                message:
-                    'flight_id, passenger_id and seat_id are required'
-            });
-        }
-
-        try {
-
-            const flight =
-                await Flight.findById(
-                    flight_id
-                );
-
-            if (!flight) {
-
-                return res.status(404).json({
-                    success: false,
-                    message:
-                        'Flight not found'
-                });
-            }
-
-
-            const seatIndex =
-                flight.seats.findIndex(
-                    s =>
-                        String(s._id) ===
-                        String(seat_id)
-                );
-
-            if (seatIndex === -1) {
-
-                return res.status(404).json({
-                    success: false,
-                    message:
-                        'Seat not found'
-                });
-            }
-
-
-            const claim =
-                await Flight.findOneAndUpdate(
-
-                    {
-                        _id: flight_id,
-
-                        [`seats.${seatIndex}._id`]:
-                            seat_id,
-
-                        [`seats.${seatIndex}.availability`]:
-                            true
-                    },
-
-                    {
-                        $set: {
-                            [`seats.${seatIndex}.availability`]:
-                                false
-                        }
-                    },
-
-                    {
-                        new: true
-                    }
-                );
-
-            if (!claim) {
-
-                return res.status(400).json({
-                    success: false,
-                    message:
-                        'Seat not available'
-                });
-            }
-
-
-            const seat =
-                claim.seats.id(
-                    seat_id
-                );
-
-
-            try {
-
-                const passenger =
-                    await Passenger.findById(
-                        passenger_id
-                    ).lean();
-
-                if (!passenger) {
-
-                    throw new Error(
-                        'Passenger not found'
-                    );
-                }
-
-
-                const booking =
-                    await Booking.create({
-
-                        user:
-                            req.session.userId,
-
-                        flight:
-                            flight_id,
-
-                        passenger:
-                            passenger_id,
-
-                        seat_id:
-                            seat_id,
-
-                        seat_number:
-                            seat.seat_number,
-
-                        cabin_class:
-                            seat.class,
-
-                        meal_preference:
-                            meal_preference ||
-                            'None',
-
-                        wheelchair_required:
-                            wheelchair_required ||
-                            'NO',
-
-                        special_assistance:
-                            special_assistance ||
-                            'None',
-
-                        infant_bassinet_required:
-                            infant_bassinet_required ||
-                            'NO',
-
-                        passengers: [
-                            {
-                                passenger_id:
-                                    passenger._id,
-
-                                name:
-                                    passenger.name,
-
-                                age:
-                                    passenger.age,
-
-                                gender:
-                                    passenger.gender,
-
-                                passport_number:
-                                    passenger.passport_number,
-
-                                seat_id:
-                                    seat._id,
-
-                                seat_number:
-                                    seat.seat_number,
-
-                                meal_preference:
-                                    meal_preference ||
-                                    'None',
-
-                                wheelchair_required:
-                                    wheelchair_required ||
-                                    'NO',
-
-                                special_assistance:
-                                    special_assistance ||
-                                    'None',
-
-                                infant_bassinet_required:
-                                    infant_bassinet_required ||
-                                    'NO'
-                            }
-                        ],
-
-                        payment_status:
-                            'PENDING'
-                    });
-
-
-                res.json({
-
-                    success: true,
-
-                    booking_id:
-                        booking._id.toString(),
-
-                    total_amount:
-                        Number(seat.price),
-
-                    message:
-                        'Booking successful'
-                });
-
-            } catch (err) {
-
-                await Flight.updateOne(
-
-                    {
-                        _id:
-                            flight_id
-                    },
-
-                    {
-                        $set: {
-                            [`seats.${seatIndex}.availability`]:
-                                true
-                        }
-                    }
-                );
-
-                throw err;
-            }
-
-        } catch (err) {
-
-            console.error(
-                'BOOKING INSERT ERROR:',
-                err
-            );
-
-            res.status(500).json({
-                success: false,
-                message: err.message
-            });
-        }
-    }
-);
-
-
-/* =========================================================
-   CANCEL BOOKING
-========================================================= */
-
-router.put(
-    '/cancel-booking',
-    requireAuth,
-    async (req, res) => {
-
-        const {
-            booking_id
-        } = req.body;
-
-        try {
-
-            if (
-                !mongoose.isValidObjectId(
-                    booking_id
-                )
-            ) {
-
-                return res.status(404).json({
-                    success: false,
-                    message:
-                        'Booking not found'
-                });
-            }
-
-
-            const booking =
-                await Booking.findById(
-                    booking_id
-                );
-
-            if (!booking) {
-
-                return res.status(404).json({
-                    success: false,
-                    message:
-                        'Booking not found'
-                });
-            }
-
-
-            if (
-                String(booking.user) !==
-                String(req.session.userId)
-            ) {
-
-                return res.status(403).json({
-                    success: false,
-                    message:
-                        'Not authorized'
-                });
-            }
-
-
-            if (
-                booking.status ===
-                'CANCELLED'
-            ) {
-
-                return res.status(400).json({
-                    success: false,
-                    message:
-                        'Booking already cancelled'
-                });
-            }
-
-
-            const flight =
-                await Flight.findById(
-                    booking.flight
-                );
-
-
-            if (flight) {
-
-                const seatsToRelease = [];
-
-
-                if (
-                    Array.isArray(
-                        booking.passengers
-                    ) &&
-                    booking.passengers.length
-                ) {
-
-                    booking.passengers.forEach(
-                        passenger => {
-
-                            if (
-                                passenger.seat_id
-                            ) {
-
-                                seatsToRelease.push(
-                                    passenger.seat_id
-                                );
-                            }
-                        }
-                    );
-
-                } else if (
-                    booking.seat_id
-                ) {
-
-                    seatsToRelease.push(
-                        booking.seat_id
-                    );
-                }
-
-
-                for (
-                    const seatId
-                    of seatsToRelease
-                ) {
-
-                    const index =
-                        flight.seats.findIndex(
-                            seat =>
-                                String(
-                                    seat._id
-                                ) ===
-                                String(seatId)
-                        );
-
-                    if (index !== -1) {
-
-                        flight.seats[
-                            index
-                        ].availability = true;
-                    }
-                }
-
-
-                await flight.save();
-            }
-
-
-            booking.status =
-                'CANCELLED';
-
-
-            if (
-                booking.payment_status ===
-                'PAID'
-            ) {
-
-                booking.payment_status =
-                    'REFUNDED';
-
-            }
-
-
-            await booking.save();
-
-
-            await Payment.updateMany(
-
-                {
-                    booking:
-                        booking._id
-                },
-
-                {
-                    $set: {
-                        payment_status:
-                            'REFUNDED'
-                    }
-                }
-            );
-
-
-            res.json({
-
-                success: true,
-
-                message:
-                    'Booking cancelled successfully'
-            });
-
-        } catch (err) {
-
-            console.error(
-                'CANCEL BOOKING ERROR:',
-                err
-            );
-
-            res.status(500).json({
-                success: false,
-                message: err.message
-            });
-        }
-    }
-);
-
-
-/* =========================================================
-   BOOKING DETAILS
-========================================================= */
-
-function formatDateTime(value) {
-
-    if (!value)
-        return null;
-
-    return String(value)
-        .slice(0, 16);
+  next();
 }
 
 
+// ============================================================
+// AGE CALCULATOR
+// ============================================================
+
+function calculateAge(dateOfBirth) {
+  if (!dateOfBirth) return null;
+
+  const dob = new Date(dateOfBirth);
+
+  if (Number.isNaN(dob.getTime())) {
+    return null;
+  }
+
+  const today = new Date();
+
+  let age = today.getFullYear() - dob.getFullYear();
+
+  const monthDifference = today.getMonth() - dob.getMonth();
+
+  if (
+    monthDifference < 0 ||
+    (monthDifference === 0 && today.getDate() < dob.getDate())
+  ) {
+    age--;
+  }
+
+  return age;
+}
+
+
+// ============================================================
+// CLAIM ONE AVAILABLE SEAT SAFELY
+// ============================================================
+
+async function claimSeat(flightId, cabinClass) {
+  for (let attempt = 0; attempt < 5; attempt++) {
+
+    const flight = await Flight.findById(flightId);
+
+    if (!flight) {
+      throw new Error('Flight not found.');
+    }
+
+    const seatIndex = flight.seats.findIndex(
+      seat =>
+        seat.class === cabinClass &&
+        seat.availability === true
+    );
+
+    if (seatIndex === -1) {
+      throw new Error(
+        `No ${cabinClass} seats are currently available.`
+      );
+    }
+
+    const seat = flight.seats[seatIndex];
+
+    const updateField =
+      `seats.${seatIndex}.availability`;
+
+    const updatedFlight = await Flight.findOneAndUpdate(
+      {
+        _id: flightId,
+        [updateField]: true
+      },
+      {
+        $set: {
+          [updateField]: false
+        }
+      },
+      {
+        new: true
+      }
+    );
+
+    if (updatedFlight) {
+      return updatedFlight.seats[seatIndex];
+    }
+  }
+
+  throw new Error(
+    'The selected seat became unavailable. Please try again.'
+  );
+}
+
+
+// ============================================================
+// RELEASE SEATS
+// ============================================================
+
+async function releaseSeats(flightId, seatIds) {
+  if (!seatIds || seatIds.length === 0) {
+    return;
+  }
+
+  const flight = await Flight.findById(flightId);
+
+  if (!flight) {
+    return;
+  }
+
+  const seatIdStrings = seatIds.map(id => String(id));
+
+  let changed = false;
+
+  flight.seats.forEach(seat => {
+    if (
+      seatIdStrings.includes(String(seat._id)) &&
+      seat.availability === false
+    ) {
+      seat.availability = true;
+      changed = true;
+    }
+  });
+
+  if (changed) {
+    await flight.save();
+  }
+}
+
+
+// ============================================================
+// OLD: CREATE PASSENGER
+// ============================================================
+
+router.post('/passenger', requireAuth, async (req, res) => {
+  try {
+    const {
+      name,
+      age,
+      gender,
+      passport_number
+    } = req.body;
+
+    if (!name || !age || !gender || !passport_number) {
+      return res.status(400).json({
+        success: false,
+        message: 'All passenger fields are required.'
+      });
+    }
+
+    const passenger = await Passenger.create({
+      name,
+      age,
+      gender,
+      passport_number
+    });
+
+    res.json({
+      success: true,
+      passenger_id: passenger._id
+    });
+
+  } catch (error) {
+    console.error('Passenger creation error:', error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+});
+
+
+// ============================================================
+// OLD: FIND AVAILABLE SEAT
+// ============================================================
+
+router.post('/seat', requireAuth, async (req, res) => {
+  try {
+    const {
+      flight_id,
+      cabin_class
+    } = req.body;
+
+    if (!flight_id || !cabin_class) {
+      return res.status(400).json({
+        success: false,
+        message: 'Flight ID and cabin class are required.'
+      });
+    }
+
+    const flight = await Flight.findById(flight_id);
+
+    if (!flight) {
+      return res.status(404).json({
+        success: false,
+        message: 'Flight not found.'
+      });
+    }
+
+    const seat = flight.seats.find(
+      s =>
+        s.class === cabin_class &&
+        s.availability === true
+    );
+
+    if (!seat) {
+      return res.status(404).json({
+        success: false,
+        message: `No ${cabin_class} seats available.`
+      });
+    }
+
+    res.json({
+      success: true,
+      seat_id: seat._id,
+      seat_number: seat.seat_number,
+      price: seat.price,
+      cabin_class: seat.class
+    });
+
+  } catch (error) {
+    console.error('Seat lookup error:', error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+});
+
+
+// ============================================================
+// NEW: MULTI-PASSENGER BOOKING
+// ============================================================
+
+router.post('/booking-group', requireAuth, async (req, res) => {
+
+  const createdPassengerIds = [];
+  const claimedSeatIds = [];
+
+  try {
+
+    const {
+      flight_id,
+      passengers,
+      booking_date
+    } = req.body;
+
+    // --------------------------------------------------------
+    // VALIDATE REQUEST
+    // --------------------------------------------------------
+
+    if (!flight_id) {
+      return res.status(400).json({
+        success: false,
+        message: 'Flight ID is required.'
+      });
+    }
+
+    if (
+      !mongoose.Types.ObjectId.isValid(flight_id)
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid flight ID.'
+      });
+    }
+
+    if (
+      !Array.isArray(passengers) ||
+      passengers.length === 0
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: 'At least one passenger is required.'
+      });
+    }
+
+    if (passengers.length > 9) {
+      return res.status(400).json({
+        success: false,
+        message: 'Maximum 9 passengers are allowed per booking.'
+      });
+    }
+
+    // --------------------------------------------------------
+    // CHECK FLIGHT
+    // --------------------------------------------------------
+
+    const flight = await Flight.findById(flight_id);
+
+    if (!flight) {
+      return res.status(404).json({
+        success: false,
+        message: 'Flight not found.'
+      });
+    }
+
+    // --------------------------------------------------------
+    // VALIDATE ALL PASSENGERS BEFORE CHANGING DB
+    // --------------------------------------------------------
+
+    for (let i = 0; i < passengers.length; i++) {
+
+      const passenger = passengers[i];
+
+      if (
+        !passenger.first_name ||
+        !passenger.surname ||
+        !passenger.date_of_birth ||
+        !passenger.gender ||
+        !passenger.passport_number
+      ) {
+        return res.status(400).json({
+          success: false,
+          message:
+            `Please complete all required fields for Passenger ${i + 1}.`
+        });
+      }
+
+      if (
+        !['Male', 'Female', 'Other'].includes(
+          passenger.gender
+        )
+      ) {
+        return res.status(400).json({
+          success: false,
+          message:
+            `Invalid gender for Passenger ${i + 1}.`
+        });
+      }
+
+      if (
+        !passenger.cabin_class
+      ) {
+        return res.status(400).json({
+          success: false,
+          message:
+            `Cabin class is required for Passenger ${i + 1}.`
+        });
+      }
+    }
+
+    // --------------------------------------------------------
+    // CREATE PASSENGERS + CLAIM SEATS
+    // --------------------------------------------------------
+
+    const bookingPassengers = [];
+    let totalAmount = 0;
+
+    for (let i = 0; i < passengers.length; i++) {
+
+      const data = passengers[i];
+
+      const passengerDocument = await Passenger.create({
+        first_name: data.first_name.trim(),
+        surname: data.surname.trim(),
+        date_of_birth: data.date_of_birth,
+        gender: data.gender,
+        passport_number:
+          data.passport_number.trim().toUpperCase(),
+
+        meal_preference:
+          data.meal_preference || 'None',
+
+        special_assistance:
+          data.special_assistance || 'None',
+
+        wheelchair_required:
+          Boolean(data.wheelchair_required),
+
+        infant_bassinet_required:
+          Boolean(data.infant_bassinet_required),
+
+        // Legacy compatibility
+        name:
+          `${data.first_name.trim()} ${data.surname.trim()}`,
+
+        age:
+          calculateAge(data.date_of_birth)
+      });
+
+      createdPassengerIds.push(
+        passengerDocument._id
+      );
+
+      // Claim seat
+      const claimedSeat = await claimSeat(
+        flight_id,
+        data.cabin_class
+      );
+
+      claimedSeatIds.push(
+        claimedSeat._id
+      );
+
+      totalAmount += Number(
+        claimedSeat.price || 0
+      );
+
+      bookingPassengers.push({
+        passenger: passengerDocument._id,
+        seat_id: claimedSeat._id,
+        seat_number: claimedSeat.seat_number,
+        cabin_class: claimedSeat.class
+      });
+    }
+
+    // --------------------------------------------------------
+    // CREATE ONE BOOKING FOR THE WHOLE GROUP
+    // --------------------------------------------------------
+
+    const booking = await Booking.create({
+      user: req.session.user._id ||
+            req.session.user.id,
+
+      flight: flight_id,
+
+      passengers: bookingPassengers,
+
+      booking_date:
+        booking_date ||
+        new Date().toISOString().split('T')[0],
+
+      status: 'CONFIRMED'
+    });
+
+    // --------------------------------------------------------
+    // RESPONSE
+    // --------------------------------------------------------
+
+    res.status(201).json({
+      success: true,
+
+      message:
+        'Booking created successfully.',
+
+      booking_id: booking._id,
+
+      amount: totalAmount,
+
+      passengers:
+        bookingPassengers.map(item => ({
+          passenger_id: item.passenger,
+          seat_id: item.seat_id,
+          seat_number: item.seat_number,
+          cabin_class: item.cabin_class
+        }))
+    });
+
+  } catch (error) {
+
+    console.error(
+      'GROUP BOOKING ERROR:',
+      error
+    );
+
+    // --------------------------------------------------------
+    // ROLLBACK SEATS
+    // --------------------------------------------------------
+
+    try {
+
+      if (claimedSeatIds.length > 0) {
+
+        await releaseSeats(
+          req.body.flight_id,
+          claimedSeatIds
+        );
+      }
+
+    } catch (releaseError) {
+
+      console.error(
+        'Seat rollback failed:',
+        releaseError
+      );
+    }
+
+    // --------------------------------------------------------
+    // ROLLBACK PASSENGERS
+    // --------------------------------------------------------
+
+    try {
+
+      if (createdPassengerIds.length > 0) {
+
+        await Passenger.deleteMany({
+          _id: {
+            $in: createdPassengerIds
+          }
+        });
+      }
+
+    } catch (deleteError) {
+
+      console.error(
+        'Passenger rollback failed:',
+        deleteError
+      );
+    }
+
+    res.status(500).json({
+      success: false,
+      message:
+        error.message ||
+        'Unable to create booking.'
+    });
+  }
+});
+
+
+// ============================================================
+// OLD: SINGLE-PASSENGER BOOKING
+// ============================================================
+
+router.post('/booking', requireAuth, async (req, res) => {
+
+  try {
+
+    const {
+      flight_id,
+      passenger_id,
+      seat_id,
+      booking_date,
+      meal_preference,
+      wheelchair_required,
+      special_assistance,
+      infant_bassinet_required
+    } = req.body;
+
+    if (
+      !flight_id ||
+      !passenger_id ||
+      !seat_id
+    ) {
+      return res.status(400).json({
+        success: false,
+        message:
+          'Flight, passenger and seat are required.'
+      });
+    }
+
+    const flight = await Flight.findById(
+      flight_id
+    );
+
+    if (!flight) {
+      return res.status(404).json({
+        success: false,
+        message: 'Flight not found.'
+      });
+    }
+
+    const seat = flight.seats.id(
+      seat_id
+    );
+
+    if (!seat) {
+      return res.status(404).json({
+        success: false,
+        message: 'Seat not found.'
+      });
+    }
+
+    if (!seat.availability) {
+      return res.status(409).json({
+        success: false,
+        message: 'Seat is no longer available.'
+      });
+    }
+
+    seat.availability = false;
+
+    await flight.save();
+
+    const booking = await Booking.create({
+      user:
+        req.session.user._id ||
+        req.session.user.id,
+
+      flight: flight_id,
+
+      passenger: passenger_id,
+
+      seat_id: seat._id,
+
+      seat_number: seat.seat_number,
+
+      cabin_class: seat.class,
+
+      meal_preference:
+        meal_preference || 'None',
+
+      wheelchair_required:
+        wheelchair_required || 'NO',
+
+      special_assistance:
+        special_assistance || null,
+
+      infant_bassinet_required:
+        infant_bassinet_required || 'NO',
+
+      booking_date:
+        booking_date ||
+        new Date().toISOString().split('T')[0],
+
+      status: 'CONFIRMED'
+    });
+
+    res.json({
+      success: true,
+      booking_id: booking._id,
+      amount: seat.price
+    });
+
+  } catch (error) {
+
+    console.error(
+      'Booking creation error:',
+      error
+    );
+
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+});
+
+
+// ============================================================
+// MY BOOKINGS
+// ============================================================
+
+router.get('/my-bookings', requireAuth, async (req, res) => {
+
+  try {
+
+    const userId =
+      req.session.user._id ||
+      req.session.user.id;
+
+    const bookings = await Booking
+      .find({ user: userId })
+      .sort({ createdAt: -1 })
+      .select('_id status booking_date createdAt');
+
+    res.json({
+      success: true,
+      booking_ids:
+        bookings.map(booking => ({
+          id: booking._id,
+          status: booking.status,
+          booking_date: booking.booking_date,
+          createdAt: booking.createdAt
+        }))
+    });
+
+  } catch (error) {
+
+    console.error(
+      'My bookings error:',
+      error
+    );
+
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+});
+
+
+// ============================================================
+// BOOKING DETAILS
+// ============================================================
+
 router.get(
-    '/booking-details/:booking_id',
-    requireAuth,
-    async (req, res) => {
-
-        const {
-            booking_id
-        } = req.params;
-
-        try {
-
-            if (
-                !mongoose.isValidObjectId(
-                    booking_id
-                )
-            ) {
-
-                return res.status(404).json({
-                    success: false,
-                    message:
-                        'Booking not found'
-                });
-            }
-
-
-            const booking =
-                await Booking.findById(
-                    booking_id
-                ).lean();
-
-
-            if (!booking) {
-
-                return res.status(404).json({
-                    success: false,
-                    message:
-                        'Booking not found'
-                });
-            }
-
-
-            if (
-                String(booking.user) !==
-                String(req.session.userId)
-            ) {
-
-                return res.status(403).json({
-                    success: false,
-                    message:
-                        'Not authorized'
-                });
-            }
-
-
-            const [
-                flight,
-                payment
-            ] = await Promise.all([
-
-                Flight.findById(
-                    booking.flight
-                ).lean(),
-
-                Payment.findOne({
-                    booking:
-                        booking._id
-                })
-                    .sort({
-                        createdAt: -1
-                    })
-                    .lean()
-            ]);
-
-
-            if (!flight) {
-
-                return res.status(404).json({
-                    success: false,
-                    message:
-                        'Flight not found'
-                });
-            }
-
-
-            let passengers = [];
-
-
-            /*
-             * New multi-passenger booking.
-             */
-            if (
-                Array.isArray(
-                    booking.passengers
-                ) &&
-                booking.passengers.length
-            ) {
-
-                passengers =
-                    booking.passengers.map(
-                        passenger => {
-
-                            const seat =
-                                (
-                                    flight.seats ||
-                                    []
-                                ).find(
-                                    s =>
-                                        String(
-                                            s._id
-                                        ) ===
-                                        String(
-                                            passenger.seat_id
-                                        )
-                                );
-
-
-                            return {
-
-                                NAME:
-                                    passenger.name,
-
-                                AGE:
-                                    passenger.age,
-
-                                GENDER:
-                                    passenger.gender,
-
-                                PASSPORT_NUMBER:
-                                    passenger.passport_number,
-
-                                SEAT_NUMBER:
-                                    passenger.seat_number ||
-                                    (
-                                        seat &&
-                                        seat.seat_number
-                                    ),
-
-                                CLASS:
-                                    booking.cabin_class ||
-                                    (
-                                        seat &&
-                                        seat.class
-                                    ),
-
-                                PRICE:
-                                    seat
-                                        ? Number(
-                                            seat.price
-                                        )
-                                        : 0,
-
-                                MEAL_PREFERENCE:
-                                    passenger.meal_preference ||
-                                    'None',
-
-                                WHEELCHAIR_REQUIRED:
-                                    passenger.wheelchair_required ||
-                                    'NO',
-
-                                SPECIAL_ASSISTANCE:
-                                    passenger.special_assistance ||
-                                    'None',
-
-                                INFANT_BASSINET_REQUIRED:
-                                    passenger.infant_bassinet_required ||
-                                    'NO'
-                            };
-                        }
-                    );
-
-            } else {
-
-                /*
-                 * Legacy booking.
-                 */
-                const passenger =
-                    booking.passenger
-                        ? await Passenger.findById(
-                            booking.passenger
-                        ).lean()
-                        : null;
-
-
-                const seat =
-                    (
-                        flight.seats ||
-                        []
-                    ).find(
-                        s =>
-                            String(s._id) ===
-                            String(
-                                booking.seat_id
-                            )
-                    );
-
-
-                if (passenger) {
-
-                    passengers = [
-                        {
-
-                            NAME:
-                                passenger.name,
-
-                            AGE:
-                                passenger.age,
-
-                            GENDER:
-                                passenger.gender,
-
-                            PASSPORT_NUMBER:
-                                passenger.passport_number,
-
-                            SEAT_NUMBER:
-                                booking.seat_number ||
-                                (
-                                    seat &&
-                                    seat.seat_number
-                                ),
-
-                            CLASS:
-                                booking.cabin_class ||
-                                (
-                                    seat &&
-                                    seat.class
-                                ),
-
-                            PRICE:
-                                seat
-                                    ? Number(
-                                        seat.price
-                                    )
-                                    : 0,
-
-                            MEAL_PREFERENCE:
-                                booking.meal_preference ||
-                                'None',
-
-                            WHEELCHAIR_REQUIRED:
-                                booking.wheelchair_required ||
-                                'NO',
-
-                            SPECIAL_ASSISTANCE:
-                                booking.special_assistance ||
-                                'None',
-
-                            INFANT_BASSINET_REQUIRED:
-                                booking.infant_bassinet_required ||
-                                'NO'
-                        }
-                    ];
-                }
-            }
-
-
-            const amount =
-                passengers.reduce(
-                    (sum, passenger) =>
-                        sum +
-                        Number(
-                            passenger.PRICE || 0
-                        ),
-                    0
-                );
-
-
-            res.json({
-
-                success: true,
-
-                data: {
-
-                    BOOKING_ID:
-                        booking._id.toString(),
-
-                    STATUS_:
-                        booking.status,
-
-                    PAYMENT_STATUS:
-                        payment
-                            ? payment.payment_status
-                            : (
-                                booking.payment_status ||
-                                'PENDING'
-                            ),
-
-                    BOOKING_DATE:
-                        booking.booking_date,
-
-                    FLIGHT_NUMBER:
-                        flight.flight_number,
-
-                    AIRLINE_NAME:
-                        flight.airline_name,
-
-                    ORIGIN:
-                        flight.origin,
-
-                    DESTINATION:
-                        flight.destination,
-
-                    DEP_TEXT:
-                        formatDateTime(
-                            flight.departure_time
-                        ),
-
-                    ARR_TEXT:
-                        formatDateTime(
-                            flight.arrival_time
-                        ),
-
-                    PASSENGER_COUNT:
-                        passengers.length,
-
-                    PASSENGERS:
-                        passengers,
-
-                    AMOUNT:
-                        payment
-                            ? Number(
-                                payment.amount
-                            )
-                            : amount,
-
-                    PAYMENT_METHOD:
-                        payment
-                            ? payment.payment_method
-                            : null
-                }
-            });
-
-        } catch (err) {
-
-            console.error(
-                'BOOKING DETAILS ERROR:',
-                err
+  '/booking-details/:booking_id',
+  requireAuth,
+  async (req, res) => {
+
+    try {
+
+      const {
+        booking_id
+      } = req.params;
+
+      if (
+        !mongoose.Types.ObjectId.isValid(
+          booking_id
+        )
+      ) {
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid booking ID.'
+        });
+      }
+
+      const userId =
+        req.session.user._id ||
+        req.session.user.id;
+
+      const booking = await Booking
+        .findOne({
+          _id: booking_id,
+          user: userId
+        })
+        .populate('flight')
+        .populate('passengers.passenger')
+        .populate('passenger');
+
+      if (!booking) {
+        return res.status(404).json({
+          success: false,
+          message: 'Booking not found.'
+        });
+      }
+
+      // ------------------------------------------------------
+      // PAYMENT
+      // ------------------------------------------------------
+
+      const payment = await Payment
+        .findOne({
+          booking: booking._id
+        })
+        .sort({ createdAt: -1 });
+
+      // ------------------------------------------------------
+      // NEW MULTI-PASSENGER BOOKING
+      // ------------------------------------------------------
+
+      if (
+        Array.isArray(booking.passengers) &&
+        booking.passengers.length > 0
+      ) {
+
+        const passengerDetails = [];
+
+        let totalAmount = 0;
+
+        for (
+          const item of booking.passengers
+        ) {
+
+          const passenger =
+            item.passenger;
+
+          const seat =
+            booking.flight.seats.id(
+              item.seat_id
             );
 
-            res.status(500).json({
-                success: false,
-                message: err.message
-            });
+          const price =
+            seat
+              ? Number(seat.price || 0)
+              : 0;
+
+          totalAmount += price;
+
+          passengerDetails.push({
+
+            FIRST_NAME:
+              passenger?.first_name || '',
+
+            SURNAME:
+              passenger?.surname || '',
+
+            NAME:
+              passenger
+                ? `${passenger.first_name || ''} ${passenger.surname || ''}`.trim()
+                : '',
+
+            DOB:
+              passenger?.date_of_birth || '',
+
+            GENDER:
+              passenger?.gender || '',
+
+            PASSPORT_NUMBER:
+              passenger?.passport_number || '',
+
+            SEAT_NUMBER:
+              item.seat_number,
+
+            CLASS:
+              item.cabin_class,
+
+            PRICE:
+              price,
+
+            MEAL_PREFERENCE:
+              passenger?.meal_preference ||
+              'None',
+
+            SPECIAL_ASSISTANCE:
+              passenger?.special_assistance ||
+              'None',
+
+            WHEELCHAIR_REQUIRED:
+              passenger?.wheelchair_required
+                ? 'YES'
+                : 'NO',
+
+            INFANT_BASSINET_REQUIRED:
+              passenger?.infant_bassinet_required
+                ? 'YES'
+                : 'NO'
+          });
         }
+
+        return res.json({
+          success: true,
+
+          data: {
+
+            BOOKING_ID:
+              booking._id,
+
+            STATUS:
+              booking.status,
+
+            BOOKING_DATE:
+              booking.booking_date,
+
+            FLIGHT_NUMBER:
+              booking.flight.flight_number,
+
+            AIRLINE_NAME:
+              booking.flight.airline_name,
+
+            ORIGIN:
+              booking.flight.origin,
+
+            DESTINATION:
+              booking.flight.destination,
+
+            DEP_TEXT:
+              booking.flight.departure_time,
+
+            ARR_TEXT:
+              booking.flight.arrival_time,
+
+            PASSENGERS:
+              passengerDetails,
+
+            AMOUNT:
+              totalAmount,
+
+            PAYMENT_STATUS:
+              payment
+                ? payment.payment_status
+                : 'PENDING',
+
+            PAYMENT_METHOD:
+              payment
+                ? payment.payment_method
+                : null
+          }
+        });
+      }
+
+
+      // ------------------------------------------------------
+      // LEGACY SINGLE-PASSENGER BOOKING
+      // ------------------------------------------------------
+
+      const passenger =
+        booking.passenger;
+
+      const seat =
+        booking.flight.seats.id(
+          booking.seat_id
+        );
+
+      const amount =
+        seat
+          ? Number(seat.price || 0)
+          : 0;
+
+      return res.json({
+
+        success: true,
+
+        data: {
+
+          BOOKING_ID:
+            booking._id,
+
+          STATUS:
+            booking.status,
+
+          BOOKING_DATE:
+            booking.booking_date,
+
+          FLIGHT_NUMBER:
+            booking.flight.flight_number,
+
+          AIRLINE_NAME:
+            booking.flight.airline_name,
+
+          ORIGIN:
+            booking.flight.origin,
+
+          DESTINATION:
+            booking.flight.destination,
+
+          DEP_TEXT:
+            booking.flight.departure_time,
+
+          ARR_TEXT:
+            booking.flight.arrival_time,
+
+          NAME:
+            passenger?.name || '',
+
+          AGE:
+            passenger?.age || '',
+
+          GENDER:
+            passenger?.gender || '',
+
+          PASSPORT_NUMBER:
+            passenger?.passport_number || '',
+
+          SEAT_NUMBER:
+            booking.seat_number,
+
+          CLASS:
+            booking.cabin_class,
+
+          PRICE:
+            amount,
+
+          MEAL_PREFERENCE:
+            booking.meal_preference,
+
+          WHEELCHAIR_REQUIRED:
+            booking.wheelchair_required,
+
+          SPECIAL_ASSISTANCE:
+            booking.special_assistance,
+
+          INFANT_BASSINET_REQUIRED:
+            booking.infant_bassinet_required,
+
+          PASSENGERS: [
+            {
+              NAME:
+                passenger?.name || '',
+
+              GENDER:
+                passenger?.gender || '',
+
+              PASSPORT_NUMBER:
+                passenger?.passport_number || '',
+
+              SEAT_NUMBER:
+                booking.seat_number,
+
+              CLASS:
+                booking.cabin_class,
+
+              PRICE:
+                amount,
+
+              MEAL_PREFERENCE:
+                booking.meal_preference,
+
+              SPECIAL_ASSISTANCE:
+                booking.special_assistance,
+
+              WHEELCHAIR_REQUIRED:
+                booking.wheelchair_required,
+
+              INFANT_BASSINET_REQUIRED:
+                booking.infant_bassinet_required
+            }
+          ],
+
+          AMOUNT:
+            amount,
+
+          PAYMENT_STATUS:
+            payment
+              ? payment.payment_status
+              : 'PENDING',
+
+          PAYMENT_METHOD:
+            payment
+              ? payment.payment_method
+              : null
+        }
+      });
+
+    } catch (error) {
+
+      console.error(
+        'Booking details error:',
+        error
+      );
+
+      res.status(500).json({
+        success: false,
+        message: error.message
+      });
     }
+  }
 );
 
 
-/* =========================================================
-   MY BOOKINGS
-========================================================= */
+// ============================================================
+// CANCEL BOOKING
+// ============================================================
 
-router.get(
-    '/my-bookings',
-    requireAuth,
-    async (req, res) => {
+router.put(
+  '/cancel-booking',
+  requireAuth,
+  async (req, res) => {
 
-        try {
+    try {
 
-            const bookings =
-                await Booking.find({
-                    user:
-                        req.session.userId
-                })
-                    .sort({
-                        createdAt: -1
-                    })
-                    .lean();
+      const {
+        booking_id
+      } = req.body;
 
+      if (
+        !mongoose.Types.ObjectId.isValid(
+          booking_id
+        )
+      ) {
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid booking ID.'
+        });
+      }
 
-            const result = [];
+      const userId =
+        req.session.user._id ||
+        req.session.user.id;
 
+      const booking =
+        await Booking.findOne({
+          _id: booking_id,
+          user: userId
+        });
 
-            for (
-                const booking
-                of bookings
-            ) {
+      if (!booking) {
+        return res.status(404).json({
+          success: false,
+          message: 'Booking not found.'
+        });
+      }
 
-                const [
-                    flight,
-                    payment
-                ] = await Promise.all([
+      if (
+        booking.status === 'CANCELLED'
+      ) {
+        return res.status(400).json({
+          success: false,
+          message: 'Booking is already cancelled.'
+        });
+      }
 
-                    Flight.findById(
-                        booking.flight
-                    ).lean(),
+      const seatIds = [];
 
-                    Payment.findOne({
-                        booking:
-                            booking._id
-                    })
-                        .sort({
-                            createdAt: -1
-                        })
-                        .lean()
-                ]);
+      // New group booking
+      if (
+        Array.isArray(booking.passengers)
+      ) {
+        booking.passengers.forEach(
+          passenger => {
 
-
-                if (!flight)
-                    continue;
-
-
-                let passengers = [];
-
-
-                if (
-                    Array.isArray(
-                        booking.passengers
-                    ) &&
-                    booking.passengers.length
-                ) {
-
-                    passengers =
-                        booking.passengers;
-
-                } else {
-
-                    const passenger =
-                        booking.passenger
-                            ? await Passenger.findById(
-                                booking.passenger
-                            ).lean()
-                            : null;
-
-
-                    if (passenger) {
-
-                        passengers = [
-                            {
-
-                                name:
-                                    passenger.name,
-
-                                age:
-                                    passenger.age,
-
-                                gender:
-                                    passenger.gender,
-
-                                passport_number:
-                                    passenger.passport_number,
-
-                                seat_id:
-                                    booking.seat_id,
-
-                                seat_number:
-                                    booking.seat_number,
-
-                                meal_preference:
-                                    booking.meal_preference,
-
-                                wheelchair_required:
-                                    booking.wheelchair_required,
-
-                                special_assistance:
-                                    booking.special_assistance,
-
-                                infant_bassinet_required:
-                                    booking.infant_bassinet_required
-                            }
-                        ];
-                    }
-                }
-
-
-                let amount = 0;
-
-
-                passengers.forEach(
-                    passenger => {
-
-                        const seat =
-                            flight.seats.find(
-                                s =>
-                                    String(
-                                        s._id
-                                    ) ===
-                                    String(
-                                        passenger.seat_id
-                                    )
-                            );
-
-                        if (seat) {
-
-                            amount +=
-                                Number(
-                                    seat.price
-                                );
-                        }
-                    }
-                );
-
-
-                const paymentStatus =
-                    payment
-                        ? payment.payment_status
-                        : (
-                            booking.payment_status ||
-                            'PENDING'
-                        );
-
-
-                result.push({
-
-                    BOOKING_ID:
-                        booking._id.toString(),
-
-                    STATUS_:
-                        booking.status,
-
-                    PAYMENT_STATUS:
-                        paymentStatus,
-
-                    AIRLINE_NAME:
-                        flight.airline_name,
-
-                    FLIGHT_NUMBER:
-                        flight.flight_number,
-
-                    ORIGIN:
-                        flight.origin,
-
-                    DESTINATION:
-                        flight.destination,
-
-                    DEP_TEXT:
-                        formatDateTime(
-                            flight.departure_time
-                        ),
-
-                    ARR_TEXT:
-                        formatDateTime(
-                            flight.arrival_time
-                        ),
-
-                    PASSENGER_COUNT:
-                        passengers.length,
-
-                    PASSENGER_NAMES:
-                        passengers
-                            .map(
-                                p => p.name
-                            )
-                            .join(', '),
-
-                    SEATS:
-                        passengers
-                            .map(
-                                p =>
-                                    p.seat_number
-                            )
-                            .join(', '),
-
-                    CLASS:
-                        booking.cabin_class ||
-                        'Economy',
-
-                    AMOUNT:
-                        payment
-                            ? Number(
-                                payment.amount
-                            )
-                            : amount,
-
-                    BOOKING_DATE:
-                        booking.booking_date
-                });
+            if (passenger.seat_id) {
+              seatIds.push(
+                passenger.seat_id
+              );
             }
+          }
+        );
+      }
 
+      // Legacy booking
+      if (booking.seat_id) {
+        seatIds.push(
+          booking.seat_id
+        );
+      }
 
-            res.json({
+      await releaseSeats(
+        booking.flight,
+        seatIds
+      );
 
-                success: true,
+      booking.status = 'CANCELLED';
 
-                bookings:
-                    result
-            });
+      await booking.save();
 
-        } catch (err) {
-
-            console.error(
-                'MY BOOKINGS ERROR:',
-                err
-            );
-
-            res.status(500).json({
-                success: false,
-                message: err.message
-            });
+      // Refund payment record
+      await Payment.updateMany(
+        {
+          booking: booking._id,
+          payment_status: 'PAID'
+        },
+        {
+          $set: {
+            payment_status: 'REFUNDED'
+          }
         }
+      );
+
+      res.json({
+        success: true,
+        message:
+          'Booking cancelled successfully.'
+      });
+
+    } catch (error) {
+
+      console.error(
+        'Cancel booking error:',
+        error
+      );
+
+      res.status(500).json({
+        success: false,
+        message: error.message
+      });
     }
+  }
 );
 
 

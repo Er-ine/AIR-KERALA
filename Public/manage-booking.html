@@ -10,7 +10,7 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Manage My Booking | AIR KERALA</title>
+    <title>Payment | Air Kerala</title>
 
     <link
         rel="stylesheet"
@@ -19,234 +19,246 @@
 
     <style>
 
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
-            background: #f5f8fb;
             font-family: Arial, sans-serif;
+            background: #f3f8fb;
         }
 
-        .page-header {
-            text-align: center;
-            padding: 55px 20px 25px;
+        .payment-page {
+            max-width: 900px;
+            margin: 110px auto 60px;
+            padding: 20px;
         }
 
-        .eyebrow {
-            color: #0878d1;
-            font-size: 11px;
-            font-weight: 800;
-            letter-spacing: 2px;
-        }
-
-        .page-header h1 {
-            color: #071b2e;
-            font-size: 42px;
-            font-weight: 800;
-            margin: 8px 0;
-        }
-
-        .page-header p {
-            color: #64748b;
-        }
-
-        .container-bookings {
-            max-width: 1050px;
-            margin: auto;
-            padding: 20px 18px 70px;
-        }
-
-        .section-title {
-            color: #071b2e;
-            font-size: 22px;
-            font-weight: 800;
-            margin: 35px 0 18px;
-        }
-
-        .booking-card {
+        .payment-card {
             background: white;
-            border-radius: 16px;
-            border: 1px solid #e1e8ef;
-            margin-bottom: 22px;
-            overflow: hidden;
-            box-shadow: 0 8px 28px rgba(7,27,46,.06);
+            border-radius: 22px;
+            padding: 35px;
+            box-shadow:
+                0 15px 45px rgba(0, 0, 0, 0.10);
         }
 
-        .booking-top {
-            background: #071b2e;
-            color: white;
-            padding: 20px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        h1 {
+            text-align: center;
+            color: #123d59;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #71808b;
+            margin-bottom: 30px;
+        }
+
+        .booking-summary {
+            background: #f1f8fc;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(160px, 1fr));
             gap: 15px;
-            flex-wrap: wrap;
         }
 
-        .pnr-label {
-            font-size: 10px;
-            opacity: .6;
-            letter-spacing: 1.5px;
+        .summary-label {
+            font-size: 12px;
+            color: #71808b;
+            text-transform: uppercase;
         }
 
-        .pnr {
-            font-size: 20px;
-            font-weight: 800;
-            color: #d7b56d;
-        }
-
-        .badge {
-            border-radius: 30px;
-            padding: 7px 13px;
-            font-size: 11px;
-            font-weight: 800;
-        }
-
-        .confirmed {
-            background: #dcfce7;
-            color: #15803d;
-        }
-
-        .pending {
-            background: #fef3c7;
-            color: #b45309;
-        }
-
-        .paid {
-            background: #dbeafe;
-            color: #1d4ed8;
-        }
-
-        .cancelled {
-            background: #fee2e2;
-            color: #b91c1c;
-        }
-
-        .completed {
-            background: #e5e7eb;
-            color: #475569;
-        }
-
-        .booking-body {
-            padding: 24px;
-        }
-
-        .route {
-            font-size: 25px;
-            font-weight: 800;
-            color: #071b2e;
-        }
-
-        .route span {
-            color: #d7b56d;
-            margin: 0 10px;
-        }
-
-        .flight {
-            color: #64748b;
+        .summary-value {
+            color: #123d59;
+            font-weight: 700;
             margin-top: 5px;
         }
 
-        .facts {
-            display: grid;
-            grid-template-columns:
-                repeat(
-                    auto-fit,
-                    minmax(150px, 1fr)
-                );
-            gap: 18px;
-            margin-top: 25px;
+        .amount-box {
+            text-align: center;
+            padding: 20px;
+            border-radius: 14px;
+            background: #eef8f2;
+            margin-bottom: 25px;
         }
 
-        .label {
-            font-size: 10px;
-            color: #94a3b8;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        .amount-label {
+            color: #587066;
+        }
+
+        .amount {
+            font-size: 32px;
             font-weight: 800;
+            color: #146c43;
+            margin-top: 5px;
         }
 
-        .value {
-            font-weight: 700;
-            color: #1e293b;
-            margin-top: 3px;
-        }
-
-        .actions {
-            padding: 0 24px 22px;
+        .methods {
             display: flex;
             gap: 10px;
+            margin-bottom: 25px;
             flex-wrap: wrap;
         }
 
-        .btn-air {
-            border: 0;
-            border-radius: 30px;
-            padding: 10px 20px;
+        .method-btn {
+            flex: 1;
+            min-width: 120px;
+            padding: 13px;
+            border: 1px solid #d5e0e7;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .method-btn.active {
+            border-color: #123d59;
+            background: #123d59;
+            color: white;
+        }
+
+        .payment-section {
+            display: none;
+        }
+
+        .payment-section.active {
+            display: block;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .field label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #354957;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #d5e0e7;
+            border-radius: 10px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #1683bd;
+        }
+
+        .full {
+            grid-column: 1 / -1;
+        }
+
+        .pay-btn {
+            width: 100%;
+            margin-top: 25px;
+            border: none;
+            border-radius: 12px;
+            padding: 16px;
+            background: #123d59;
+            color: white;
+            font-size: 17px;
             font-weight: 700;
             cursor: pointer;
         }
 
-        .btn-primary {
-            background: #0878d1;
-            color: white;
+        .pay-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
-        .btn-secondary {
-            background: white;
-            border: 1px solid #071b2e;
-            color: #071b2e;
-        }
-
-        .btn-danger {
-            background: white;
-            border: 1px solid #fca5a5;
-            color: #b91c1c;
-        }
-
-        .details {
+        .error {
             display: none;
-            border-top: 1px dashed #d5dee8;
-            background: #f9fbfd;
-            padding: 25px;
+            background: #fff1f1;
+            color: #a52b2b;
+            border: 1px solid #f0caca;
+            padding: 14px;
+            border-radius: 10px;
+            margin-bottom: 20px;
         }
 
-        .details.open {
-            display: block;
+        .success {
+            display: none;
+            text-align: center;
         }
 
-        .passenger-detail {
-            background: white;
-            border: 1px solid #e1e8ef;
-            border-radius: 12px;
-            padding: 18px;
-            margin-top: 15px;
-        }
-
-        .passenger-detail h4 {
-            color: #071b2e;
-            font-size: 17px;
-            font-weight: 800;
+        .success-icon {
+            font-size: 55px;
             margin-bottom: 15px;
         }
 
-        .empty {
-            background: white;
-            border: 1px dashed #cbd5e1;
-            border-radius: 14px;
-            padding: 35px;
-            text-align: center;
-            color: #64748b;
+        .success h2 {
+            color: #146c43;
         }
 
-        @media(max-width:700px) {
+        .receipt {
+            margin-top: 25px;
+            background: #f5faf7;
+            padding: 20px;
+            border-radius: 14px;
+            text-align: left;
+        }
 
-            .page-header h1 {
-                font-size: 32px;
+        .receipt-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #dce9e1;
+        }
+
+        .receipt-row:last-child {
+            border-bottom: none;
+        }
+
+        .print-btn {
+            margin-top: 20px;
+            padding: 13px 25px;
+            border: none;
+            border-radius: 10px;
+            background: #123d59;
+            color: white;
+            cursor: pointer;
+        }
+
+        @media (max-width: 650px) {
+
+            .payment-card {
+                padding: 20px;
             }
 
-            .route {
-                font-size: 20px;
+            .form-grid {
+                grid-template-columns: 1fr;
             }
 
+            .full {
+                grid-column: auto;
+            }
+        }
+
+        @media print {
+
+            .no-print {
+                display: none !important;
+            }
+
+            .payment-page {
+                margin: 0;
+            }
         }
 
     </style>
@@ -255,1071 +267,976 @@
 
 <body>
 
-<script
-    src="site-common.js"
-    data-page="manage"
-    data-auth="logout"
-></script>
+<div class="payment-page">
+
+    <div class="payment-card">
+
+        <div id="paymentContent">
+
+            <h1>
+                Complete Payment
+            </h1>
+
+            <p class="subtitle">
+                Secure payment for your Air Kerala booking
+            </p>
 
 
-<header class="page-header">
+            <div
+                id="errorMessage"
+                class="error"
+            ></div>
 
-    <div class="eyebrow">
-        MANAGE BOOKING
+
+            <!-- BOOKING SUMMARY -->
+
+            <div class="booking-summary">
+
+                <div class="summary-grid">
+
+                    <div>
+
+                        <div class="summary-label">
+                            Booking ID
+                        </div>
+
+                        <div
+                            id="bookingIdDisplay"
+                            class="summary-value"
+                        >
+                            Loading...
+                        </div>
+
+                    </div>
+
+
+                    <div>
+
+                        <div class="summary-label">
+                            Flight
+                        </div>
+
+                        <div
+                            id="flightDisplay"
+                            class="summary-value"
+                        >
+                            Loading...
+                        </div>
+
+                    </div>
+
+
+                    <div>
+
+                        <div class="summary-label">
+                            Route
+                        </div>
+
+                        <div
+                            id="routeDisplay"
+                            class="summary-value"
+                        >
+                            Loading...
+                        </div>
+
+                    </div>
+
+
+                    <div>
+
+                        <div class="summary-label">
+                            Passengers
+                        </div>
+
+                        <div
+                            id="passengersDisplay"
+                            class="summary-value"
+                        >
+                            Loading...
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- AMOUNT -->
+
+            <div class="amount-box">
+
+                <div class="amount-label">
+                    Total Amount
+                </div>
+
+                <div
+                    id="totalAmount"
+                    class="amount"
+                >
+                    ₹0
+                </div>
+
+            </div>
+
+
+            <!-- PAYMENT METHODS -->
+
+            <div class="methods no-print">
+
+                <button
+                    type="button"
+                    class="method-btn active"
+                    data-method="CARD"
+                >
+                    Card
+                </button>
+
+                <button
+                    type="button"
+                    class="method-btn"
+                    data-method="UPI"
+                >
+                    UPI
+                </button>
+
+            </div>
+
+
+            <!-- CARD -->
+
+            <div
+                id="cardSection"
+                class="payment-section active"
+            >
+
+                <div class="form-grid">
+
+
+                    <div class="field full">
+
+                        <label>
+                            Card Number
+                        </label>
+
+                        <input
+                            id="cardNumber"
+                            type="text"
+                            inputmode="numeric"
+                            autocomplete="cc-number"
+                            maxlength="23"
+                            placeholder="1234 5678 9012 3456"
+                        >
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            Expiry Date
+                        </label>
+
+                        <input
+                            id="expiry"
+                            type="text"
+                            inputmode="numeric"
+                            maxlength="5"
+                            placeholder="MM/YY"
+                        >
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            CVV
+                        </label>
+
+                        <input
+                            id="cvv"
+                            type="password"
+                            inputmode="numeric"
+                            maxlength="4"
+                            placeholder="CVV"
+                        >
+
+                    </div>
+
+
+                    <!-- CARDHOLDER LAST -->
+
+                    <div class="field full">
+
+                        <label>
+                            Cardholder Name
+                        </label>
+
+                        <input
+                            id="cardholderName"
+                            type="text"
+                            autocomplete="cc-name"
+                            placeholder="Name as shown on card"
+                        >
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- UPI -->
+
+            <div
+                id="upiSection"
+                class="payment-section"
+            >
+
+                <div class="field">
+
+                    <label>
+                        UPI ID
+                    </label>
+
+                    <input
+                        id="upiId"
+                        type="text"
+                        placeholder="example@upi"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <button
+                id="payButton"
+                class="pay-btn no-print"
+            >
+                Pay Now
+            </button>
+
+        </div>
+
+
+        <!-- SUCCESS -->
+
+        <div
+            id="successSection"
+            class="success"
+        >
+
+            <div class="success-icon">
+                ✓
+            </div>
+
+            <h2>
+                Payment Successful
+            </h2>
+
+            <p>
+                Your Air Kerala booking has been confirmed.
+            </p>
+
+
+            <div class="receipt">
+
+                <div class="receipt-row">
+
+                    <span>
+                        Booking ID
+                    </span>
+
+                    <strong
+                        id="receiptBookingId"
+                    >
+                    </strong>
+
+                </div>
+
+
+                <div class="receipt-row">
+
+                    <span>
+                        Flight
+                    </span>
+
+                    <strong
+                        id="receiptFlight"
+                    >
+                    </strong>
+
+                </div>
+
+
+                <div class="receipt-row">
+
+                    <span>
+                        Passengers
+                    </span>
+
+                    <strong
+                        id="receiptPassengers"
+                    >
+                    </strong>
+
+                </div>
+
+
+                <div class="receipt-row">
+
+                    <span>
+                        Payment Method
+                    </span>
+
+                    <strong
+                        id="receiptMethod"
+                    >
+                    </strong>
+
+                </div>
+
+
+                <div class="receipt-row">
+
+                    <span>
+                        Amount Paid
+                    </span>
+
+                    <strong
+                        id="receiptAmount"
+                    >
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <button
+                class="print-btn no-print"
+                onclick="window.print()"
+            >
+                Print E-Ticket
+            </button>
+
+        </div>
+
     </div>
 
-    <h1>
-        My Bookings
-    </h1>
-
-    <p>
-        View, pay or cancel your Air Kerala bookings.
-    </p>
-
-</header>
+</div>
 
 
-<main class="container-bookings">
-
-    <section>
-
-        <h2 class="section-title">
-            ✈ Upcoming / Active Bookings
-        </h2>
-
-        <div id="upcoming"></div>
-
-    </section>
-
-
-    <section>
-
-        <h2 class="section-title">
-            🕘 Previous Bookings
-        </h2>
-
-        <div id="previous"></div>
-
-    </section>
-
-
-    <section>
-
-        <h2 class="section-title">
-            ❌ Cancelled Bookings
-        </h2>
-
-        <div id="cancelled"></div>
-
-    </section>
-
-</main>
+<script
+    src="site-common.js"
+    data-page="payment"
+    data-auth="none"
+></script>
 
 
 <script>
 
-let bookings = [];
+    // ========================================================
+    // BOOKING ID
+    // ========================================================
 
-
-/* =========================================================
-   HELPERS
-========================================================= */
-
-function escapeHtml(value) {
-
-    return String(
-        value == null
-            ? ''
-            : value
-    ).replace(
-        /[&<>"']/g,
-        char => ({
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&#39;'
-        })[char]
-    );
-}
-
-
-function pnr(id) {
-
-    return (
-        'AK-' +
-        String(id)
-            .slice(-8)
-            .toUpperCase()
-    );
-}
-
-
-function formatDate(value) {
-
-    if (!value)
-        return '—';
-
-    const date =
-        new Date(
-            String(value)
-                .replace(' ', 'T')
+    const params =
+        new URLSearchParams(
+            window.location.search
         );
 
-    if (
-        Number.isNaN(
-            date.getTime()
-        )
-    )
-        return value;
-
-    return date.toLocaleDateString(
-        'en-IN',
-        {
-            day: '2-digit',
-            month: 'short',
-            year: 'numeric'
-        }
-    );
-}
+    const bookingId =
+        params.get('booking_id') ||
+        localStorage.getItem('bookingId');
 
 
-function formatTime(value) {
+    if (!bookingId) {
 
-    if (!value)
-        return '—';
+        document.getElementById(
+            'errorMessage'
+        ).textContent =
+            'Booking ID is missing.';
 
-    return String(value)
-        .slice(11, 16);
-}
+        document.getElementById(
+            'errorMessage'
+        ).style.display =
+            'block';
 
-
-/* =========================================================
-   BUCKET
-========================================================= */
-
-function bucketBooking(booking) {
-
-    if (
-        booking.STATUS_ ===
-        'CANCELLED'
-    )
-        return 'cancelled';
-
-
-    const departure =
-        new Date(
-            String(
-                booking.DEP_TEXT || ''
-            ).replace(
-                ' ',
-                'T'
-            )
-        );
-
-
-    if (
-        !Number.isNaN(
-            departure.getTime()
-        ) &&
-        departure < new Date()
-    )
-        return 'previous';
-
-
-    return 'upcoming';
-}
-
-
-/* =========================================================
-   BADGES
-========================================================= */
-
-function badges(booking) {
-
-    let html = '';
-
-
-    if (
-        booking.STATUS_ ===
-        'CANCELLED'
-    ) {
-
-        html +=
-            '<span class="badge cancelled">CANCELLED</span>';
-
-    } else {
-
-        html +=
-            '<span class="badge confirmed">CONFIRMED</span>';
+        document.getElementById(
+            'payButton'
+        ).disabled = true;
     }
 
 
-    if (
-        booking.PAYMENT_STATUS ===
-        'PAID'
-    ) {
+    document.getElementById(
+        'bookingIdDisplay'
+    ).textContent =
+        bookingId || '—';
 
-        html +=
-            '<span class="badge paid">PAID</span>';
 
-    } else if (
-        booking.PAYMENT_STATUS ===
-        'REFUNDED'
-    ) {
+    // ========================================================
+    // FORMAT CURRENCY
+    // ========================================================
 
-        html +=
-            '<span class="badge cancelled">REFUNDED</span>';
+    function formatCurrency(amount) {
 
-    } else {
-
-        html +=
-            '<span class="badge pending">PAYMENT PENDING</span>';
+        return '₹' +
+            Number(amount || 0)
+                .toLocaleString('en-IN');
     }
 
 
-    return html;
-}
+    // ========================================================
+    // LOAD BOOKING DETAILS
+    // ========================================================
 
+    let bookingAmount = 0;
 
-/* =========================================================
-   CARD
-========================================================= */
+    async function loadBooking() {
 
-function bookingCard(
-    booking,
-    bucket
-) {
-
-    const needsPayment =
-        bucket === 'upcoming' &&
-        booking.STATUS_ !== 'CANCELLED' &&
-        booking.PAYMENT_STATUS !== 'PAID';
-
-
-    const canCancel =
-        bucket === 'upcoming' &&
-        booking.STATUS_ !== 'CANCELLED';
-
-
-    return `
-
-        <article
-            class="booking-card"
-            id="booking-${escapeHtml(
-                booking.BOOKING_ID
-            )}"
-        >
-
-            <div class="booking-top">
-
-                <div>
-
-                    <div class="pnr-label">
-                        BOOKING REFERENCE / PNR
-                    </div>
-
-                    <div class="pnr">
-                        ${escapeHtml(
-                            pnr(
-                                booking.BOOKING_ID
-                            )
-                        )}
-                    </div>
-
-                </div>
-
-
-                <div>
-                    ${badges(booking)}
-                </div>
-
-            </div>
-
-
-            <div class="booking-body">
-
-                <div class="route">
-
-                    ${escapeHtml(
-                        booking.ORIGIN
-                    )}
-
-                    <span>✈</span>
-
-                    ${escapeHtml(
-                        booking.DESTINATION
-                    )}
-
-                </div>
-
-
-                <div class="flight">
-
-                    ${escapeHtml(
-                        booking.AIRLINE_NAME
-                    )}
-
-                    ·
-
-                    ${escapeHtml(
-                        booking.FLIGHT_NUMBER
-                    )}
-
-                </div>
-
-
-                <div class="facts">
-
-                    <div>
-
-                        <div class="label">
-                            Passengers
-                        </div>
-
-                        <div class="value">
-                            ${escapeHtml(
-                                booking.PASSENGER_COUNT
-                            )}
-                        </div>
-
-                    </div>
-
-
-                    <div>
-
-                        <div class="label">
-                            Travel Date
-                        </div>
-
-                        <div class="value">
-                            ${formatDate(
-                                booking.DEP_TEXT
-                            )}
-                        </div>
-
-                    </div>
-
-
-                    <div>
-
-                        <div class="label">
-                            Departure
-                        </div>
-
-                        <div class="value">
-                            ${formatTime(
-                                booking.DEP_TEXT
-                            )}
-                        </div>
-
-                    </div>
-
-
-                    <div>
-
-                        <div class="label">
-                            Seats
-                        </div>
-
-                        <div class="value">
-                            ${escapeHtml(
-                                booking.SEATS
-                            )}
-                        </div>
-
-                    </div>
-
-
-                    <div>
-
-                        <div class="label">
-                            Total
-                        </div>
-
-                        <div class="value">
-                            ₹${Number(
-                                booking.AMOUNT || 0
-                            ).toLocaleString(
-                                'en-IN'
-                            )}
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <div class="actions">
-
-                <button
-                    class="btn-air btn-secondary"
-                    onclick="toggleDetails('${escapeHtml(
-                        booking.BOOKING_ID
-                    )}')"
-                >
-                    View Details
-                </button>
-
-
-                ${
-                    needsPayment
-                        ? `
-                            <button
-                                class="btn-air btn-primary"
-                                onclick="completePayment('${escapeHtml(
-                                    booking.BOOKING_ID
-                                )}')"
-                            >
-                                Complete Payment
-                            </button>
-                        `
-                        : ''
-                }
-
-
-                ${
-                    canCancel
-                        ? `
-                            <button
-                                class="btn-air btn-danger"
-                                onclick="cancelBooking(
-                                    '${escapeHtml(
-                                        booking.BOOKING_ID
-                                    )}',
-                                    this
-                                )"
-                            >
-                                Cancel Booking
-                            </button>
-                        `
-                        : ''
-                }
-
-            </div>
-
-
-            <div
-                class="details"
-                id="details-${escapeHtml(
-                    booking.BOOKING_ID
-                )}"
-            >
-
-                ${detailsHtml(booking)}
-
-            </div>
-
-        </article>
-
-    `;
-}
-
-
-/* =========================================================
-   DETAILS
-========================================================= */
-
-function detailsHtml(booking) {
-
-    const passengers =
-        booking.PASSENGERS || [];
-
-
-    let html = `
-
-        <div class="facts">
-
-            <div>
-                <div class="label">
-                    Airline
-                </div>
-
-                <div class="value">
-                    ${escapeHtml(
-                        booking.AIRLINE_NAME
-                    )}
-                </div>
-            </div>
-
-
-            <div>
-                <div class="label">
-                    Flight
-                </div>
-
-                <div class="value">
-                    ${escapeHtml(
-                        booking.FLIGHT_NUMBER
-                    )}
-                </div>
-            </div>
-
-
-            <div>
-                <div class="label">
-                    Cabin
-                </div>
-
-                <div class="value">
-                    ${escapeHtml(
-                        booking.CLASS
-                    )}
-                </div>
-            </div>
-
-
-            <div>
-                <div class="label">
-                    Payment
-                </div>
-
-                <div class="value">
-                    ${escapeHtml(
-                        booking.PAYMENT_STATUS
-                    )}
-                </div>
-            </div>
-
-        </div>
-
-    `;
-
-
-    passengers.forEach(
-        (passenger, index) => {
-
-            html += `
-
-                <div class="passenger-detail">
-
-                    <h4>
-                        Passenger ${index + 1}
-                        ·
-                        ${escapeHtml(
-                            passenger.NAME
-                        )}
-                    </h4>
-
-
-                    <div class="facts">
-
-                        <div>
-
-                            <div class="label">
-                                Age
-                            </div>
-
-                            <div class="value">
-                                ${escapeHtml(
-                                    passenger.AGE
-                                )}
-                            </div>
-
-                        </div>
-
-
-                        <div>
-
-                            <div class="label">
-                                Gender
-                            </div>
-
-                            <div class="value">
-                                ${escapeHtml(
-                                    passenger.GENDER
-                                )}
-                            </div>
-
-                        </div>
-
-
-                        <div>
-
-                            <div class="label">
-                                Passport / ID
-                            </div>
-
-                            <div class="value">
-                                ${escapeHtml(
-                                    passenger.PASSPORT_NUMBER
-                                )}
-                            </div>
-
-                        </div>
-
-
-                        <div>
-
-                            <div class="label">
-                                Seat
-                            </div>
-
-                            <div class="value">
-                                ${escapeHtml(
-                                    passenger.SEAT_NUMBER
-                                )}
-                            </div>
-
-                        </div>
-
-
-                        <div>
-
-                            <div class="label">
-                                Meal
-                            </div>
-
-                            <div class="value">
-                                ${escapeHtml(
-                                    passenger.MEAL_PREFERENCE ||
-                                    'None'
-                                )}
-                            </div>
-
-                        </div>
-
-
-                        <div>
-
-                            <div class="label">
-                                Special Assistance
-                            </div>
-
-                            <div class="value">
-                                ${escapeHtml(
-                                    passenger.SPECIAL_ASSISTANCE ||
-                                    'None'
-                                )}
-                            </div>
-
-                        </div>
-
-
-                        <div>
-
-                            <div class="label">
-                                Wheelchair
-                            </div>
-
-                            <div class="value">
-                                ${escapeHtml(
-                                    passenger.WHEELCHAIR_REQUIRED ||
-                                    'NO'
-                                )}
-                            </div>
-
-                        </div>
-
-
-                        <div>
-
-                            <div class="label">
-                                Infant Bassinet
-                            </div>
-
-                            <div class="value">
-                                ${escapeHtml(
-                                    passenger.INFANT_BASSINET_REQUIRED ||
-                                    'NO'
-                                )}
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            `;
-        }
-    );
-
-
-    return html;
-}
-
-
-/* =========================================================
-   TOGGLE DETAILS
-========================================================= */
-
-function toggleDetails(id) {
-
-    const element =
-        document.getElementById(
-            'details-' + id
-        );
-
-
-    if (element) {
-
-        element.classList.toggle(
-            'open'
-        );
-    }
-}
-
-
-/* =========================================================
-   PAYMENT
-========================================================= */
-
-function completePayment(id) {
-
-    localStorage.setItem(
-        'booking_id',
-        String(id)
-    );
-
-
-    window.location.href =
-        'payment.html?booking_id=' +
-        encodeURIComponent(
-            id
-        );
-}
-
-
-/* =========================================================
-   CANCEL
-========================================================= */
-
-async function cancelBooking(
-    id,
-    button
-) {
-
-    const confirmed =
-        confirm(
-            'Are you sure you want to cancel this booking?'
-        );
-
-
-    if (!confirmed)
-        return;
-
-
-    button.disabled =
-        true;
-
-
-    try {
-
-        const response =
-            await fetch(
-                '/api/cancel-booking',
-                {
-                    method: 'PUT',
-
-                    headers: {
-                        'Content-Type':
-                            'application/json'
-                    },
-
-                    credentials:
-                        'include',
-
-                    body:
-                        JSON.stringify({
-                            booking_id:
-                                String(id)
-                        })
-                }
-            );
-
-
-        const data =
-            await response.json();
-
-
-        if (
-            !response.ok ||
-            !data.success
-        ) {
-
-            throw new Error(
-                data.message ||
-                'Could not cancel booking'
-            );
-        }
-
-
-        alert(
-            'Booking cancelled successfully.'
-        );
-
-
-        await loadBookings();
-
-    } catch (error) {
-
-        alert(
-            'Could not cancel booking: ' +
-            error.message
-        );
-
-        button.disabled =
-            false;
-    }
-}
-
-
-/* =========================================================
-   RENDER
-========================================================= */
-
-function render() {
-
-    const upcoming =
-        document.getElementById(
-            'upcoming'
-        );
-
-    const previous =
-        document.getElementById(
-            'previous'
-        );
-
-    const cancelled =
-        document.getElementById(
-            'cancelled'
-        );
-
-
-    upcoming.innerHTML =
-        '';
-
-    previous.innerHTML =
-        '';
-
-    cancelled.innerHTML =
-        '';
-
-
-    const groups = {
-
-        upcoming: [],
-
-        previous: [],
-
-        cancelled: []
-    };
-
-
-    bookings.forEach(
-        booking => {
-
-            const bucket =
-                bucketBooking(
-                    booking
-                );
-
-            groups[
-                bucket
-            ].push(
-                booking
-            );
-        }
-    );
-
-
-    upcoming.innerHTML =
-        groups.upcoming.length
-            ? groups.upcoming
-                .map(
-                    b =>
-                        bookingCard(
-                            b,
-                            'upcoming'
-                        )
-                )
-                .join('')
-            : `
-                <div class="empty">
-                    No upcoming bookings.
-                </div>
-            `;
-
-
-    previous.innerHTML =
-        groups.previous.length
-            ? groups.previous
-                .map(
-                    b =>
-                        bookingCard(
-                            b,
-                            'previous'
-                        )
-                )
-                .join('')
-            : `
-                <div class="empty">
-                    No previous bookings.
-                </div>
-            `;
-
-
-    cancelled.innerHTML =
-        groups.cancelled.length
-            ? groups.cancelled
-                .map(
-                    b =>
-                        bookingCard(
-                            b,
-                            'cancelled'
-                        )
-                )
-                .join('')
-            : `
-                <div class="empty">
-                    No cancelled bookings.
-                </div>
-            `;
-}
-
-
-/* =========================================================
-   LOAD
-========================================================= */
-
-async function loadBookings() {
-
-    try {
-
-        const response =
-            await fetch(
-                '/api/my-bookings',
-                {
-                    credentials:
-                        'include'
-                }
-            );
-
-
-        if (
-            response.status ===
-            401
-        ) {
-
-            window.location.href =
-                'index.html';
-
+        if (!bookingId) {
             return;
         }
 
+        try {
 
-        const data =
-            await response.json();
-
-
-        if (
-            !response.ok ||
-            !data.success
-        ) {
-
-            throw new Error(
-                data.message ||
-                'Could not load bookings'
-            );
-        }
+            const response =
+                await fetch(
+                    `/api/booking-details/${encodeURIComponent(
+                        bookingId
+                    )}`,
+                    {
+                        credentials: 'include'
+                    }
+                );
 
 
-        bookings =
-            data.bookings || [];
+            const result =
+                await response.json();
 
 
-        /*
-         * Fetch detailed passenger
-         * information for each booking.
-         */
-        for (
-            const booking
-            of bookings
-        ) {
+            if (
+                !response.ok ||
+                !result.success
+            ) {
 
-            try {
-
-                const detailResponse =
-                    await fetch(
-                        '/api/booking-details/' +
-                        encodeURIComponent(
-                            booking.BOOKING_ID
-                        ),
-                        {
-                            credentials:
-                                'include'
-                        }
-                    );
-
-
-                const detailData =
-                    await detailResponse.json();
-
-
-                if (
-                    detailResponse.ok &&
-                    detailData.success
-                ) {
-
-                    const detail =
-                        detailData.data;
-
-
-                    booking.PASSENGERS =
-                        detail.PASSENGERS ||
-                        [];
-
-                    booking.AMOUNT =
-                        detail.AMOUNT;
-
-                    booking.PAYMENT_STATUS =
-                        detail.PAYMENT_STATUS;
-
-                }
-
-            } catch (detailError) {
-
-                console.error(
-                    detailError
+                throw new Error(
+                    result.message ||
+                    'Could not load booking.'
                 );
             }
+
+
+            const data =
+                result.data;
+
+
+            bookingAmount =
+                Number(data.AMOUNT || 0);
+
+
+            if (
+                !Number.isFinite(
+                    bookingAmount
+                ) ||
+                bookingAmount <= 0
+            ) {
+
+                throw new Error(
+                    'Could not determine booking amount.'
+                );
+            }
+
+
+            document.getElementById(
+                'totalAmount'
+            ).textContent =
+                formatCurrency(
+                    bookingAmount
+                );
+
+
+            document.getElementById(
+                'flightDisplay'
+            ).textContent =
+                data.FLIGHT_NUMBER || '—';
+
+
+            document.getElementById(
+                'routeDisplay'
+            ).textContent =
+                `${data.ORIGIN || '—'} → ${data.DESTINATION || '—'}`;
+
+
+            const passengerList =
+                Array.isArray(
+                    data.PASSENGERS
+                )
+                    ? data.PASSENGERS
+                    : [];
+
+
+            document.getElementById(
+                'passengersDisplay'
+            ).textContent =
+                passengerList.length === 1
+                    ? '1 Passenger'
+                    : `${passengerList.length} Passengers`;
+
+        } catch (error) {
+
+            console.error(error);
+
+            showError(
+                error.message
+            );
         }
+    }
 
 
-        render();
+    // ========================================================
+    // ERROR
+    // ========================================================
 
-    } catch (error) {
+    function showError(message) {
 
-        console.error(
-            error
+        const error =
+            document.getElementById(
+                'errorMessage'
+            );
+
+        error.textContent =
+            message;
+
+        error.style.display =
+            'block';
+    }
+
+
+    // ========================================================
+    // PAYMENT METHOD
+    // ========================================================
+
+    let selectedMethod = 'CARD';
+
+    document
+        .querySelectorAll('.method-btn')
+        .forEach(button => {
+
+            button.addEventListener(
+                'click',
+                () => {
+
+                    document
+                        .querySelectorAll(
+                            '.method-btn'
+                        )
+                        .forEach(btn =>
+                            btn.classList.remove(
+                                'active'
+                            )
+                        );
+
+                    button.classList.add(
+                        'active'
+                    );
+
+                    selectedMethod =
+                        button.dataset.method;
+
+
+                    document
+                        .getElementById(
+                            'cardSection'
+                        )
+                        .classList.toggle(
+                            'active',
+                            selectedMethod === 'CARD'
+                        );
+
+
+                    document
+                        .getElementById(
+                            'upiSection'
+                        )
+                        .classList.toggle(
+                            'active',
+                            selectedMethod === 'UPI'
+                        );
+                }
+            );
+
+        });
+
+
+    // ========================================================
+    // CARD NUMBER AUTO SPACING
+    // ========================================================
+
+    document
+        .getElementById('cardNumber')
+        .addEventListener(
+            'input',
+            function () {
+
+                let value =
+                    this.value
+                        .replace(/\D/g, '')
+                        .slice(0, 19);
+
+                const groups = [];
+
+                for (
+                    let i = 0;
+                    i < value.length;
+                    i += 4
+                ) {
+
+                    groups.push(
+                        value.substring(
+                            i,
+                            i + 4
+                        )
+                    );
+                }
+
+                this.value =
+                    groups.join(' ');
+            }
         );
 
 
-        document.getElementById(
-            'upcoming'
-        ).innerHTML = `
+    // ========================================================
+    // EXPIRY AUTO /
+    // ========================================================
 
-            <div class="empty">
+    document
+        .getElementById('expiry')
+        .addEventListener(
+            'input',
+            function () {
 
-                Could not load your bookings.
+                let value =
+                    this.value
+                        .replace(/\D/g, '')
+                        .slice(0, 4);
 
-                <br><br>
+                if (
+                    value.length >= 3
+                ) {
 
-                ${escapeHtml(
-                    error.message
-                )}
+                    value =
+                        value.substring(0, 2) +
+                        '/' +
+                        value.substring(2);
+                }
 
-            </div>
+                this.value =
+                    value;
+            }
+        );
 
-        `;
-    }
-}
+
+    // ========================================================
+    // PAY
+    // ========================================================
+
+    document
+        .getElementById('payButton')
+        .addEventListener(
+            'click',
+            async function () {
+
+                const button =
+                    this;
+
+                const error =
+                    document.getElementById(
+                        'errorMessage'
+                    );
+
+                error.style.display =
+                    'none';
 
 
-loadBookings();
+                if (
+                    !bookingId
+                ) {
+
+                    showError(
+                        'Booking ID is missing.'
+                    );
+
+                    return;
+                }
+
+
+                if (
+                    !bookingAmount ||
+                    bookingAmount <= 0
+                ) {
+
+                    showError(
+                        'Could not determine booking amount.'
+                    );
+
+                    return;
+                }
+
+
+                // --------------------------------------------
+                // FRONTEND VALIDATION
+                // --------------------------------------------
+
+                if (
+                    selectedMethod === 'CARD'
+                ) {
+
+                    const card =
+                        document
+                            .getElementById(
+                                'cardNumber'
+                            )
+                            .value
+                            .replace(
+                                /\s/g,
+                                ''
+                            );
+
+                    const expiry =
+                        document
+                            .getElementById(
+                                'expiry'
+                            )
+                            .value;
+
+                    const cvv =
+                        document
+                            .getElementById(
+                                'cvv'
+                            )
+                            .value;
+
+                    const name =
+                        document
+                            .getElementById(
+                                'cardholderName'
+                            )
+                            .value
+                            .trim();
+
+
+                    if (
+                        card.length < 12
+                    ) {
+
+                        showError(
+                            'Please enter a valid card number.'
+                        );
+
+                        return;
+                    }
+
+
+                    if (
+                        expiry.length !== 5
+                    ) {
+
+                        showError(
+                            'Please enter the expiry date as MM/YY.'
+                        );
+
+                        return;
+                    }
+
+
+                    if (
+                        cvv.length < 3
+                    ) {
+
+                        showError(
+                            'Please enter a valid CVV.'
+                        );
+
+                        return;
+                    }
+
+
+                    if (!name) {
+
+                        showError(
+                            'Please enter the cardholder name.'
+                        );
+
+                        return;
+                    }
+
+                } else {
+
+                    const upi =
+                        document
+                            .getElementById(
+                                'upiId'
+                            )
+                            .value
+                            .trim();
+
+
+                    if (!upi) {
+
+                        showError(
+                            'Please enter your UPI ID.'
+                        );
+
+                        return;
+                    }
+                }
+
+
+                button.disabled =
+                    true;
+
+                button.textContent =
+                    'Processing Payment...';
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            '/api/payment',
+                            {
+                                method: 'POST',
+
+                                headers: {
+                                    'Content-Type':
+                                        'application/json'
+                                },
+
+                                credentials: 'include',
+
+                                body:
+                                    JSON.stringify({
+
+                                        booking_id:
+                                            String(
+                                                bookingId
+                                            ),
+
+                                        payment_method:
+                                            selectedMethod
+
+                                    })
+                            }
+                        );
+
+
+                    const result =
+                        await response.json();
+
+
+                    if (
+                        !response.ok ||
+                        !result.success
+                    ) {
+
+                        throw new Error(
+                            result.message ||
+                            'Payment failed.'
+                        );
+                    }
+
+
+                    // ----------------------------------------
+                    // SUCCESS
+                    // ----------------------------------------
+
+                    const paidAmount =
+                        Number(
+                            result.amount ||
+                            bookingAmount
+                        );
+
+
+                    document.getElementById(
+                        'receiptBookingId'
+                    ).textContent =
+                        bookingId;
+
+
+                    document.getElementById(
+                        'receiptFlight'
+                    ).textContent =
+                        document.getElementById(
+                            'flightDisplay'
+                        ).textContent;
+
+
+                    document.getElementById(
+                        'receiptPassengers'
+                    ).textContent =
+                        document.getElementById(
+                            'passengersDisplay'
+                        ).textContent;
+
+
+                    document.getElementById(
+                        'receiptMethod'
+                    ).textContent =
+                        selectedMethod;
+
+
+                    document.getElementById(
+                        'receiptAmount'
+                    ).textContent =
+                        formatCurrency(
+                            paidAmount
+                        );
+
+
+                    document.getElementById(
+                        'paymentContent'
+                    ).style.display =
+                        'none';
+
+
+                    document.getElementById(
+                        'successSection'
+                    ).style.display =
+                        'block';
+
+
+                    localStorage.removeItem(
+                        'bookingTotal'
+                    );
+
+                } catch (error) {
+
+                    console.error(error);
+
+                    showError(
+                        error.message ||
+                        'Payment failed.'
+                    );
+
+                    button.disabled =
+                        false;
+
+                    button.textContent =
+                        'Pay Now';
+                }
+
+            }
+        );
+
+
+    // ========================================================
+    // START
+    // ========================================================
+
+    loadBooking();
 
 </script>
 
