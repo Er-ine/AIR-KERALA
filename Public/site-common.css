@@ -1,21 +1,10 @@
-/* =========================================================
-   AIR KERALA — SHARED WEBSITE STYLE
-   Header + Footer + Shared Components
-   ========================================================= */
-
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-
 :root {
     --ak-blue: #0878d1;
     --ak-blue-dark: #0565b0;
     --ak-navy: #071b2e;
-    --ak-navy-light: #102d45;
     --ak-gold: #d7b56d;
-    --ak-white: #ffffff;
     --ak-text: #17202a;
     --ak-muted: #64748b;
-    --ak-border: #e2e8f0;
-    --ak-light: #f5f8fb;
 }
 
 * {
@@ -28,17 +17,19 @@ html {
 
 body {
     margin: 0;
-    font-family: "Plus Jakarta Sans", Arial, sans-serif;
     color: var(--ak-text);
 }
 
-/* =========================================================
+
+/* =====================================================
    HEADER
-   ========================================================= */
+===================================================== */
 
 .ak-header {
+
     position: sticky;
     top: 0;
+
     z-index: 5000;
 
     width: 100%;
@@ -51,64 +42,56 @@ body {
 
     gap: 30px;
 
-    background: rgba(7, 27, 46, 0.98);
+    background: rgba(7,27,46,.98);
 
-    border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+    border-bottom:
+        1px solid
+        rgba(255,255,255,.1);
 
     box-shadow:
-        0 5px 25px rgba(0, 0, 0, 0.15);
+        0 5px 25px
+        rgba(0,0,0,.15);
 
-    backdrop-filter: blur(15px);
-
-    transition:
-        background 0.25s ease,
-        box-shadow 0.25s ease;
+    backdrop-filter:
+        blur(15px);
 }
 
-/* Homepage overlay mode */
 
 .ak-header.ak-header--overlay {
+
     position: absolute;
+
     top: 0;
     left: 0;
 
     background: transparent;
 
-    border-bottom: 1px solid rgba(255,255,255,0.12);
-
     box-shadow: none;
 }
 
-.ak-header.ak-header--overlay.ak-scrolled {
-    position: fixed;
 
-    background: rgba(7, 27, 46, 0.97);
-
-    box-shadow:
-        0 5px 25px rgba(0,0,0,0.18);
-
-    backdrop-filter: blur(15px);
-}
-
-/* =========================================================
+/* =====================================================
    LOGO
-   ========================================================= */
+===================================================== */
 
 .ak-brand {
+
+    width: 205px;
+    height: 52px;
+
     display: flex;
     align-items: center;
 
     flex-shrink: 0;
 
-    width: 205px;
-    height: 52px;
+    overflow: hidden;
 
     text-decoration: none;
-
-    overflow: hidden;
 }
 
+
 .ak-brand img {
+
     display: block;
 
     width: auto;
@@ -117,34 +100,27 @@ body {
     height: 48px;
 
     object-fit: contain;
-
-    object-position: left center;
 }
 
-/* Prevent broken image icon from affecting layout */
 
-.ak-brand img[src=""],
-.ak-brand img:not([src]) {
-    display: none;
-}
-
-/* =========================================================
+/* =====================================================
    NAVIGATION
-   ========================================================= */
+===================================================== */
 
 .ak-links {
+
+    flex: 1;
+
     display: flex;
-
     align-items: center;
-
     justify-content: center;
 
     gap: 4px;
-
-    flex: 1;
 }
 
+
 .ak-links a {
+
     position: relative;
 
     display: inline-flex;
@@ -154,9 +130,11 @@ body {
 
     min-height: 42px;
 
-    padding: 9px 17px;
+    padding:
+        9px 17px;
 
-    color: rgba(255,255,255,0.88);
+    color:
+        rgba(255,255,255,.88);
 
     text-decoration: none;
 
@@ -165,29 +143,31 @@ body {
 
     border-radius: 8px;
 
-    white-space: nowrap;
-
     transition:
-        color 0.2s ease,
-        background 0.2s ease,
-        transform 0.2s ease;
+        .2s ease;
 }
+
 
 .ak-links a:hover {
-    color: #ffffff;
 
-    background: rgba(255,255,255,0.09);
+    color: white;
 
-    transform: translateY(-1px);
+    background:
+        rgba(255,255,255,.09);
 }
+
 
 .ak-links a.active {
-    color: #ffffff;
 
-    background: rgba(255,255,255,0.07);
+    color: white;
+
+    background:
+        rgba(255,255,255,.07);
 }
 
+
 .ak-links a.active::after {
+
     content: "";
 
     position: absolute;
@@ -199,150 +179,145 @@ body {
 
     height: 2px;
 
-    background: var(--ak-gold);
+    background:
+        var(--ak-gold);
 
     border-radius: 10px;
 }
 
-/* =========================================================
+
+/* =====================================================
    RIGHT SIDE
-   ========================================================= */
+===================================================== */
 
 .ak-right {
+
     display: flex;
 
     align-items: center;
 
-    justify-content: flex-end;
-
-    min-width: 70px;
+    margin-left: auto;
 }
 
-#authArea {
-    display: flex;
-
-    align-items: center;
-
-    gap: 8px;
-}
-
-/* =========================================================
-   LOGIN / ACCOUNT BUTTON
-   ========================================================= */
 
 .login-btn {
-    border: 1px solid rgba(255,255,255,0.25);
 
-    background: rgba(255,255,255,0.08);
+    border:
+        1px solid
+        rgba(255,255,255,.25);
 
-    color: #ffffff;
+    background:
+        rgba(255,255,255,.08);
 
-    padding: 9px 15px;
+    color: white;
+
+    padding:
+        9px 15px;
 
     border-radius: 8px;
 
-    font-family: inherit;
-
     font-size: 12px;
-
     font-weight: 700;
 
     cursor: pointer;
-
-    transition: 0.2s ease;
 }
+
 
 .login-btn:hover {
-    background: rgba(255,255,255,0.16);
 
-    border-color: rgba(255,255,255,0.4);
+    background:
+        rgba(255,255,255,.16);
 }
 
-/* =========================================================
-   MOBILE MENU
-   ========================================================= */
+
+/* =====================================================
+   BURGER
+===================================================== */
 
 .ak-burger {
+
     display: none;
 
     width: 42px;
     height: 42px;
 
-    border: 1px solid rgba(255,255,255,0.2);
+    border:
+        1px solid
+        rgba(255,255,255,.2);
 
     border-radius: 8px;
 
-    background: rgba(255,255,255,0.08);
+    background:
+        rgba(255,255,255,.08);
+
+    padding: 8px;
 
     cursor: pointer;
-
-    padding: 9px;
 }
 
+
 .ak-burger span {
+
     display: block;
 
-    width: 100%;
     height: 2px;
 
     margin: 5px 0;
 
-    background: #ffffff;
+    background: white;
 
     border-radius: 4px;
-
-    transition: 0.2s ease;
 }
 
-/* =========================================================
+
+/* =====================================================
    FOOTER
-   ========================================================= */
+===================================================== */
 
 .ak-footer {
+
     width: 100%;
 
-    margin-top: 0;
+    margin-top: 50px;
 
-    padding: 58px 6% 24px;
+    padding:
+        58px 6% 24px;
 
     background:
         linear-gradient(
             145deg,
-            #071b2e 0%,
-            #0b2942 55%,
-            #071b2e 100%
+            #071b2e,
+            #0b2942,
+            #071b2e
         );
 
-    color: #ffffff;
+    color: white;
 }
+
 
 .ak-footer-inner {
+
     max-width: 1200px;
 
-    margin: 0 auto;
+    margin: auto;
 }
 
+
 .ak-footer-grid {
+
     display: grid;
 
     grid-template-columns:
         1.25fr
         1.2fr
-        0.8fr;
+        .8fr;
 
     gap: 55px;
-
-    align-items: start;
 }
 
-/* =========================================================
-   FOOTER LOGO
-   ========================================================= */
 
 .ak-footer-logo {
-    display: block;
 
-    width: auto;
     max-width: 205px;
 
     height: 50px;
@@ -352,26 +327,24 @@ body {
     margin-bottom: 18px;
 }
 
+
 .ak-footer-about {
-    max-width: 380px;
 
-    margin: 0;
-
-    color: rgba(255,255,255,0.65);
+    color:
+        rgba(255,255,255,.65);
 
     font-size: 13px;
 
     line-height: 1.8;
 }
 
-/* =========================================================
-   FOOTER HEADINGS
-   ========================================================= */
 
 .ak-footer-heading {
+
     margin-bottom: 18px;
 
-    color: var(--ak-gold);
+    color:
+        var(--ak-gold);
 
     font-size: 12px;
 
@@ -382,67 +355,59 @@ body {
     text-transform: uppercase;
 }
 
-/* =========================================================
-   CONTACT ITEMS
-   ========================================================= */
 
 .ak-contact-item {
-    display: flex;
 
-    align-items: flex-start;
+    display: flex;
 
     gap: 12px;
 
     margin-bottom: 16px;
 
-    color: rgba(255,255,255,0.68);
+    color:
+        rgba(255,255,255,.68);
 
     font-size: 12px;
 
     line-height: 1.7;
 }
 
-.ak-contact-item > span {
-    width: 24px;
-
-    flex-shrink: 0;
-
-    font-size: 16px;
-}
 
 .ak-contact-item strong {
+
     display: block;
 
-    margin-bottom: 2px;
-
-    color: #ffffff;
+    color: white;
 
     font-size: 11px;
 
-    font-weight: 700;
-
     text-transform: uppercase;
 
-    letter-spacing: 0.5px;
+    margin-bottom: 2px;
 }
+
 
 .ak-contact-item a {
-    color: rgba(255,255,255,0.72);
+
+    color:
+        rgba(255,255,255,.72);
 
     text-decoration: none;
-
-    transition: 0.2s ease;
 }
+
 
 .ak-contact-item a:hover {
-    color: #ffffff;
+
+    color: white;
 }
 
-/* =========================================================
-   FOOTER QUICK LINKS
-   ========================================================= */
+
+/* =====================================================
+   FOOTER LINKS
+===================================================== */
 
 .ak-footer-links {
+
     display: flex;
 
     flex-direction: column;
@@ -450,40 +415,38 @@ body {
     gap: 4px;
 }
 
+
 .ak-footer-links a {
-    display: block;
 
     width: fit-content;
 
-    color: rgba(255,255,255,0.68);
+    color:
+        rgba(255,255,255,.68);
 
     text-decoration: none;
 
     font-size: 12px;
 
     padding: 5px 0;
-
-    transition:
-        color 0.2s ease,
-        transform 0.2s ease;
 }
+
 
 .ak-footer-links a:hover {
-    color: #ffffff;
 
-    transform: translateX(3px);
+    color: white;
 }
 
-/* =========================================================
+
+/* =====================================================
    FOOTER BOTTOM
-   ========================================================= */
+===================================================== */
 
 .ak-footer-bottom {
+
     display: flex;
 
-    align-items: center;
-
-    justify-content: space-between;
+    justify-content:
+        space-between;
 
     gap: 20px;
 
@@ -493,85 +456,68 @@ body {
 
     border-top:
         1px solid
-        rgba(255,255,255,0.12);
+        rgba(255,255,255,.12);
 
-    color: rgba(255,255,255,0.42);
+    color:
+        rgba(255,255,255,.42);
 
     font-size: 11px;
 }
 
-/* =========================================================
-   CONTACT ANCHOR
-   ========================================================= */
 
 #contact {
+
     scroll-margin-top: 80px;
 }
 
-/* =========================================================
-   RESPONSIVE
-   ========================================================= */
 
-@media (max-width: 950px) {
+/* =====================================================
+   MOBILE
+===================================================== */
 
-    .ak-header {
-        padding: 10px 20px;
-
-        gap: 15px;
-    }
-
-    .ak-brand {
-        width: auto;
-    }
-
-    .ak-brand img {
-        max-width: 175px;
-
-        height: 44px;
-    }
-
-    .ak-links {
-        gap: 0;
-    }
-
-    .ak-links a {
-        padding: 8px 11px;
-
-        font-size: 12px;
-    }
-
-    .ak-right {
-        min-width: 45px;
-    }
-}
-
-@media (max-width: 760px) {
+@media (
+    max-width: 760px
+) {
 
     .ak-header {
+
         min-height: 68px;
+
+        padding:
+            10px 18px;
 
         flex-wrap: wrap;
     }
 
+
     .ak-brand {
-        height: 45px;
+
+        width: auto;
     }
 
+
     .ak-brand img {
+
         height: 42px;
 
         max-width: 165px;
     }
 
+
     .ak-right {
+
         margin-left: auto;
     }
 
+
     .ak-burger {
+
         display: block;
     }
 
+
     .ak-links {
+
         display: none;
 
         order: 10;
@@ -582,78 +528,42 @@ body {
 
         flex-direction: column;
 
-        align-items: stretch;
-
-        padding: 8px 0 5px;
-
-        border-top:
-            1px solid
-            rgba(255,255,255,0.08);
+        align-items:
+            stretch;
     }
 
-    .ak-header.ak-open .ak-links {
+
+    .ak-header.ak-open
+    .ak-links {
+
         display: flex;
     }
 
+
     .ak-links a {
+
         width: 100%;
 
-        justify-content: flex-start;
-
-        padding: 12px 14px;
-
-        border-radius: 7px;
+        justify-content:
+            flex-start;
     }
 
-    .ak-links a.active::after {
-        display: none;
-    }
-
-    #authArea {
-        display: none;
-    }
-
-    .ak-footer {
-        padding: 45px 25px 22px;
-    }
 
     .ak-footer-grid {
-        grid-template-columns: 1fr;
 
-        gap: 35px;
+        grid-template-columns:
+            1fr;
+
+        gap: 30px;
     }
+
 
     .ak-footer-bottom {
-        flex-direction: column;
 
-        align-items: flex-start;
+        flex-direction:
+            column;
 
-        gap: 8px;
-    }
-}
-
-@media (max-width: 450px) {
-
-    .ak-brand img {
-        height: 38px;
-
-        max-width: 145px;
-    }
-
-    .ak-header {
-        padding: 9px 14px;
-    }
-}
-
-/* =========================================================
-   PRINT
-   ========================================================= */
-
-@media print {
-
-    .ak-header,
-    .ak-footer,
-    .no-print {
-        display: none !important;
+        align-items:
+            flex-start;
     }
 }

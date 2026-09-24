@@ -1,383 +1,1327 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Bookings | AIR KERALA</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Shared navbar + footer styles (source of truth: homepage) -->
-    <link rel="stylesheet" href="site-common.css">
-    <style>
-        :root {
-            --air-blue: #0878d1;
-            --air-dark: #071b2e;
-            --air-gold: #d7b56d;
-        }
 
-        * { box-sizing: border-box; }
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Manage My Booking | AIR KERALA</title>
+
+    <link
+        rel="stylesheet"
+        href="site-common.css"
+    >
+
+    <style>
 
         body {
             margin: 0;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            color: #17202a;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            background: linear-gradient(180deg, #dceffd 0%, #eef7ff 40%, #f8fbff 100%);
-            background-attachment: fixed;
+            background: #f5f8fb;
+            font-family: Arial, sans-serif;
         }
 
-        /* Navbar is now the shared one from site-common.css/site-common.js. */
+        .page-header {
+            text-align: center;
+            padding: 55px 20px 25px;
+        }
 
-        .page-head { text-align: center; padding: 56px 20px 10px; }
-        .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 3px; color: var(--air-blue); }
-        .page-title { font-size: clamp(30px, 4vw, 46px); font-weight: 800; color: var(--air-dark); margin: 10px 0 8px; }
-        .page-sub { color: #4b5b6b; margin: 0; }
+        .eyebrow {
+            color: #0878d1;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
 
-        .wrap { max-width: 1000px; width: 100%; margin: 0 auto; padding: 30px 20px 70px; flex: 1; }
+        .page-header h1 {
+            color: #071b2e;
+            font-size: 42px;
+            font-weight: 800;
+            margin: 8px 0;
+        }
+
+        .page-header p {
+            color: #64748b;
+        }
+
+        .container-bookings {
+            max-width: 1050px;
+            margin: auto;
+            padding: 20px 18px 70px;
+        }
 
         .section-title {
-            display: flex; align-items: center; gap: 12px;
-            font-size: 22px; font-weight: 800; color: var(--air-dark);
-            margin: 38px 0 18px;
+            color: #071b2e;
+            font-size: 22px;
+            font-weight: 800;
+            margin: 35px 0 18px;
         }
-        .section-title .count {
-            font-size: 13px; font-weight: 700; padding: 3px 12px; border-radius: 50px;
-            background: #e2effc; color: var(--air-blue);
-        }
-        .section-title.past .count { background: #eceff3; color: #64748b; }
 
         .booking-card {
             background: white;
-            border-radius: 14px;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 8px 26px rgba(7, 27, 46, 0.07);
-            margin-bottom: 20px;
+            border-radius: 16px;
+            border: 1px solid #e1e8ef;
+            margin-bottom: 22px;
             overflow: hidden;
-            border-left: 6px solid var(--air-blue);
+            box-shadow: 0 8px 28px rgba(7,27,46,.06);
         }
-        .booking-card.past { border-left-color: #b6c0cc; box-shadow: none; }
-        .booking-card.past .card-body-row { opacity: 0.88; }
-        .booking-card.cancelled { border-left-color: #ef4444; box-shadow: none; }
-        .booking-card.cancelled .card-body-row { opacity: 0.75; }
-        .section-title.cancelled .count { background: #fee2e2; color: #b91c1c; }
 
-        .card-top {
-            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
-            padding: 16px 24px; background: #f5f9fd; border-bottom: 1px solid #e8eef5;
+        .booking-top {
+            background: #071b2e;
+            color: white;
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
         }
-        .pnr-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; color: #64748b; }
-        .pnr { font-size: 20px; font-weight: 800; color: var(--air-blue); letter-spacing: 1px; }
 
-        .badge-pill {
-            font-size: 11px; font-weight: 700; letter-spacing: 0.5px;
-            padding: 5px 13px; border-radius: 50px; margin-left: 6px;
+        .pnr-label {
+            font-size: 10px;
+            opacity: .6;
+            letter-spacing: 1.5px;
         }
-        .b-confirmed { background: #dcfce7; color: #15803d; }
-        .b-cancelled { background: #fee2e2; color: #b91c1c; }
-        .b-completed { background: #e5e7eb; color: #475569; }
-        .b-paid      { background: #dbeafe; color: #1d4ed8; }
-        .b-pending   { background: #fef3c7; color: #b45309; }
-        .b-refunded  { background: #ede9fe; color: #6d28d9; }
-        .card-body-row {
-            display: flex; align-items: center; flex-wrap: wrap; gap: 20px; padding: 22px 24px;
-        }
-        .route { flex: 1 1 260px; }
-        .route-cities { font-size: 22px; font-weight: 800; color: var(--air-dark); }
-        .route-cities span { color: var(--air-gold); margin: 0 8px; }
-        .route-flight { font-size: 13px; color: #64748b; margin-top: 4px; }
 
-        .facts { display: flex; gap: 30px; flex-wrap: wrap; }
-        .fact-label { font-size: 10px; font-weight: 700; letter-spacing: 1.2px; color: #94a3b8; text-transform: uppercase; }
-        .fact-value { font-size: 15px; font-weight: 700; color: #1e293b; }
-
-        .card-actions {
-            display: flex; gap: 10px; flex-wrap: wrap;
-            padding: 0 24px 20px;
+        .pnr {
+            font-size: 20px;
+            font-weight: 800;
+            color: #d7b56d;
         }
+
+        .badge {
+            border-radius: 30px;
+            padding: 7px 13px;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .confirmed {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .pending {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
+        .paid {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .cancelled {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .completed {
+            background: #e5e7eb;
+            color: #475569;
+        }
+
+        .booking-body {
+            padding: 24px;
+        }
+
+        .route {
+            font-size: 25px;
+            font-weight: 800;
+            color: #071b2e;
+        }
+
+        .route span {
+            color: #d7b56d;
+            margin: 0 10px;
+        }
+
+        .flight {
+            color: #64748b;
+            margin-top: 5px;
+        }
+
+        .facts {
+            display: grid;
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(150px, 1fr)
+                );
+            gap: 18px;
+            margin-top: 25px;
+        }
+
+        .label {
+            font-size: 10px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 800;
+        }
+
+        .value {
+            font-weight: 700;
+            color: #1e293b;
+            margin-top: 3px;
+        }
+
+        .actions {
+            padding: 0 24px 22px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
         .btn-air {
-            border: none; border-radius: 50px; padding: 10px 22px;
-            font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.2s;
+            border: 0;
+            border-radius: 30px;
+            padding: 10px 20px;
+            font-weight: 700;
+            cursor: pointer;
         }
-        .btn-primary-air { background: var(--air-blue); color: white; }
-        .btn-primary-air:hover { background: #0565b0; }
-        .btn-ghost { background: white; color: var(--air-dark); border: 1.5px solid var(--air-dark); }
-        .btn-ghost:hover { background: var(--air-dark); color: white; }
-        .btn-danger-air { background: white; color: #b91c1c; border: 1.5px solid #fca5a5; }
-        .btn-danger-air:hover { background: #b91c1c; color: white; }
-        .btn-air:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        .details-panel {
-            display: none;
-            padding: 20px 24px 24px;
-            border-top: 1px dashed #d5dee8;
-            background: #fbfdff;
+        .btn-primary {
+            background: #0878d1;
+            color: white;
         }
-        .details-panel.open { display: block; }
-        .detail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 18px 24px; }
+
+        .btn-secondary {
+            background: white;
+            border: 1px solid #071b2e;
+            color: #071b2e;
+        }
+
+        .btn-danger {
+            background: white;
+            border: 1px solid #fca5a5;
+            color: #b91c1c;
+        }
+
+        .details {
+            display: none;
+            border-top: 1px dashed #d5dee8;
+            background: #f9fbfd;
+            padding: 25px;
+        }
+
+        .details.open {
+            display: block;
+        }
+
+        .passenger-detail {
+            background: white;
+            border: 1px solid #e1e8ef;
+            border-radius: 12px;
+            padding: 18px;
+            margin-top: 15px;
+        }
+
+        .passenger-detail h4 {
+            color: #071b2e;
+            font-size: 17px;
+            font-weight: 800;
+            margin-bottom: 15px;
+        }
 
         .empty {
-            background: white; border: 1px dashed #c8d5e3; border-radius: 14px;
-            padding: 34px; text-align: center; color: #64748b;
+            background: white;
+            border: 1px dashed #cbd5e1;
+            border-radius: 14px;
+            padding: 35px;
+            text-align: center;
+            color: #64748b;
         }
-        .empty a { color: var(--air-blue); font-weight: 700; text-decoration: none; }
 
-        /* Old page-local <footer> and .nav-links rules removed — the footer
-           is now the shared one injected by site-common.js. */
+        @media(max-width:700px) {
+
+            .page-header h1 {
+                font-size: 32px;
+            }
+
+            .route {
+                font-size: 20px;
+            }
+
+        }
+
     </style>
+
 </head>
 
 <body>
 
-    <!-- Shared navbar (same as homepage) + footer, injected by site-common.js -->
-    <script src="site-common.js" data-page="manage" data-auth="logout"></script>
+<script
+    src="site-common.js"
+    data-page="manage"
+    data-auth="logout"
+></script>
 
-    <div class="page-head">
-        <div class="eyebrow">MANAGE BOOKING</div>
-        <h1 class="page-title">My Bookings</h1>
-        <p class="page-sub">Your trips with Air Kerala, all in one place.</p>
+
+<header class="page-header">
+
+    <div class="eyebrow">
+        MANAGE BOOKING
     </div>
 
-    <main class="wrap">
-        <div id="status" class="empty">Loading your bookings…</div>
+    <h1>
+        My Bookings
+    </h1>
 
-        <div id="content" style="display:none;">
-            <div class="section-title">✈ Upcoming / Active Bookings <span class="count" id="upCount">0</span></div>
-            <div id="upcoming"></div>
+    <p>
+        View, pay or cancel your Air Kerala bookings.
+    </p>
 
-            <div class="section-title past">🕘 Previous Bookings <span class="count" id="pastCount">0</span></div>
-            <div id="previous"></div>
+</header>
 
-            <div class="section-title cancelled">✕ Cancelled Bookings <span class="count" id="cancelledCount">0</span></div>
-            <div id="cancelled"></div>
-        </div>
-    </main>
 
-    <script>
-        if (localStorage.getItem('isLoggedIn') !== 'true') {
-            alert("🔒 Access Denied. Please login first.");
-            window.location.href = "index.html";
+<main class="container-bookings">
+
+    <section>
+
+        <h2 class="section-title">
+            ✈ Upcoming / Active Bookings
+        </h2>
+
+        <div id="upcoming"></div>
+
+    </section>
+
+
+    <section>
+
+        <h2 class="section-title">
+            🕘 Previous Bookings
+        </h2>
+
+        <div id="previous"></div>
+
+    </section>
+
+
+    <section>
+
+        <h2 class="section-title">
+            ❌ Cancelled Bookings
+        </h2>
+
+        <div id="cancelled"></div>
+
+    </section>
+
+</main>
+
+
+<script>
+
+let bookings = [];
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function escapeHtml(value) {
+
+    return String(
+        value == null
+            ? ''
+            : value
+    ).replace(
+        /[&<>"']/g,
+        char => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+        })[char]
+    );
+}
+
+
+function pnr(id) {
+
+    return (
+        'AK-' +
+        String(id)
+            .slice(-8)
+            .toUpperCase()
+    );
+}
+
+
+function formatDate(value) {
+
+    if (!value)
+        return '—';
+
+    const date =
+        new Date(
+            String(value)
+                .replace(' ', 'T')
+        );
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    )
+        return value;
+
+    return date.toLocaleDateString(
+        'en-IN',
+        {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric'
         }
+    );
+}
 
-        let bookings = [];
 
-        // Mongo _id isn't sequential like the old numeric ids this used to
-        // assume, so the PNR is derived from the id itself instead — same
-        // format/length every time for a given booking.
-        function pnrFor(id) { return 'TRV' + String(id).slice(-6).toUpperCase(); }
+function formatTime(value) {
 
-        function esc(v) {
-            return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) {
-                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
-            });
-        }
+    if (!value)
+        return '—';
 
-        function isPast(b) {
-            const d = new Date((b.DEP_TEXT || '').replace(' ', 'T'));
-            return !isNaN(d) && d < new Date();
-        }
+    return String(value)
+        .slice(11, 16);
+}
 
-        function fmtDate(txt) {
-            const d = new Date((txt || '').replace(' ', 'T'));
-            return isNaN(d) ? '—' : d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
-        }
-        function fmtTime(txt) { return txt ? txt.slice(11, 16) : '—'; }
 
-        function statusBadges(b, past) {
-            let s;
-            if (b.STATUS_ === 'CANCELLED') s = '<span class="badge-pill b-cancelled">CANCELLED</span>';
-            else if (past) s = '<span class="badge-pill b-completed">COMPLETED</span>';
-            else s = '<span class="badge-pill b-confirmed">CONFIRMED</span>';
+/* =========================================================
+   BUCKET
+========================================================= */
 
-            if (b.PAYMENT_STATUS === 'PAID') s += '<span class="badge-pill b-paid">PAID</span>';
-            else if (b.PAYMENT_STATUS === 'REFUNDED') s += '<span class="badge-pill b-refunded">REFUNDED</span>';
-            else if (b.STATUS_ !== 'CANCELLED') s += '<span class="badge-pill b-pending">PAYMENT PENDING</span>';
-            return s;
-        }
+function bucketBooking(booking) {
 
-        function cardHtml(b, bucket) {
-            const past = bucket === 'past';
-            const cancelled = bucket === 'cancelled';
-            const canCancel = !past && !cancelled && b.STATUS_ === 'CONFIRMED';
-            const needsPay = !past && !cancelled && b.STATUS_ === 'CONFIRMED' && !b.PAYMENT_STATUS;
-            const id = b.BOOKING_ID;
-            const cardClass = cancelled ? 'cancelled' : (past ? 'past' : '');
+    if (
+        booking.STATUS_ ===
+        'CANCELLED'
+    )
+        return 'cancelled';
 
-            return `
-            <div class="booking-card ${cardClass}" id="card-${id}">
-                <div class="card-top">
+
+    const departure =
+        new Date(
+            String(
+                booking.DEP_TEXT || ''
+            ).replace(
+                ' ',
+                'T'
+            )
+        );
+
+
+    if (
+        !Number.isNaN(
+            departure.getTime()
+        ) &&
+        departure < new Date()
+    )
+        return 'previous';
+
+
+    return 'upcoming';
+}
+
+
+/* =========================================================
+   BADGES
+========================================================= */
+
+function badges(booking) {
+
+    let html = '';
+
+
+    if (
+        booking.STATUS_ ===
+        'CANCELLED'
+    ) {
+
+        html +=
+            '<span class="badge cancelled">CANCELLED</span>';
+
+    } else {
+
+        html +=
+            '<span class="badge confirmed">CONFIRMED</span>';
+    }
+
+
+    if (
+        booking.PAYMENT_STATUS ===
+        'PAID'
+    ) {
+
+        html +=
+            '<span class="badge paid">PAID</span>';
+
+    } else if (
+        booking.PAYMENT_STATUS ===
+        'REFUNDED'
+    ) {
+
+        html +=
+            '<span class="badge cancelled">REFUNDED</span>';
+
+    } else {
+
+        html +=
+            '<span class="badge pending">PAYMENT PENDING</span>';
+    }
+
+
+    return html;
+}
+
+
+/* =========================================================
+   CARD
+========================================================= */
+
+function bookingCard(
+    booking,
+    bucket
+) {
+
+    const needsPayment =
+        bucket === 'upcoming' &&
+        booking.STATUS_ !== 'CANCELLED' &&
+        booking.PAYMENT_STATUS !== 'PAID';
+
+
+    const canCancel =
+        bucket === 'upcoming' &&
+        booking.STATUS_ !== 'CANCELLED';
+
+
+    return `
+
+        <article
+            class="booking-card"
+            id="booking-${escapeHtml(
+                booking.BOOKING_ID
+            )}"
+        >
+
+            <div class="booking-top">
+
+                <div>
+
+                    <div class="pnr-label">
+                        BOOKING REFERENCE / PNR
+                    </div>
+
+                    <div class="pnr">
+                        ${escapeHtml(
+                            pnr(
+                                booking.BOOKING_ID
+                            )
+                        )}
+                    </div>
+
+                </div>
+
+
+                <div>
+                    ${badges(booking)}
+                </div>
+
+            </div>
+
+
+            <div class="booking-body">
+
+                <div class="route">
+
+                    ${escapeHtml(
+                        booking.ORIGIN
+                    )}
+
+                    <span>✈</span>
+
+                    ${escapeHtml(
+                        booking.DESTINATION
+                    )}
+
+                </div>
+
+
+                <div class="flight">
+
+                    ${escapeHtml(
+                        booking.AIRLINE_NAME
+                    )}
+
+                    ·
+
+                    ${escapeHtml(
+                        booking.FLIGHT_NUMBER
+                    )}
+
+                </div>
+
+
+                <div class="facts">
+
                     <div>
-                        <div class="pnr-label">BOOKING REFERENCE / PNR</div>
-                        <div class="pnr">${pnrFor(id)}</div>
+
+                        <div class="label">
+                            Passengers
+                        </div>
+
+                        <div class="value">
+                            ${escapeHtml(
+                                booking.PASSENGER_COUNT
+                            )}
+                        </div>
+
                     </div>
-                    <div>${statusBadges(b, past)}</div>
+
+
+                    <div>
+
+                        <div class="label">
+                            Travel Date
+                        </div>
+
+                        <div class="value">
+                            ${formatDate(
+                                booking.DEP_TEXT
+                            )}
+                        </div>
+
+                    </div>
+
+
+                    <div>
+
+                        <div class="label">
+                            Departure
+                        </div>
+
+                        <div class="value">
+                            ${formatTime(
+                                booking.DEP_TEXT
+                            )}
+                        </div>
+
+                    </div>
+
+
+                    <div>
+
+                        <div class="label">
+                            Seats
+                        </div>
+
+                        <div class="value">
+                            ${escapeHtml(
+                                booking.SEATS
+                            )}
+                        </div>
+
+                    </div>
+
+
+                    <div>
+
+                        <div class="label">
+                            Total
+                        </div>
+
+                        <div class="value">
+                            ₹${Number(
+                                booking.AMOUNT || 0
+                            ).toLocaleString(
+                                'en-IN'
+                            )}
+                        </div>
+
+                    </div>
+
                 </div>
 
-                <div class="card-body-row">
-                    <div class="route">
-                        <div class="route-cities">${esc(b.ORIGIN)}<span>✈</span>${esc(b.DESTINATION)}</div>
-                        <div class="route-flight">${esc(b.AIRLINE_NAME)} · ${esc(b.FLIGHT_NUMBER || '—')}</div>
-                    </div>
+            </div>
+
+
+            <div class="actions">
+
+                <button
+                    class="btn-air btn-secondary"
+                    onclick="toggleDetails('${escapeHtml(
+                        booking.BOOKING_ID
+                    )}')"
+                >
+                    View Details
+                </button>
+
+
+                ${
+                    needsPayment
+                        ? `
+                            <button
+                                class="btn-air btn-primary"
+                                onclick="completePayment('${escapeHtml(
+                                    booking.BOOKING_ID
+                                )}')"
+                            >
+                                Complete Payment
+                            </button>
+                        `
+                        : ''
+                }
+
+
+                ${
+                    canCancel
+                        ? `
+                            <button
+                                class="btn-air btn-danger"
+                                onclick="cancelBooking(
+                                    '${escapeHtml(
+                                        booking.BOOKING_ID
+                                    )}',
+                                    this
+                                )"
+                            >
+                                Cancel Booking
+                            </button>
+                        `
+                        : ''
+                }
+
+            </div>
+
+
+            <div
+                class="details"
+                id="details-${escapeHtml(
+                    booking.BOOKING_ID
+                )}"
+            >
+
+                ${detailsHtml(booking)}
+
+            </div>
+
+        </article>
+
+    `;
+}
+
+
+/* =========================================================
+   DETAILS
+========================================================= */
+
+function detailsHtml(booking) {
+
+    const passengers =
+        booking.PASSENGERS || [];
+
+
+    let html = `
+
+        <div class="facts">
+
+            <div>
+                <div class="label">
+                    Airline
+                </div>
+
+                <div class="value">
+                    ${escapeHtml(
+                        booking.AIRLINE_NAME
+                    )}
+                </div>
+            </div>
+
+
+            <div>
+                <div class="label">
+                    Flight
+                </div>
+
+                <div class="value">
+                    ${escapeHtml(
+                        booking.FLIGHT_NUMBER
+                    )}
+                </div>
+            </div>
+
+
+            <div>
+                <div class="label">
+                    Cabin
+                </div>
+
+                <div class="value">
+                    ${escapeHtml(
+                        booking.CLASS
+                    )}
+                </div>
+            </div>
+
+
+            <div>
+                <div class="label">
+                    Payment
+                </div>
+
+                <div class="value">
+                    ${escapeHtml(
+                        booking.PAYMENT_STATUS
+                    )}
+                </div>
+            </div>
+
+        </div>
+
+    `;
+
+
+    passengers.forEach(
+        (passenger, index) => {
+
+            html += `
+
+                <div class="passenger-detail">
+
+                    <h4>
+                        Passenger ${index + 1}
+                        ·
+                        ${escapeHtml(
+                            passenger.NAME
+                        )}
+                    </h4>
+
+
                     <div class="facts">
-                        <div><div class="fact-label">Passenger</div><div class="fact-value">${esc(b.NAME)}</div></div>
-                        <div><div class="fact-label">Travel Date</div><div class="fact-value">${fmtDate(b.DEP_TEXT)}</div></div>
-                        <div><div class="fact-label">Departure</div><div class="fact-value">${fmtTime(b.DEP_TEXT)}</div></div>
+
+                        <div>
+
+                            <div class="label">
+                                Age
+                            </div>
+
+                            <div class="value">
+                                ${escapeHtml(
+                                    passenger.AGE
+                                )}
+                            </div>
+
+                        </div>
+
+
+                        <div>
+
+                            <div class="label">
+                                Gender
+                            </div>
+
+                            <div class="value">
+                                ${escapeHtml(
+                                    passenger.GENDER
+                                )}
+                            </div>
+
+                        </div>
+
+
+                        <div>
+
+                            <div class="label">
+                                Passport / ID
+                            </div>
+
+                            <div class="value">
+                                ${escapeHtml(
+                                    passenger.PASSPORT_NUMBER
+                                )}
+                            </div>
+
+                        </div>
+
+
+                        <div>
+
+                            <div class="label">
+                                Seat
+                            </div>
+
+                            <div class="value">
+                                ${escapeHtml(
+                                    passenger.SEAT_NUMBER
+                                )}
+                            </div>
+
+                        </div>
+
+
+                        <div>
+
+                            <div class="label">
+                                Meal
+                            </div>
+
+                            <div class="value">
+                                ${escapeHtml(
+                                    passenger.MEAL_PREFERENCE ||
+                                    'None'
+                                )}
+                            </div>
+
+                        </div>
+
+
+                        <div>
+
+                            <div class="label">
+                                Special Assistance
+                            </div>
+
+                            <div class="value">
+                                ${escapeHtml(
+                                    passenger.SPECIAL_ASSISTANCE ||
+                                    'None'
+                                )}
+                            </div>
+
+                        </div>
+
+
+                        <div>
+
+                            <div class="label">
+                                Wheelchair
+                            </div>
+
+                            <div class="value">
+                                ${escapeHtml(
+                                    passenger.WHEELCHAIR_REQUIRED ||
+                                    'NO'
+                                )}
+                            </div>
+
+                        </div>
+
+
+                        <div>
+
+                            <div class="label">
+                                Infant Bassinet
+                            </div>
+
+                            <div class="value">
+                                ${escapeHtml(
+                                    passenger.INFANT_BASSINET_REQUIRED ||
+                                    'NO'
+                                )}
+                            </div>
+
+                        </div>
+
                     </div>
+
                 </div>
 
-                <div class="card-actions">
-                    <button class="btn-air btn-ghost" onclick="toggleDetails(${id})">View Details</button>
-                    ${needsPay ? `<button class="btn-air btn-primary-air" onclick="completePayment(${id})">Complete Payment</button>` : ''}
-                    ${canCancel ? `<button class="btn-air btn-danger-air" onclick="cancelBooking(${id}, this)">Cancel Booking</button>` : ''}
-                </div>
-
-                <div class="details-panel" id="details-${id}">
-                    <div class="detail-grid">
-                        <div><div class="fact-label">Airline</div><div class="fact-value">${esc(b.AIRLINE_NAME)}</div></div>
-                        <div><div class="fact-label">Arrival</div><div class="fact-value">${fmtTime(b.ARR_TEXT)}</div></div>
-                        <div><div class="fact-label">Cabin Class</div><div class="fact-value">${esc(b.CLASS)}</div></div>
-                        <div><div class="fact-label">Seat</div><div class="fact-value">${esc(b.SEAT_NUMBER)}</div></div>
-                        <div><div class="fact-label">Age</div><div class="fact-value">${esc(b.AGE)}</div></div>
-                        <div><div class="fact-label">Gender</div><div class="fact-value">${esc(b.GENDER)}</div></div>
-                        <div><div class="fact-label">Passport / ID</div><div class="fact-value">${esc(b.PASSPORT_NUMBER)}</div></div>
-                        <div><div class="fact-label">Meal Preference</div><div class="fact-value">${esc(b.MEAL_PREFERENCE || '—')}</div></div>
-                        <div><div class="fact-label">Wheelchair</div><div class="fact-value">${esc(b.WHEELCHAIR_REQUIRED || 'NO')}</div></div>
-                        <div><div class="fact-label">Infant Bassinet</div><div class="fact-value">${esc(b.INFANT_BASSINET_REQUIRED || 'NO')}</div></div>
-                        <div><div class="fact-label">Special Assistance</div><div class="fact-value">${esc(b.SPECIAL_ASSISTANCE || 'None')}</div></div>
-                    </div>
-                </div>
-            </div>`;
+            `;
         }
+    );
 
-        function toggleDetails(id) {
-            document.getElementById('details-' + id).classList.toggle('open');
-        }
 
-        async function cancelBooking(id, btn) {
-            if (!confirm('Cancel booking ' + pnrFor(id) + '? This cannot be undone.')) return;
-            btn.disabled = true;
-            try {
-                const res = await fetch('/api/cancel-booking', {
+    return html;
+}
+
+
+/* =========================================================
+   TOGGLE DETAILS
+========================================================= */
+
+function toggleDetails(id) {
+
+    const element =
+        document.getElementById(
+            'details-' + id
+        );
+
+
+    if (element) {
+
+        element.classList.toggle(
+            'open'
+        );
+    }
+}
+
+
+/* =========================================================
+   PAYMENT
+========================================================= */
+
+function completePayment(id) {
+
+    localStorage.setItem(
+        'booking_id',
+        String(id)
+    );
+
+
+    window.location.href =
+        'payment.html?booking_id=' +
+        encodeURIComponent(
+            id
+        );
+}
+
+
+/* =========================================================
+   CANCEL
+========================================================= */
+
+async function cancelBooking(
+    id,
+    button
+) {
+
+    const confirmed =
+        confirm(
+            'Are you sure you want to cancel this booking?'
+        );
+
+
+    if (!confirmed)
+        return;
+
+
+    button.disabled =
+        true;
+
+
+    try {
+
+        const response =
+            await fetch(
+                '/api/cancel-booking',
+                {
                     method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ booking_id: id })
-                });
-                const data = await res.json();
-                if (!data.success) {
-                    alert('Could not cancel: ' + data.message);
-                    btn.disabled = false;
-                    return;
+
+                    headers: {
+                        'Content-Type':
+                            'application/json'
+                    },
+
+                    credentials:
+                        'include',
+
+                    body:
+                        JSON.stringify({
+                            booking_id:
+                                String(id)
+                        })
                 }
-                await loadBookings();
-            } catch (err) {
-                alert('Error: ' + err.message);
-                btn.disabled = false;
-            }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            !response.ok ||
+            !data.success
+        ) {
+
+            throw new Error(
+                data.message ||
+                'Could not cancel booking'
+            );
         }
 
-        // Resume the existing payment flow for a booking that hasn't been paid yet
-        function completePayment(id) {
-            const b = bookings.find(function (x) { return x.BOOKING_ID === id; });
-            if (!b) return;
-            localStorage.setItem('booking_id', id);
-            localStorage.setItem('bookingTotal', Math.round(b.PRICE * 1.18));
-            localStorage.setItem('origin', b.ORIGIN);
-            localStorage.setItem('dest', b.DESTINATION);
-            localStorage.setItem('cabinClass', b.CLASS);
-            localStorage.setItem('selectedSeat', b.SEAT_NUMBER);
-            localStorage.setItem('passengerName', b.NAME);
-            localStorage.setItem('flightNum', b.FLIGHT_NUMBER || '');
-            localStorage.setItem('airline', b.AIRLINE_NAME || '');
-            localStorage.setItem('dep', fmtTime(b.DEP_TEXT));
-            localStorage.setItem('arr', fmtTime(b.ARR_TEXT));
-            window.location.href = 'payment.html';
+
+        alert(
+            'Booking cancelled successfully.'
+        );
+
+
+        await loadBookings();
+
+    } catch (error) {
+
+        alert(
+            'Could not cancel booking: ' +
+            error.message
+        );
+
+        button.disabled =
+            false;
+    }
+}
+
+
+/* =========================================================
+   RENDER
+========================================================= */
+
+function render() {
+
+    const upcoming =
+        document.getElementById(
+            'upcoming'
+        );
+
+    const previous =
+        document.getElementById(
+            'previous'
+        );
+
+    const cancelled =
+        document.getElementById(
+            'cancelled'
+        );
+
+
+    upcoming.innerHTML =
+        '';
+
+    previous.innerHTML =
+        '';
+
+    cancelled.innerHTML =
+        '';
+
+
+    const groups = {
+
+        upcoming: [],
+
+        previous: [],
+
+        cancelled: []
+    };
+
+
+    bookings.forEach(
+        booking => {
+
+            const bucket =
+                bucketBooking(
+                    booking
+                );
+
+            groups[
+                bucket
+            ].push(
+                booking
+            );
+        }
+    );
+
+
+    upcoming.innerHTML =
+        groups.upcoming.length
+            ? groups.upcoming
+                .map(
+                    b =>
+                        bookingCard(
+                            b,
+                            'upcoming'
+                        )
+                )
+                .join('')
+            : `
+                <div class="empty">
+                    No upcoming bookings.
+                </div>
+            `;
+
+
+    previous.innerHTML =
+        groups.previous.length
+            ? groups.previous
+                .map(
+                    b =>
+                        bookingCard(
+                            b,
+                            'previous'
+                        )
+                )
+                .join('')
+            : `
+                <div class="empty">
+                    No previous bookings.
+                </div>
+            `;
+
+
+    cancelled.innerHTML =
+        groups.cancelled.length
+            ? groups.cancelled
+                .map(
+                    b =>
+                        bookingCard(
+                            b,
+                            'cancelled'
+                        )
+                )
+                .join('')
+            : `
+                <div class="empty">
+                    No cancelled bookings.
+                </div>
+            `;
+}
+
+
+/* =========================================================
+   LOAD
+========================================================= */
+
+async function loadBookings() {
+
+    try {
+
+        const response =
+            await fetch(
+                '/api/my-bookings',
+                {
+                    credentials:
+                        'include'
+                }
+            );
+
+
+        if (
+            response.status ===
+            401
+        ) {
+
+            window.location.href =
+                'index.html';
+
+            return;
         }
 
-        // Loads the logged-in user's own bookings straight from MongoDB via
-        // the existing /api/my-bookings + /api/booking-details/:id APIs —
-        // no passenger details re-entry, no local/hardcoded booking list.
-        async function loadBookings() {
-            const statusEl = document.getElementById('status');
-            const contentEl = document.getElementById('content');
 
-            let ids = [];
+        const data =
+            await response.json();
+
+
+        if (
+            !response.ok ||
+            !data.success
+        ) {
+
+            throw new Error(
+                data.message ||
+                'Could not load bookings'
+            );
+        }
+
+
+        bookings =
+            data.bookings || [];
+
+
+        /*
+         * Fetch detailed passenger
+         * information for each booking.
+         */
+        for (
+            const booking
+            of bookings
+        ) {
+
             try {
-                const listRes = await fetch('/api/my-bookings');
 
-                if (listRes.status === 401) {
-                    alert("🔒 Your session has expired. Please login again.");
-                    window.location.href = "index.html";
-                    return;
+                const detailResponse =
+                    await fetch(
+                        '/api/booking-details/' +
+                        encodeURIComponent(
+                            booking.BOOKING_ID
+                        ),
+                        {
+                            credentials:
+                                'include'
+                        }
+                    );
+
+
+                const detailData =
+                    await detailResponse.json();
+
+
+                if (
+                    detailResponse.ok &&
+                    detailData.success
+                ) {
+
+                    const detail =
+                        detailData.data;
+
+
+                    booking.PASSENGERS =
+                        detail.PASSENGERS ||
+                        [];
+
+                    booking.AMOUNT =
+                        detail.AMOUNT;
+
+                    booking.PAYMENT_STATUS =
+                        detail.PAYMENT_STATUS;
+
                 }
 
-                const listData = await listRes.json();
-                if (!listData.success) {
-                    statusEl.textContent = 'Could not load bookings: ' + (listData.message || 'Unknown error');
-                    return;
-                }
-                ids = listData.booking_ids || [];
-            } catch (err) {
-                statusEl.textContent = 'Could not load bookings: ' + err.message;
-                return;
+            } catch (detailError) {
+
+                console.error(
+                    detailError
+                );
             }
-
-            if (!ids.length) {
-                statusEl.innerHTML = 'You have no bookings yet. <a href="flights.html">Book a flight</a> to get started.';
-                statusEl.style.display = 'block';
-                contentEl.style.display = 'none';
-                return;
-            }
-
-            try {
-                const results = await Promise.all(ids.map(function (id) {
-                    return fetch('/api/booking-details/' + id)
-                        .then(function (r) { return r.json(); })
-                        .catch(function () { return { success: false }; });
-                }));
-
-                bookings = results
-                    .filter(function (r) { return r.success && r.data && r.data.length; })
-                    .map(function (r) { return r.data[0]; });
-            } catch (err) {
-                statusEl.textContent = 'Could not load bookings: ' + err.message;
-                return;
-            }
-
-            const cancelledB = bookings.filter(function (b) { return b.STATUS_ === 'CANCELLED'; })
-                .sort(function (a, b) { return (b.DEP_TEXT || '').localeCompare(a.DEP_TEXT || ''); });
-            const upcoming = bookings.filter(function (b) { return b.STATUS_ !== 'CANCELLED' && !isPast(b); })
-                .sort(function (a, b) { return (a.DEP_TEXT || '').localeCompare(b.DEP_TEXT || ''); });
-            const previous = bookings.filter(function (b) { return b.STATUS_ !== 'CANCELLED' && isPast(b); })
-                .sort(function (a, b) { return (b.DEP_TEXT || '').localeCompare(a.DEP_TEXT || ''); });
-
-            document.getElementById('upCount').textContent = upcoming.length;
-            document.getElementById('pastCount').textContent = previous.length;
-            document.getElementById('cancelledCount').textContent = cancelledB.length;
-
-            document.getElementById('upcoming').innerHTML = upcoming.length
-                ? upcoming.map(function (b) { return cardHtml(b, 'upcoming'); }).join('')
-                : '<div class="empty">No upcoming bookings. <a href="flights.html">Book a flight</a></div>';
-
-            document.getElementById('previous').innerHTML = previous.length
-                ? previous.map(function (b) { return cardHtml(b, 'past'); }).join('')
-                : '<div class="empty">No previous bookings yet.</div>';
-
-            document.getElementById('cancelled').innerHTML = cancelledB.length
-                ? cancelledB.map(function (b) { return cardHtml(b, 'cancelled'); }).join('')
-                : '<div class="empty">No cancelled bookings.</div>';
-
-            statusEl.style.display = 'none';
-            contentEl.style.display = 'block';
         }
 
-        function logout() {
-            localStorage.removeItem('isLoggedIn');
-            localStorage.removeItem('userName');
-            window.location.href = 'index.html';
-        }
 
-        loadBookings();
-    </script>
+        render();
+
+    } catch (error) {
+
+        console.error(
+            error
+        );
+
+
+        document.getElementById(
+            'upcoming'
+        ).innerHTML = `
+
+            <div class="empty">
+
+                Could not load your bookings.
+
+                <br><br>
+
+                ${escapeHtml(
+                    error.message
+                )}
+
+            </div>
+
+        `;
+    }
+}
+
+
+loadBookings();
+
+</script>
+
 </body>
 </html>

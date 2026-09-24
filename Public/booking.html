@@ -1,10 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Passenger Booking | AIR KERALA</title>
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Book Ticket | AIR KERALA</title>
 
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
@@ -12,1503 +18,1178 @@
     >
 
     <link
-        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
         rel="stylesheet"
+        href="site-common.css"
     >
 
-    <!-- Shared navbar + footer styles (same as every other page) -->
-    <link rel="stylesheet" href="site-common.css">
-
     <style>
-        :root {
-            --air-blue: #0878d1;
-            --air-dark: #071b2e;
-            --air-gold: #d7b56d;
-            --bg-light: #f4f8fc;
-        }
 
-        * {
-            box-sizing: border-box;
+        :root {
+            --blue: #0878d1;
+            --navy: #071b2e;
+            --gold: #d7b56d;
+            --light: #f4f8fc;
         }
 
         body {
             margin: 0;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            color: #17202a;
-
             background:
                 linear-gradient(
-                    rgba(239, 247, 253, 0.94),
-                    rgba(248, 251, 255, 0.97)
+                    rgba(244, 249, 253, .93),
+                    rgba(248, 251, 255, .96)
                 ),
                 url("https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=2000&q=85");
-
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
-            min-height: 100vh;
+            font-family: Arial, sans-serif;
         }
 
-        /* =========================
-           NAVBAR
-           (Old hardcoded navbar — no longer used. The navbar is
-            now provided by site-common.js / site-common.css.)
-        ========================== */
+        .booking-wrapper {
+            max-width: 1050px;
+            margin: 45px auto 70px;
+            padding: 0 18px;
+        }
 
-        .navbar-solid {
-            background: rgba(7, 27, 46, 0.98);
-            padding: 15px 5%;
-            border-bottom: 1px solid rgba(255,255,255,0.12);
+        .booking-card {
+            background: rgba(255,255,255,.97);
+            border-radius: 18px;
+            box-shadow: 0 20px 60px rgba(7,27,46,.13);
+            padding: 38px;
+        }
 
+        .page-title {
+            color: var(--navy);
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            color: #64748b;
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            border-left: 4px solid var(--gold);
+            padding-left: 14px;
+            color: var(--navy);
+            font-weight: 800;
+            margin: 30px 0 20px;
+        }
+
+        .flight-summary {
+            background: linear-gradient(
+                135deg,
+                #eaf5ff,
+                #f7fbff
+            );
+            border: 1px solid #cfe4f8;
+            border-radius: 14px;
+            padding: 24px;
+            margin-bottom: 30px;
+        }
+
+        .flight-airline {
+            color: var(--blue);
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .flight-route {
+            color: var(--navy);
+            font-size: 28px;
+            font-weight: 800;
+            margin: 6px 0;
+        }
+
+        .flight-info {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .passenger-card {
+            background: #fff;
+            border: 1px solid #dfe7ef;
+            border-radius: 14px;
+            padding: 25px;
+            margin-bottom: 22px;
+            box-shadow: 0 5px 20px rgba(7,27,46,.05);
+        }
+
+        .passenger-heading {
             display: flex;
-            align-items: center;
             justify-content: space-between;
-
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-
-            box-shadow: 0 4px 18px rgba(0,0,0,0.15);
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-
-            text-decoration: none;
-            color: white;
-        }
-
-        .brand-logo {
-            height: 44px;
-            width: auto;
-            max-width: 180px;
-            object-fit: contain;
-        }
-
-        .brand-fallback {
-            display: flex;
             align-items: center;
             gap: 10px;
+            margin-bottom: 22px;
         }
 
-        .brand-symbol {
-            width: 40px;
-            height: 40px;
-
-            border-radius: 50%;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            background: rgba(255,255,255,0.13);
-            font-size: 20px;
+        .passenger-number {
+            font-weight: 800;
+            color: var(--navy);
+            font-size: 18px;
         }
 
-        .brand-name {
-            font-size: 19px;
+        .passenger-badge {
+            background: #eaf5ff;
+            color: var(--blue);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
             font-weight: 700;
-            letter-spacing: 3px;
-        }
-
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .nav-links a {
-            color: rgba(255,255,255,0.88);
-            text-decoration: none;
-
-            padding: 10px 17px;
-
-            font-size: 13px;
-            font-weight: 600;
-
-            border-radius: 5px;
-
-            transition: 0.25s;
-        }
-
-        .nav-links a:hover {
-            color: white;
-            background: rgba(255,255,255,0.08);
-        }
-
-        .nav-links a.active {
-            color: white;
-            border-bottom: 2px solid var(--air-gold);
-        }
-
-        /* =========================
-           MAIN CONTAINER
-        ========================== */
-
-        .booking-container {
-            max-width: 900px;
-
-            margin: 50px auto;
-
-            background: rgba(255,255,255,0.97);
-
-            padding: 40px;
-
-            border-radius: 10px;
-
-            border: 1px solid rgba(255,255,255,0.8);
-
-            box-shadow:
-                0 20px 60px rgba(7,27,46,0.15);
-
-            backdrop-filter: blur(10px);
-        }
-
-        .section-header {
-            border-left: 4px solid var(--air-gold);
-
-            padding-left: 15px;
-
-            margin-bottom: 25px;
-
-            font-weight: 700;
-
-            color: var(--air-dark);
         }
 
         .form-label {
-            font-weight: 700;
-
             font-size: 11px;
-
-            letter-spacing: 1px;
-
-            color: #64748b;
-
             text-transform: uppercase;
+            letter-spacing: .8px;
+            font-weight: 800;
+            color: #64748b;
         }
 
         .form-control,
         .form-select {
-            border-radius: 5px;
-
+            border-radius: 9px;
             padding: 12px;
-
-            border: 1.5px solid #e2e8f0;
-
-            background: white;
+            border: 1px solid #d9e2eb;
         }
 
         .form-control:focus,
         .form-select:focus {
-            border-color: var(--air-blue);
-
-            box-shadow:
-                0 0 0 3px rgba(8,120,209,0.08);
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(8,120,209,.08);
         }
 
-        /* =========================
-           SELECTED FLIGHT
-        ========================== */
-
-        .flight-summary {
-            background:
-                linear-gradient(
-                    135deg,
-                    #eaf5ff,
-                    #f5faff
-                );
-
-            border: 1px solid #cfe4f8;
-
-            border-radius: 8px;
-
-            padding: 24px;
-
-            margin-bottom: 32px;
-
-            box-shadow: 0 6px 20px rgba(8,120,209,0.07);
+        .service-box {
+            background: #fffaf1;
+            border: 1px solid #f0dfb7;
+            border-radius: 11px;
+            padding: 18px;
+            margin-top: 18px;
         }
 
-        .flight-badge {
-            display: inline-block;
-
-            background: var(--air-blue);
-
+        .fare-box {
+            background: var(--navy);
             color: white;
+            border-radius: 13px;
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 25px;
+        }
 
-            padding: 5px 10px;
-
-            border-radius: 20px;
-
+        .fare-label {
             font-size: 11px;
-
-            font-weight: 700;
-
-            letter-spacing: .5px;
-
-            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: .7;
         }
 
-        .flight-route {
-            font-size: 23px;
-
-            font-weight: 700;
-
-            color: var(--air-dark);
+        .fare-value {
+            font-size: 25px;
+            font-weight: 800;
         }
 
-        .flight-meta {
-            color: #64748b;
-
-            font-size: 13px;
-
-            margin-top: 5px;
-        }
-
-        /* =========================
-           PRICE
-        ========================== */
-
-        .price-card {
-            background: #f1f5f9;
-
-            padding: 18px 22px;
-
-            border-radius: 7px;
-
-            text-align: right;
-
-            border: 1px dashed var(--air-dark);
-
-            min-width: 170px;
-        }
-
-        #livePrice {
-            color: var(--air-dark);
-        }
-
-        /* =========================
-           SSR
-        ========================== */
-
-        .ssr-box {
-            background: #fdfaf3;
-
-            padding: 20px;
-
-            border-radius: 7px;
-
-            border: 1px solid #f3e8cc;
-        }
-
-        /* =========================
-           PAYMENT BUTTON
-        ========================== */
-
-        .btn-pay {
-            background: var(--air-blue);
-
-            color: white;
-
-            padding: 15px;
-
-            border-radius: 5px;
-
+        .btn-payment {
             width: 100%;
-
-            font-weight: 700;
-
-            border: none;
-
-            transition: 0.3s;
-
+            border: 0;
+            border-radius: 10px;
+            padding: 16px;
             margin-top: 20px;
-
+            background: var(--blue);
+            color: white;
             font-size: 16px;
+            font-weight: 800;
         }
 
-        .btn-pay:hover {
+        .btn-payment:hover {
             background: #0565b0;
-
-            transform: translateY(-2px);
-
-            box-shadow:
-                0 8px 20px rgba(8,120,209,0.2);
         }
 
-        /* =========================
-           MOBILE
-        ========================== */
+        .error-box {
+            display: none;
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 20px;
+        }
 
-        @media (max-width: 768px) {
+        @media (max-width: 700px) {
 
-            .navbar-solid {
-                padding: 12px 18px;
-
-                flex-wrap: wrap;
-
-                gap: 10px;
-            }
-
-            .nav-links {
-                width: 100%;
-
-                justify-content: center;
-
-                flex-wrap: wrap;
-            }
-
-            .nav-links a {
-                font-size: 12px;
-
-                padding: 8px 10px;
-            }
-
-            .booking-container {
-                margin: 25px 12px;
-
+            .booking-card {
                 padding: 22px;
             }
 
             .flight-route {
-                font-size: 19px;
+                font-size: 21px;
             }
 
-            .price-card {
-                margin-top: 15px;
-
-                text-align: left;
+            .fare-box {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
             }
         }
+
     </style>
+
 </head>
 
 <body>
 
-    <!-- =========================
-         NAVBAR
-    ========================== -->
+<script
+    src="site-common.js"
+    data-page="book"
+    data-auth="none"
+></script>
 
-    <!-- Shared navbar (same as every other page) + footer, injected by site-common.js -->
-    <script src="site-common.js" data-page="book" data-auth="none"></script>
+
+<main class="booking-wrapper">
+
+    <div class="booking-card">
+
+        <h1 class="page-title">
+            Passenger Details
+        </h1>
+
+        <p class="page-subtitle">
+            Enter the details for everyone travelling on this booking.
+        </p>
 
 
-    <!-- =========================
-         BOOKING
-    ========================== -->
+        <div class="flight-summary">
 
-    <div class="container">
-
-        <div class="booking-container">
-
-            <!-- =========================
-                 SELECTED FLIGHT
-            ========================== -->
-
-            <h3 class="section-header">
-                Selected Flight
-            </h3>
-
-            <div class="flight-summary">
-
-                <div class="row align-items-center">
-
-                    <div class="col-md-8">
-
-                        <div
-                            class="flight-badge"
-                            id="bannerAirline"
-                        >
-                            Loading flight...
-                        </div>
-
-                        <div
-                            class="flight-route"
-                            id="bannerRoute"
-                        >
-                            Loading...
-                        </div>
-
-                        <div
-                            class="flight-meta"
-                            id="bannerTime"
-                        >
-                            Please wait...
-                        </div>
-
-                    </div>
-
-                    <div class="col-md-4 text-md-end mt-3 mt-md-0">
-
-                        <div class="small text-muted fw-bold">
-                            CABIN CLASS
-                        </div>
-
-                        <select
-                            id="cabinSelect"
-                            class="form-select form-select-sm mt-1"
-                            onchange="onCabinChange()"
-                        >
-                            <option value="Economy">
-                                Economy
-                            </option>
-
-                            <option value="Business">
-                                Business
-                            </option>
-
-                            <option value="First">
-                                First
-                            </option>
-                        </select>
-
-                        <div class="small text-muted fw-bold mt-3">
-                            SEAT
-                        </div>
-
-                        <div
-                            class="fw-bold"
-                            id="bannerSeat"
-                        >
-                            Assigned during booking
-                        </div>
-
-                    </div>
-
-                </div>
-
+            <div
+                class="flight-airline"
+                id="flightAirline"
+            >
+                AIR KERALA
             </div>
 
-
-            <!-- =========================
-                 PASSENGER HEADER
-            ========================== -->
-
-            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
-
-                <h3 class="section-header mb-0">
-                    Passenger Details
-                </h3>
-
-                <div class="price-card">
-
-                    <small class="fw-bold text-muted">
-                        TOTAL FARE
-                    </small>
-
-                    <h2
-                        class="fw-bold mb-0"
-                        id="livePrice"
-                    >
-                        —
-                    </h2>
-
-                </div>
-
+            <div
+                class="flight-route"
+                id="flightRoute"
+            >
+                Loading flight...
             </div>
 
-
-            <!-- =========================
-                 PASSENGER FORM
-            ========================== -->
-
-            <form id="mainBookingForm">
-
-                <div class="row g-3 mb-4">
-
-                    <div class="col-md-6">
-
-                        <label class="form-label">
-                            Passenger Name
-                        </label>
-
-                        <input
-                            type="text"
-                            id="pName"
-                            class="form-control"
-                            placeholder="Full name as per ID"
-                            required
-                        >
-
-                    </div>
-
-
-                    <div class="col-md-3">
-
-                        <label class="form-label">
-                            Age
-                        </label>
-
-                        <input
-                            type="number"
-                            id="pAge"
-                            class="form-control"
-                            min="1"
-                            max="120"
-                            required
-                        >
-
-                    </div>
-
-
-                    <div class="col-md-3">
-
-                        <label class="form-label">
-                            Gender
-                        </label>
-
-                        <select
-                            id="pGender"
-                            class="form-select"
-                        >
-                            <option>Male</option>
-                            <option>Female</option>
-                            <option>Other</option>
-                        </select>
-
-                    </div>
-
-                </div>
-
-
-                <div class="row g-3 mb-4">
-
-                    <div class="col-md-6">
-
-                        <label class="form-label">
-                            Passport / ID Number
-                        </label>
-
-                        <input
-                            type="text"
-                            id="pID"
-                            class="form-control"
-                            placeholder="e.g. P1234567"
-                            required
-                        >
-
-                    </div>
-
-                </div>
-
-
-                <!-- =========================
-                     SPECIAL SERVICES
-                ========================== -->
-
-                <h5 class="section-header">
-                    Special Service Requests
-                </h5>
-
-                <div class="ssr-box mb-4">
-
-                    <div class="row g-3">
-
-                        <div class="col-md-6">
-
-                            <label class="form-label">
-                                Food Preference
-                            </label>
-
-                            <select
-                                id="mealPref"
-                                class="form-select"
-                            >
-
-                                <option value="None">
-                                    No Meal Required
-                                </option>
-
-                                <option value="Veg">
-                                    Vegetarian (Veg)
-                                </option>
-
-                                <option value="Non-Veg">
-                                    Non-Vegetarian (Non-Veg)
-                                </option>
-
-                                <option value="Vegan">
-                                    Vegan / Jain Meal
-                                </option>
-
-                                <option value="Hindu Non-Veg">
-                                    Hindu Non-Vegetarian
-                                </option>
-
-                            </select>
-
-                        </div>
-
-
-                        <div class="col-md-6">
-
-                            <label class="form-label">
-                                Additional Assistance
-                            </label>
-
-                            <div class="d-flex gap-3 mt-2 flex-wrap">
-
-                                <div class="form-check">
-
-                                    <input
-                                        class="form-check-input"
-                                        type="checkbox"
-                                        id="ssrWheelchair"
-                                    >
-
-                                    <label
-                                        class="form-check-label small fw-bold"
-                                        for="ssrWheelchair"
-                                    >
-                                        Wheelchair
-                                    </label>
-
-                                </div>
-
-
-                                <div class="form-check">
-
-                                    <input
-                                        class="form-check-input"
-                                        type="checkbox"
-                                        id="ssrInfant"
-                                    >
-
-                                    <label
-                                        class="form-check-label small fw-bold"
-                                        for="ssrInfant"
-                                    >
-                                        Infant Bassinet
-                                    </label>
-
-                                </div>
-
-
-                                <div class="form-check">
-
-                                    <input
-                                        class="form-check-input"
-                                        type="checkbox"
-                                        id="ssrMedical"
-                                    >
-
-                                    <label
-                                        class="form-check-label small fw-bold"
-                                        for="ssrMedical"
-                                    >
-                                        Medical Support
-                                    </label>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <button
-                    type="submit"
-                    class="btn-pay shadow-sm"
-                >
-                    Proceed to Payment Gateway ➔
-                </button>
-
-            </form>
+            <div
+                class="flight-info"
+                id="flightInfo"
+            >
+                Loading...
+            </div>
 
         </div>
 
+
+        <div class="error-box" id="errorBox"></div>
+
+
+        <form id="bookingForm">
+
+            <h3 class="section-title">
+                Booking Details
+            </h3>
+
+
+            <div class="row g-3">
+
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Number of Passengers
+                    </label>
+
+                    <select
+                        id="passengerCount"
+                        class="form-select"
+                    >
+
+                        <option value="1">1 Passenger</option>
+                        <option value="2">2 Passengers</option>
+                        <option value="3">3 Passengers</option>
+                        <option value="4">4 Passengers</option>
+                        <option value="5">5 Passengers</option>
+                        <option value="6">6 Passengers</option>
+                        <option value="7">7 Passengers</option>
+                        <option value="8">8 Passengers</option>
+                        <option value="9">9 Passengers</option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Cabin Class
+                    </label>
+
+                    <select
+                        id="cabinClass"
+                        class="form-select"
+                    >
+
+                        <option value="Economy">
+                            Economy
+                        </option>
+
+                        <option value="Business">
+                            Business
+                        </option>
+
+                        <option value="First">
+                            First
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div id="passengerContainer"></div>
+
+
+            <div class="fare-box">
+
+                <div>
+
+                    <div class="fare-label">
+                        Estimated Total Fare
+                    </div>
+
+                    <div>
+                        Final amount is calculated by the server.
+                    </div>
+
+                </div>
+
+                <div
+                    class="fare-value"
+                    id="fareValue"
+                >
+                    ₹ —
+                </div>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="btn-payment"
+                id="submitBtn"
+            >
+                Continue to Payment →
+            </button>
+
+        </form>
+
     </div>
 
-
-    <!-- =========================
-         JAVASCRIPT
-    ========================== -->
-
-    <script>
-
-        /* =========================
-           LOGIN CHECK
-        ========================== */
-
-        if (localStorage.getItem('isLoggedIn') !== 'true') {
-            window.location.href = 'index.html';
-        }
+</main>
 
 
-        /* =========================
-           GET SELECTED FLIGHT
-        ========================== */
+<script>
 
-        const flightId = localStorage.getItem('flightId');
+const flightId =
+    localStorage.getItem('flightId');
 
-        const flightNum = localStorage.getItem('flightNum');
-        const airline = localStorage.getItem('airline');
+const flightNum =
+    localStorage.getItem('flightNum');
 
-        const origin = localStorage.getItem('origin');
-        const dest = localStorage.getItem('dest');
+const airline =
+    localStorage.getItem('airline') ||
+    'AIR KERALA';
 
-        const dep = localStorage.getItem('dep');
-        const arr = localStorage.getItem('arr');
+const origin =
+    localStorage.getItem('origin');
 
-        const flightDate = localStorage.getItem('flightDate');
+const destination =
+    localStorage.getItem('dest');
 
-        let livePrices = {};
-        let liveSeatCounts = {};
+const departure =
+    localStorage.getItem('dep');
 
-        let inventoryReady = false;
+const arrival =
+    localStorage.getItem('arr');
+
+const flightDate =
+    localStorage.getItem('flightDate');
 
 
-        /* =========================
-           CHECK FLIGHT
-        ========================== */
+if (!flightId) {
 
-        if (!flightId || !flightNum || !origin || !dest) {
+    alert(
+        'Please select a flight first.'
+    );
 
-            alert(
-                'Please select a flight before entering passenger details.'
+    window.location.href =
+        'flights.html';
+}
+
+
+/* =========================================================
+   FLIGHT SUMMARY
+========================================================= */
+
+document.getElementById(
+    'flightAirline'
+).textContent =
+    airline +
+    (
+        flightNum
+            ? ' · ' + flightNum
+            : ''
+    );
+
+
+document.getElementById(
+    'flightRoute'
+).textContent =
+    (origin || '-') +
+    ' → ' +
+    (destination || '-');
+
+
+document.getElementById(
+    'flightInfo'
+).textContent =
+    'Date: ' +
+    (flightDate || '-') +
+    ' · Departure: ' +
+    (departure || '-') +
+    ' · Arrival: ' +
+    (arrival || '-');
+
+
+/* =========================================================
+   PASSENGER FORM
+========================================================= */
+
+const passengerContainer =
+    document.getElementById(
+        'passengerContainer'
+    );
+
+
+function passengerCard(index) {
+
+    return `
+
+        <div
+            class="passenger-card"
+            data-passenger="${index}"
+        >
+
+            <div class="passenger-heading">
+
+                <div class="passenger-number">
+                    Passenger ${index}
+                </div>
+
+                <div class="passenger-badge">
+                    TRAVELLER ${index}
+                </div>
+
+            </div>
+
+
+            <div class="row g-3">
+
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Full Name
+                    </label>
+
+                    <input
+                        type="text"
+                        class="form-control passenger-name"
+                        required
+                        placeholder="Name as per ID"
+                    >
+
+                </div>
+
+
+                <div class="col-md-3">
+
+                    <label class="form-label">
+                        Age
+                    </label>
+
+                    <input
+                        type="number"
+                        class="form-control passenger-age"
+                        min="1"
+                        max="120"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="col-md-3">
+
+                    <label class="form-label">
+                        Gender
+                    </label>
+
+                    <select
+                        class="form-select passenger-gender"
+                    >
+
+                        <option value="Male">
+                            Male
+                        </option>
+
+                        <option value="Female">
+                            Female
+                        </option>
+
+                        <option value="Other">
+                            Other
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Passport / ID Number
+                    </label>
+
+                    <input
+                        type="text"
+                        class="form-control passenger-id"
+                        required
+                        placeholder="Passport / Government ID"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="service-box">
+
+                <div class="fw-bold mb-3">
+                    Special Service Requests
+                </div>
+
+
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+                            Meal Preference
+                        </label>
+
+                        <select
+                            class="form-select passenger-meal"
+                        >
+
+                            <option value="None">
+                                No Meal Required
+                            </option>
+
+                            <option value="Veg">
+                                Vegetarian
+                            </option>
+
+                            <option value="Non-Veg">
+                                Non-Vegetarian
+                            </option>
+
+                            <option value="Vegan">
+                                Vegan
+                            </option>
+
+                            <option value="Jain">
+                                Jain Meal
+                            </option>
+
+                            <option value="Hindu Non-Veg">
+                                Hindu Non-Vegetarian
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+                            Special Assistance
+                        </label>
+
+                        <select
+                            class="form-select passenger-assistance"
+                        >
+
+                            <option value="None">
+                                No Special Assistance
+                            </option>
+
+                            <option value="Mobility Assistance">
+                                Mobility Assistance
+                            </option>
+
+                            <option value="Hearing Assistance">
+                                Hearing Assistance
+                            </option>
+
+                            <option value="Visual Assistance">
+                                Visual Assistance
+                            </option>
+
+                            <option value="Medical Support">
+                                Medical Support
+                            </option>
+
+                            <option value="Other">
+                                Other Assistance
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="col-12">
+
+                        <div class="d-flex gap-4 flex-wrap">
+
+                            <label class="form-check">
+
+                                <input
+                                    type="checkbox"
+                                    class="form-check-input passenger-wheelchair"
+                                >
+
+                                <span class="form-check-label">
+                                    Wheelchair Required
+                                </span>
+
+                            </label>
+
+
+                            <label class="form-check">
+
+                                <input
+                                    type="checkbox"
+                                    class="form-check-input passenger-infant"
+                                >
+
+                                <span class="form-check-label">
+                                    Infant Bassinet
+                                </span>
+
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    `;
+}
+
+
+function renderPassengers() {
+
+    const count =
+        Number(
+            document.getElementById(
+                'passengerCount'
+            ).value
+        );
+
+    passengerContainer.innerHTML = '';
+
+
+    for (
+        let i = 1;
+        i <= count;
+        i++
+    ) {
+
+        passengerContainer.insertAdjacentHTML(
+            'beforeend',
+            passengerCard(i)
+        );
+    }
+
+
+    updateFare();
+}
+
+
+document.getElementById(
+    'passengerCount'
+).addEventListener(
+    'change',
+    renderPassengers
+);
+
+
+/* =========================================================
+   INVENTORY
+========================================================= */
+
+let prices = {};
+
+
+async function loadInventory() {
+
+    try {
+
+        const response =
+            await fetch(
+                '/api/flights/ensure',
+                {
+                    method: 'POST',
+
+                    headers: {
+                        'Content-Type':
+                            'application/json'
+                    },
+
+                    body:
+                        JSON.stringify({
+
+                            flight_number:
+                                flightNum,
+
+                            airline_name:
+                                airline,
+
+                            origin:
+                                origin,
+
+                            destination:
+                                destination,
+
+                            departure_time:
+                                makeDateTime(
+                                    flightDate,
+                                    departure
+                                ),
+
+                            arrival_time:
+                                makeDateTime(
+                                    flightDate,
+                                    arrival
+                                )
+                        })
+                }
             );
 
-            window.location.href = 'flights.html';
 
+        const data =
+            await response.json();
+
+
+        if (!data.success) {
+
+            throw new Error(
+                data.message ||
+                'Could not load flight'
+            );
         }
 
 
-        /* =========================
-           DISPLAY FLIGHT
-        ========================== */
+        if (data.flight_id) {
 
-        document.getElementById('bannerAirline').textContent =
-            (airline || 'AIR KERALA') +
-            ' · ' +
-            (flightNum || '');
-
-        document.getElementById('bannerRoute').textContent =
-            (origin || '') +
-            ' → ' +
-            (dest || '');
-
-        document.getElementById('bannerTime').textContent =
-            'Date: ' +
-            (flightDate || 'Selected flight date') +
-            ' | Departure: ' +
-            (dep || 'N/A') +
-            ' | Arrival: ' +
-            (arr || 'N/A');
+            localStorage.setItem(
+                'flightId',
+                data.flight_id
+            );
+        }
 
 
-        /* =========================
-           LOAD REAL INVENTORY
-        ========================== */
+        prices = {};
 
-        async function loadInventory() {
 
-            if (!flightId) {
-                return;
-            }
+        (data.seats || [])
+            .forEach(
+                row => {
 
-            try {
+                    prices[
+                        row.CLASS
+                    ] =
+                        Number(
+                            row.price
+                        );
+                }
+            );
 
-                const res = await fetch(
-                    '/api/flights/ensure',
+
+        updateFare();
+
+    } catch (error) {
+
+        console.error(
+            error
+        );
+
+        showError(
+            'Could not load live flight availability. Please go back and select the flight again.'
+        );
+    }
+}
+
+
+function makeDateTime(
+    date,
+    time
+) {
+
+    if (!date)
+        return '';
+
+    return (
+        date +
+        ' ' +
+        (
+            time ||
+            '00:00'
+        ) +
+        ':00'
+    );
+}
+
+
+/* =========================================================
+   FARE
+========================================================= */
+
+function updateFare() {
+
+    const cabin =
+        document.getElementById(
+            'cabinClass'
+        ).value;
+
+    const count =
+        Number(
+            document.getElementById(
+                'passengerCount'
+            ).value
+        );
+
+    const price =
+        Number(
+            prices[cabin] || 0
+        );
+
+    const total =
+        price * count;
+
+
+    document.getElementById(
+        'fareValue'
+    ).textContent =
+        total
+            ? '₹ ' +
+              total.toLocaleString(
+                  'en-IN'
+              )
+            : '₹ —';
+
+
+    if (total) {
+
+        localStorage.setItem(
+            'bookingTotal',
+            String(total)
+        );
+    }
+
+
+    localStorage.setItem(
+        'cabinClass',
+        cabin
+    );
+}
+
+
+document.getElementById(
+    'cabinClass'
+).addEventListener(
+    'change',
+    updateFare
+);
+
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+function showError(message) {
+
+    const box =
+        document.getElementById(
+            'errorBox'
+        );
+
+    box.textContent =
+        message;
+
+    box.style.display =
+        'block';
+
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+}
+
+
+/* =========================================================
+   SUBMIT
+========================================================= */
+
+document.getElementById(
+    'bookingForm'
+).addEventListener(
+    'submit',
+    async function(event) {
+
+        event.preventDefault();
+
+
+        const cards =
+            Array.from(
+                document.querySelectorAll(
+                    '.passenger-card'
+                )
+            );
+
+
+        const passengers =
+            cards.map(
+                card => ({
+
+                    name:
+                        card.querySelector(
+                            '.passenger-name'
+                        ).value.trim(),
+
+                    age:
+                        Number(
+                            card.querySelector(
+                                '.passenger-age'
+                            ).value
+                        ),
+
+                    gender:
+                        card.querySelector(
+                            '.passenger-gender'
+                        ).value,
+
+                    passport_number:
+                        card.querySelector(
+                            '.passenger-id'
+                        ).value.trim(),
+
+                    meal_preference:
+                        card.querySelector(
+                            '.passenger-meal'
+                        ).value,
+
+                    special_assistance:
+                        card.querySelector(
+                            '.passenger-assistance'
+                        ).value,
+
+                    wheelchair_required:
+                        card.querySelector(
+                            '.passenger-wheelchair'
+                        ).checked
+                            ? 'YES'
+                            : 'NO',
+
+                    infant_bassinet_required:
+                        card.querySelector(
+                            '.passenger-infant'
+                        ).checked
+                            ? 'YES'
+                            : 'NO'
+                })
+            );
+
+
+        const cabin =
+            document.getElementById(
+                'cabinClass'
+            ).value;
+
+
+        const button =
+            document.getElementById(
+                'submitBtn'
+            );
+
+
+        button.disabled =
+            true;
+
+        button.textContent =
+            'Creating Booking...';
+
+
+        try {
+
+            const response =
+                await fetch(
+                    '/api/booking-group',
                     {
                         method: 'POST',
 
                         headers: {
-                            'Content-Type': 'application/json'
+                            'Content-Type':
+                                'application/json'
                         },
 
-                        body: JSON.stringify({
+                        credentials:
+                            'include',
 
-                            flight_number: flightNum,
+                        body:
+                            JSON.stringify({
 
-                            airline_name: airline,
+                                flight_id:
+                                    localStorage.getItem(
+                                        'flightId'
+                                    ),
 
-                            origin: origin,
+                                cabin_class:
+                                    cabin,
 
-                            destination: dest,
+                                passengers:
+                                    passengers,
 
-                            departure_time:
-                                toDateTime(
-                                    flightDate,
-                                    dep
-                                ),
-
-                            arrival_time:
-                                toDateTime(
-                                    flightDate,
-                                    arr
-                                )
-
-                        })
+                                booking_date:
+                                    flightDate ||
+                                    new Date()
+                                        .toISOString()
+                                        .split('T')[0]
+                            })
                     }
                 );
 
 
-                const data = await res.json();
-
-
-                if (!data.success) {
-
-                    alert(
-                        'Could not load flight availability: ' +
-                        (data.message || 'Unknown error')
-                    );
-
-                    return;
-
-                }
-
-
-                /*
-                    Use the actual MongoDB flight ID returned
-                    by the server.
-                */
-
-                if (data.flight_id) {
-
-                    localStorage.setItem(
-                        'flightId',
-                        data.flight_id
-                    );
-
-                }
-
-
-                livePrices = {};
-                liveSeatCounts = {};
-
-
-                (data.seats || []).forEach(function(row) {
-
-                    livePrices[row.CLASS] =
-                        row.price;
-
-                    liveSeatCounts[row.CLASS] =
-                        row.available;
-
-                });
-
-
-                const cabin =
-                    document.getElementById(
-                        'cabinSelect'
-                    );
-
-
-                Array.from(cabin.options).forEach(
-                    function(option) {
-
-                        const available =
-                            liveSeatCounts[
-                                option.value
-                            ] || 0;
-
-
-                        option.textContent =
-                            option.value +
-                            ' (' +
-                            available +
-                            ' left)';
-
-
-                        option.disabled =
-                            available === 0;
-
-                    }
-                );
-
-
-                /*
-                    If current cabin has no seats,
-                    select first available cabin.
-                */
-
-                const current =
-                    cabin.value;
-
-
-                if (
-                    liveSeatCounts[current] === 0
-                ) {
-
-                    const availableOption =
-                        Array.from(
-                            cabin.options
-                        ).find(
-                            function(option) {
-                                return !option.disabled;
-                            }
-                        );
-
-
-                    if (availableOption) {
-
-                        cabin.value =
-                            availableOption.value;
-
-                    }
-
-                }
-
-
-                inventoryReady = true;
-
-                calculatePrice();
-
-            }
-            catch (error) {
-
-                console.error(
-                    'Inventory error:',
-                    error
-                );
-
-                alert(
-                    'Could not load live seat availability.'
-                );
-
-            }
-
-        }
-
-
-        /* =========================
-           DATE/TIME FORMAT
-        ========================== */
-
-        function toDateTime(
-            dateStr,
-            timeStr
-        ) {
-
-            if (
-                !dateStr ||
-                !timeStr ||
-                timeStr === 'N/A'
-            ) {
-
-                return (
-                    dateStr ||
-                    new Date()
-                        .toISOString()
-                        .split('T')[0]
-                ) +
-                ' 00:00:00';
-
-            }
-
-            return (
-                dateStr +
-                ' ' +
-                timeStr +
-                ':00'
-            );
-
-        }
-
-
-        /* =========================
-           PRICE
-        ========================== */
-
-        function calculatePrice() {
-
-            const cabin =
-                document.getElementById(
-                    'cabinSelect'
-                ).value;
-
-
-            const base =
-                livePrices[cabin];
-
-
-            if (base) {
-
-                const total =
-                    base +
-                    Math.round(
-                        base * 0.18
-                    );
-
-
-                document.getElementById(
-                    'livePrice'
-                ).innerText =
-                    '₹ ' +
-                    total.toLocaleString();
-
-
-                localStorage.setItem(
-                    'bookingTotal',
-                    total
-                );
-
-            }
-
-        }
-
-
-        function onCabinChange() {
-
-            const cabin =
-                document.getElementById(
-                    'cabinSelect'
-                ).value;
-
-
-            localStorage.setItem(
-                'cabinClass',
-                cabin
-            );
-
-
-            calculatePrice();
-
-        }
-
-
-        /* =========================
-           REMEMBER BOOKING
-        ========================== */
-
-        function rememberBooking(id) {
-
-            const key =
-                'myBookings:' +
-                (
-                    localStorage.getItem(
-                        'userName'
-                    ) || 'guest'
-                );
-
-
-            let list = [];
-
-
-            try {
-
-                list =
-                    JSON.parse(
-                        localStorage.getItem(
-                            key
-                        ) || '[]'
-                    );
-
-            }
-            catch (error) {
-
-                list = [];
-
-            }
+            const data =
+                await response.json();
 
 
             if (
-                list.indexOf(id) === -1
+                !response.ok ||
+                !data.success
             ) {
 
-                list.push(id);
-
+                throw new Error(
+                    data.message ||
+                    'Could not create booking'
+                );
             }
 
 
+            /*
+             * Store only useful booking information.
+             */
             localStorage.setItem(
-                key,
-                JSON.stringify(list)
+                'booking_id',
+                String(
+                    data.booking_id
+                )
             );
 
+
+            localStorage.setItem(
+                'bookingTotal',
+                String(
+                    data.total_amount
+                )
+            );
+
+
+            localStorage.setItem(
+                'passengerName',
+                passengers[0].name
+            );
+
+
+            localStorage.setItem(
+                'passengerCount',
+                String(
+                    passengers.length
+                )
+            );
+
+
+            localStorage.setItem(
+                'selectedSeats',
+                JSON.stringify(
+                    data.seats || []
+                )
+            );
+
+
+            window.location.href =
+                'payment.html?booking_id=' +
+                encodeURIComponent(
+                    data.booking_id
+                );
+
+        } catch (error) {
+
+            console.error(
+                error
+            );
+
+            showError(
+                error.message
+            );
+
+            button.disabled =
+                false;
+
+            button.textContent =
+                'Continue to Payment →';
         }
 
+    }
+);
 
-        /* =========================
-           BOOKING SUBMIT
-        ========================== */
 
-        document
-            .getElementById(
-                'mainBookingForm'
-            )
-            .addEventListener(
-                'submit',
-                async function(event) {
+/* =========================================================
+   START
+========================================================= */
 
-                    event.preventDefault();
+renderPassengers();
 
+loadInventory();
 
-                    const name =
-                        document.getElementById(
-                            'pName'
-                        ).value.trim();
-
-
-                    const age =
-                        document.getElementById(
-                            'pAge'
-                        ).value;
-
-
-                    const gender =
-                        document.getElementById(
-                            'pGender'
-                        ).value
-                        .toUpperCase();
-
-
-                    const passport =
-                        document.getElementById(
-                            'pID'
-                        ).value.trim();
-
-
-                    const cabin =
-                        document.getElementById(
-                            'cabinSelect'
-                        ).value;
-
-
-                    const realFlightId =
-                        localStorage.getItem(
-                            'flightId'
-                        );
-
-
-                    if (!name) {
-
-                        alert(
-                            'Please enter passenger name.'
-                        );
-
-                        return;
-
-                    }
-
-
-                    if (!passport) {
-
-                        alert(
-                            'Please enter Passport / ID Number.'
-                        );
-
-                        return;
-
-                    }
-
-
-                    if (!realFlightId) {
-
-                        alert(
-                            'Flight information is missing. Please select a flight again.'
-                        );
-
-                        window.location.href =
-                            'flights.html';
-
-                        return;
-
-                    }
-
-
-                    if (!inventoryReady) {
-
-                        alert(
-                            'Still loading live seat availability. Please wait a moment and try again.'
-                        );
-
-                        return;
-
-                    }
-
-
-                    try {
-
-                        /*
-                         * STEP 1
-                         * Create passenger
-                         */
-
-                        const passengerResponse =
-                            await fetch(
-                                '/api/passenger',
-                                {
-                                    method: 'POST',
-
-                                    headers: {
-                                        'Content-Type':
-                                            'application/json'
-                                    },
-
-                                    body:
-                                        JSON.stringify({
-
-                                            name:
-                                                name,
-
-                                            age:
-                                                age,
-
-                                            gender:
-                                                gender,
-
-                                            passport_number:
-                                                passport
-
-                                        })
-
-                                }
-                            );
-
-
-                        const passengerData =
-                            await passengerResponse.json();
-
-
-                        if (
-                            !passengerData.success
-                        ) {
-
-                            alert(
-                                'Passenger error: ' +
-                                passengerData.message
-                            );
-
-                            return;
-
-                        }
-
-
-                        /*
-                         * STEP 2
-                         * Assign real seat
-                         */
-
-                        const seatResponse =
-                            await fetch(
-                                '/api/seat',
-                                {
-                                    method: 'POST',
-
-                                    headers: {
-                                        'Content-Type':
-                                            'application/json'
-                                    },
-
-                                    body:
-                                        JSON.stringify({
-
-                                            flight_id:
-                                                realFlightId,
-
-                                            class:
-                                                cabin
-
-                                        })
-
-                                }
-                            );
-
-
-                        const seatData =
-                            await seatResponse.json();
-
-
-                        if (
-                            !seatData.success
-                        ) {
-
-                            alert(
-                                'Seat error: ' +
-                                seatData.message
-                            );
-
-                            return;
-
-                        }
-
-
-                        const total =
-                            Math.round(
-                                seatData.price *
-                                1.18
-                            );
-
-
-                        localStorage.setItem(
-                            'selectedSeat',
-                            seatData.seat_number
-                        );
-
-
-                        localStorage.setItem(
-                            'bookingTotal',
-                            total
-                        );
-
-
-                        /*
-                         * STEP 3
-                         * Create booking
-                         */
-
-                        const bookingResponse =
-                            await fetch(
-                                '/api/booking',
-                                {
-                                    method: 'POST',
-
-                                    headers: {
-                                        'Content-Type':
-                                            'application/json'
-                                    },
-
-                                    body:
-                                        JSON.stringify({
-
-                                            agent_id: 1,
-
-                                            flight_id:
-                                                realFlightId,
-
-                                            booking_date:
-                                                new Date()
-                                                    .toISOString()
-                                                    .split('T')[0],
-
-                                            passenger_id:
-                                                passengerData.passenger_id,
-
-                                            seat_id:
-                                                seatData.seat_id,
-
-                                            meal_preference:
-                                                document
-                                                    .getElementById(
-                                                        'mealPref'
-                                                    )
-                                                    .value,
-
-                                            wheelchair_required:
-                                                document
-                                                    .getElementById(
-                                                        'ssrWheelchair'
-                                                    )
-                                                    .checked
-                                                    ? 'YES'
-                                                    : 'NO',
-
-                                            special_assistance:
-                                                document
-                                                    .getElementById(
-                                                        'ssrMedical'
-                                                    )
-                                                    .checked
-                                                    ? 'MEDICAL SUPPORT'
-                                                    : null,
-
-                                            infant_bassinet_required:
-                                                document
-                                                    .getElementById(
-                                                        'ssrInfant'
-                                                    )
-                                                    .checked
-                                                    ? 'YES'
-                                                    : 'NO'
-
-                                        })
-
-                                }
-                            );
-
-
-                        const bookingData =
-                            await bookingResponse.json();
-
-
-                        if (
-                            !bookingData.success
-                        ) {
-
-                            alert(
-                                'Booking failed: ' +
-                                bookingData.message
-                            );
-
-                            return;
-
-                        }
-
-
-                        /*
-                         * Save booking information
-                         */
-
-                        localStorage.setItem(
-                            'booking_id',
-                            bookingData.booking_id
-                        );
-
-
-                        rememberBooking(
-                            bookingData.booking_id
-                        );
-
-
-                        localStorage.setItem(
-                            'passengerName',
-                            name
-                        );
-
-
-                        localStorage.setItem(
-                            'passengerID',
-                            passport
-                        );
-
-
-                        localStorage.setItem(
-                            'bookingTotal',
-                            total
-                        );
-
-
-                        /*
-                         * Continue to payment
-                         */
-
-                        window.location.href =
-                            'payment.html';
-
-                    }
-                    catch (error) {
-
-                        console.error(
-                            error
-                        );
-
-                        alert(
-                            'Error: ' +
-                            error.message
-                        );
-
-                    }
-
-                }
-            );
-
-
-        /* =========================
-           START
-        ========================== */
-
-        loadInventory();
-
-    </script>
+</script>
 
 </body>
 </html>
