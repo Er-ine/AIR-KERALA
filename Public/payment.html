@@ -418,46 +418,86 @@ async function handleTransaction() {
     const arr = localStorage.getItem('arr') || '-';
 
     const paymentData = {
-        booking_id: parseInt(booking_id),
-        amount: total,
-        payment_method: selectedPaymentMethod, // 'CARD' or 'UPI' — no card/UPI details included
-        payment_date: new Date().toISOString().split('T')[0]
+    booking_id: String(booking_id),
+    payment_method: selectedPaymentMethod,
+    payment_date: new Date().toISOString().split('T')[0]
+};
+
+try {
+    const res = await fetch('/api/payment', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify(paymentData)
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || !data.success) {
+        throw new Error(data.message || 'Payment failed');
+    }
+
+    // Keep the MongoDB booking ID as a string.
+    // Do NOT convert it with parseInt().
+    const pnr = String(booking_id);
+
+    document.getElementById('recName').innerText =
+        name.toUpperCase();
+
+    document.getElementById('recPNR').innerText =
+        pnr;
+
+    document.getElementById('recClass').innerText =
+        cls;
+
+    document.getElementById('recSeat').innerText =
+        seat;
+
+    document.getElementById('recRoute').innerText =
+        `Flight Booking ${
+            airline
+                ? '(' + airline + (flightNum ? ' ' + flightNum : '') + ') '
+                : ''
+        }(${origin} → ${dest})`;
+
+    document.getElementById('recAmount').innerText =
+        '₹' + Number(total).toLocaleString('en-IN') + '.00';
+
+    document.getElementById('recTotal').innerText =
+        '₹' + Number(total).toLocaleString('en-IN');
+
+    document.getElementById('paymentSection').style.display = 'none';
+    document.getElementById('receiptSection').style.display = 'block';
+
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+
+    lastTicket = {
+        pnr,
+        bookingId: String(booking_id),
+        name: name.toUpperCase(),
+        airline,
+        flightNum,
+        origin,
+        dest,
+        dep,
+        arr,
+        cls,
+        seat,
+        total,
+        paymentDate: paymentData.payment_date
     };
-        try {
-            const res = await fetch('/api/payment', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(paymentData)
-            });
 
-            const data = await res.json();
+    downloadTicketPDF();
 
-            if (data.success) {
-                const pnr = 'TRV' + String(booking_id).padStart(6, '0'); // same reference Manage Booking shows
-                document.getElementById('recName').innerText = name.toUpperCase();
-                document.getElementById('recPNR').innerText = pnr;
-                document.getElementById('recClass').innerText = cls;
-                document.getElementById('recSeat').innerText = seat;
-                document.getElementById('recRoute').innerText = `Flight Booking ${airline ? '(' + airline + (flightNum ? ' ' + flightNum : '') + ') ' : ''}(${origin} → ${dest})`;
-                document.getElementById('recAmount').innerText = '₹' + total.toLocaleString() + '.00';
-                document.getElementById('recTotal').innerText = '₹' + total.toLocaleString();
-                document.getElementById('paymentSection').style.display = 'none';
-                document.getElementById('receiptSection').style.display = 'block';
-                window.scrollTo(0, 0);
-
-                lastTicket = {
-                    pnr, name: name.toUpperCase(), airline, flightNum,
-                    origin, dest, dep, arr, cls, seat, total,
-                    paymentDate: paymentData.payment_date
-                };
-
-                downloadTicketPDF();
-            } else {
-                alert('Payment failed: ' + data.message);
-            }
-        } catch (err) {
-            alert('Error: ' + err.message);
-        }
+} catch (err) {
+    console.error('Payment error:', err);
+    alert('Payment failed: ' + err.message);
+}
     }
 
 // Builds an e-ticket PDF client-side with jsPDF — no server round trip needed.

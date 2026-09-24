@@ -16,6 +16,9 @@
         rel="stylesheet"
     >
 
+    <!-- Shared navbar + footer styles (same as every other page) -->
+    <link rel="stylesheet" href="site-common.css">
+
     <style>
         :root {
             --air-blue: #0878d1;
@@ -48,6 +51,8 @@
 
         /* =========================
            NAVBAR
+           (Old hardcoded navbar — no longer used. The navbar is
+            now provided by site-common.js / site-common.css.)
         ========================== */
 
         .navbar-solid {
@@ -387,50 +392,8 @@
          NAVBAR
     ========================== -->
 
-    <header class="navbar-solid">
-
-        <a href="index.html" class="brand">
-
-            <!-- Change this path only if your logo has a different filename -->
-            <img
-                src="assets/air-kerala-logo.png"
-                class="brand-logo"
-                alt="Air Kerala"
-                onerror="this.style.display='none'; document.getElementById('logoFallback').style.display='flex';"
-            >
-
-            <div
-                id="logoFallback"
-                class="brand-fallback"
-                style="display:none;"
-            >
-                <div class="brand-symbol">✈</div>
-                <div class="brand-name">AIR KERALA</div>
-            </div>
-
-        </a>
-
-        <nav class="nav-links">
-
-            <a href="index.html">
-                Home
-            </a>
-
-            <a href="flights.html">
-                Book Ticket
-            </a>
-
-            <a href="manage-booking.html">
-                Manage My Booking
-            </a>
-
-            <a href="index.html#contact">
-                Contact
-            </a>
-
-        </nav>
-
-    </header>
+    <!-- Shared navbar (same as every other page) + footer, injected by site-common.js -->
+    <script src="site-common.js" data-page="book" data-auth="none"></script>
 
 
     <!-- =========================

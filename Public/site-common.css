@@ -1,6 +1,9 @@
 /* =========================================================
-   AIR KERALA - SHARED WEBSITE STYLES
+   AIR KERALA — SHARED WEBSITE STYLE
+   Header + Footer + Shared Components
    ========================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
 :root {
     --ak-blue: #0878d1;
@@ -14,11 +17,6 @@
     --ak-border: #e2e8f0;
     --ak-light: #f5f8fb;
 }
-
-
-/* =========================================================
-   RESET
-   ========================================================= */
 
 * {
     box-sizing: border-box;
@@ -34,38 +32,63 @@ body {
     color: var(--ak-text);
 }
 
-
 /* =========================================================
-   SHARED NAVBAR
+   HEADER
    ========================================================= */
 
-.ak-navbar {
+.ak-header {
     position: sticky;
     top: 0;
     z-index: 5000;
 
     width: 100%;
-
     min-height: 76px;
 
-    padding: 12px 5%;
+    padding: 10px 5%;
 
     display: flex;
     align-items: center;
-    justify-content: space-between;
 
-    gap: 25px;
+    gap: 30px;
 
     background: rgba(7, 27, 46, 0.98);
 
-    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.10);
 
     box-shadow:
-        0 5px 22px rgba(0, 0, 0, 0.12);
+        0 5px 25px rgba(0, 0, 0, 0.15);
 
-    backdrop-filter: blur(14px);
+    backdrop-filter: blur(15px);
+
+    transition:
+        background 0.25s ease,
+        box-shadow 0.25s ease;
 }
 
+/* Homepage overlay mode */
+
+.ak-header.ak-header--overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    background: transparent;
+
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+
+    box-shadow: none;
+}
+
+.ak-header.ak-header--overlay.ak-scrolled {
+    position: fixed;
+
+    background: rgba(7, 27, 46, 0.97);
+
+    box-shadow:
+        0 5px 25px rgba(0,0,0,0.18);
+
+    backdrop-filter: blur(15px);
+}
 
 /* =========================================================
    LOGO
@@ -75,112 +98,104 @@ body {
     display: flex;
     align-items: center;
 
+    flex-shrink: 0;
+
+    width: 205px;
+    height: 52px;
+
     text-decoration: none;
 
-    min-width: 190px;
+    overflow: hidden;
 }
 
-.ak-logo {
+.ak-brand img {
     display: block;
 
     width: auto;
+    max-width: 205px;
+
     height: 48px;
 
-    max-width: 190px;
-
     object-fit: contain;
+
+    object-position: left center;
 }
 
-.ak-logo-fallback {
-    display: flex;
-    align-items: center;
+/* Prevent broken image icon from affecting layout */
 
-    gap: 10px;
-
-    color: white;
+.ak-brand img[src=""],
+.ak-brand img:not([src]) {
+    display: none;
 }
-
-.ak-logo-symbol {
-    width: 40px;
-    height: 40px;
-
-    border-radius: 50%;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background: rgba(255, 255, 255, 0.13);
-
-    color: white;
-
-    font-size: 20px;
-}
-
-.ak-logo-text {
-    color: white;
-
-    font-size: 19px;
-
-    font-weight: 700;
-
-    letter-spacing: 3px;
-
-    white-space: nowrap;
-}
-
 
 /* =========================================================
    NAVIGATION
    ========================================================= */
 
-.ak-nav {
+.ak-links {
     display: flex;
+
     align-items: center;
 
-    gap: 5px;
+    justify-content: center;
+
+    gap: 4px;
+
+    flex: 1;
 }
 
-.ak-nav-link {
+.ak-links a {
     position: relative;
 
-    color: rgba(255, 255, 255, 0.88);
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    min-height: 42px;
+
+    padding: 9px 17px;
+
+    color: rgba(255,255,255,0.88);
 
     text-decoration: none;
 
-    padding: 11px 17px;
-
     font-size: 13px;
-
     font-weight: 600;
 
-    border-radius: 5px;
+    border-radius: 8px;
+
+    white-space: nowrap;
 
     transition:
-        color 0.25s ease,
-        background 0.25s ease;
+        color 0.2s ease,
+        background 0.2s ease,
+        transform 0.2s ease;
 }
 
-.ak-nav-link:hover {
-    color: white;
+.ak-links a:hover {
+    color: #ffffff;
 
-    background:
-        rgba(255, 255, 255, 0.08);
+    background: rgba(255,255,255,0.09);
+
+    transform: translateY(-1px);
 }
 
-.ak-nav-link.active {
-    color: white;
+.ak-links a.active {
+    color: #ffffff;
+
+    background: rgba(255,255,255,0.07);
 }
 
-.ak-nav-link.active::after {
+.ak-links a.active::after {
     content: "";
 
     position: absolute;
 
-    left: 16px;
-    right: 16px;
+    left: 17px;
+    right: 17px;
 
-    bottom: 3px;
+    bottom: 4px;
 
     height: 2px;
 
@@ -189,203 +204,301 @@ body {
     border-radius: 10px;
 }
 
-
 /* =========================================================
-   MOBILE MENU BUTTON
+   RIGHT SIDE
    ========================================================= */
 
-.ak-menu-button {
+.ak-right {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: flex-end;
+
+    min-width: 70px;
+}
+
+#authArea {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+}
+
+/* =========================================================
+   LOGIN / ACCOUNT BUTTON
+   ========================================================= */
+
+.login-btn {
+    border: 1px solid rgba(255,255,255,0.25);
+
+    background: rgba(255,255,255,0.08);
+
+    color: #ffffff;
+
+    padding: 9px 15px;
+
+    border-radius: 8px;
+
+    font-family: inherit;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.login-btn:hover {
+    background: rgba(255,255,255,0.16);
+
+    border-color: rgba(255,255,255,0.4);
+}
+
+/* =========================================================
+   MOBILE MENU
+   ========================================================= */
+
+.ak-burger {
     display: none;
 
     width: 42px;
     height: 42px;
 
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255,255,255,0.2);
 
-    border-radius: 6px;
+    border-radius: 8px;
 
-    background:
-        rgba(255, 255, 255, 0.08);
-
-    color: white;
+    background: rgba(255,255,255,0.08);
 
     cursor: pointer;
 
-    font-size: 20px;
+    padding: 9px;
 }
 
+.ak-burger span {
+    display: block;
 
-/* =========================================================
-   PAGE OFFSET
-   ========================================================= */
-
-.ak-page {
     width: 100%;
+    height: 2px;
+
+    margin: 5px 0;
+
+    background: #ffffff;
+
+    border-radius: 4px;
+
+    transition: 0.2s ease;
 }
 
-
 /* =========================================================
-   SHARED FOOTER
+   FOOTER
    ========================================================= */
 
 .ak-footer {
-    background: var(--ak-navy);
-
-    color: white;
-
-    padding: 55px 6% 25px;
+    width: 100%;
 
     margin-top: 0;
+
+    padding: 58px 6% 24px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #071b2e 0%,
+            #0b2942 55%,
+            #071b2e 100%
+        );
+
+    color: #ffffff;
 }
 
-.ak-footer-container {
+.ak-footer-inner {
     max-width: 1200px;
 
     margin: 0 auto;
+}
 
+.ak-footer-grid {
     display: grid;
 
     grid-template-columns:
-        1.3fr 1fr 1fr;
+        1.25fr
+        1.2fr
+        0.8fr;
 
-    gap: 50px;
+    gap: 55px;
+
+    align-items: start;
 }
 
-.ak-footer-brand {
-    font-size: 21px;
+/* =========================================================
+   FOOTER LOGO
+   ========================================================= */
 
-    font-weight: 700;
+.ak-footer-logo {
+    display: block;
 
-    letter-spacing: 2px;
+    width: auto;
+    max-width: 205px;
 
-    margin-bottom: 12px;
+    height: 50px;
+
+    object-fit: contain;
+
+    margin-bottom: 18px;
 }
 
-.ak-footer-description {
-    color:
-        rgba(255, 255, 255, 0.68);
+.ak-footer-about {
+    max-width: 380px;
+
+    margin: 0;
+
+    color: rgba(255,255,255,0.65);
 
     font-size: 13px;
 
     line-height: 1.8;
-
-    max-width: 400px;
 }
 
-.ak-footer-title {
+/* =========================================================
+   FOOTER HEADINGS
+   ========================================================= */
+
+.ak-footer-heading {
+    margin-bottom: 18px;
+
+    color: var(--ak-gold);
+
     font-size: 12px;
 
-    font-weight: 700;
+    font-weight: 800;
 
     letter-spacing: 1.5px;
 
     text-transform: uppercase;
-
-    color: var(--ak-gold);
-
-    margin-bottom: 15px;
 }
 
-.ak-footer-text {
-    color:
-        rgba(255, 255, 255, 0.72);
+/* =========================================================
+   CONTACT ITEMS
+   ========================================================= */
 
-    font-size: 13px;
+.ak-contact-item {
+    display: flex;
 
-    line-height: 1.8;
+    align-items: flex-start;
 
-    margin: 0;
+    gap: 12px;
+
+    margin-bottom: 16px;
+
+    color: rgba(255,255,255,0.68);
+
+    font-size: 12px;
+
+    line-height: 1.7;
 }
 
-.ak-footer-link {
-    color:
-        rgba(255, 255, 255, 0.75);
+.ak-contact-item > span {
+    width: 24px;
+
+    flex-shrink: 0;
+
+    font-size: 16px;
+}
+
+.ak-contact-item strong {
+    display: block;
+
+    margin-bottom: 2px;
+
+    color: #ffffff;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.5px;
+}
+
+.ak-contact-item a {
+    color: rgba(255,255,255,0.72);
 
     text-decoration: none;
 
-    font-size: 13px;
+    transition: 0.2s ease;
+}
 
+.ak-contact-item a:hover {
+    color: #ffffff;
+}
+
+/* =========================================================
+   FOOTER QUICK LINKS
+   ========================================================= */
+
+.ak-footer-links {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+}
+
+.ak-footer-links a {
     display: block;
 
-    margin-bottom: 9px;
+    width: fit-content;
 
-    transition: 0.2s;
+    color: rgba(255,255,255,0.68);
+
+    text-decoration: none;
+
+    font-size: 12px;
+
+    padding: 5px 0;
+
+    transition:
+        color 0.2s ease,
+        transform 0.2s ease;
 }
 
-.ak-footer-link:hover {
-    color: white;
+.ak-footer-links a:hover {
+    color: #ffffff;
+
+    transform: translateX(3px);
 }
+
+/* =========================================================
+   FOOTER BOTTOM
+   ========================================================= */
 
 .ak-footer-bottom {
-    max-width: 1200px;
-
-    margin: 40px auto 0;
-
-    padding-top: 20px;
-
-    border-top:
-        1px solid
-        rgba(255, 255, 255, 0.12);
-
     display: flex;
+
+    align-items: center;
 
     justify-content: space-between;
 
     gap: 20px;
 
-    color:
-        rgba(255, 255, 255, 0.45);
+    margin-top: 42px;
+
+    padding-top: 20px;
+
+    border-top:
+        1px solid
+        rgba(255,255,255,0.12);
+
+    color: rgba(255,255,255,0.42);
 
     font-size: 11px;
 }
-
-
-/* =========================================================
-   GENERAL BUTTONS
-   ========================================================= */
-
-.ak-primary-btn {
-    display: inline-flex;
-
-    align-items: center;
-    justify-content: center;
-
-    border: none;
-
-    background: var(--ak-blue);
-
-    color: white;
-
-    text-decoration: none;
-
-    padding: 13px 22px;
-
-    border-radius: 5px;
-
-    font-size: 13px;
-
-    font-weight: 700;
-
-    cursor: pointer;
-
-    transition:
-        background 0.25s ease,
-        transform 0.25s ease,
-        box-shadow 0.25s ease;
-}
-
-.ak-primary-btn:hover {
-    background: var(--ak-blue-dark);
-
-    color: white;
-
-    transform: translateY(-1px);
-
-    box-shadow:
-        0 8px 20px
-        rgba(8, 120, 209, 0.2);
-}
-
 
 /* =========================================================
    CONTACT ANCHOR
@@ -395,78 +508,152 @@ body {
     scroll-margin-top: 80px;
 }
 
-
 /* =========================================================
    RESPONSIVE
    ========================================================= */
 
-@media (max-width: 850px) {
+@media (max-width: 950px) {
 
-    .ak-navbar {
+    .ak-header {
+        padding: 10px 20px;
+
+        gap: 15px;
+    }
+
+    .ak-brand {
+        width: auto;
+    }
+
+    .ak-brand img {
+        max-width: 175px;
+
+        height: 44px;
+    }
+
+    .ak-links {
+        gap: 0;
+    }
+
+    .ak-links a {
+        padding: 8px 11px;
+
+        font-size: 12px;
+    }
+
+    .ak-right {
+        min-width: 45px;
+    }
+}
+
+@media (max-width: 760px) {
+
+    .ak-header {
         min-height: 68px;
-
-        padding:
-            10px 18px;
 
         flex-wrap: wrap;
     }
 
     .ak-brand {
-        min-width: auto;
+        height: 45px;
     }
 
-    .ak-logo {
+    .ak-brand img {
         height: 42px;
 
-        max-width: 160px;
+        max-width: 165px;
     }
 
-    .ak-menu-button {
-        display: flex;
-
-        align-items: center;
-        justify-content: center;
+    .ak-right {
+        margin-left: auto;
     }
 
-    .ak-nav {
+    .ak-burger {
+        display: block;
+    }
+
+    .ak-links {
         display: none;
 
+        order: 10;
+
         width: 100%;
+
+        flex-basis: 100%;
 
         flex-direction: column;
 
         align-items: stretch;
 
-        gap: 2px;
+        padding: 8px 0 5px;
 
-        padding-top: 8px;
+        border-top:
+            1px solid
+            rgba(255,255,255,0.08);
     }
 
-    .ak-nav.open {
+    .ak-header.ak-open .ak-links {
         display: flex;
     }
 
-    .ak-nav-link {
+    .ak-links a {
         width: 100%;
 
-        text-align: center;
+        justify-content: flex-start;
 
-        padding: 12px;
+        padding: 12px 14px;
+
+        border-radius: 7px;
     }
 
-    .ak-nav-link.active::after {
+    .ak-links a.active::after {
         display: none;
     }
 
-    .ak-footer-container {
+    #authArea {
+        display: none;
+    }
+
+    .ak-footer {
+        padding: 45px 25px 22px;
+    }
+
+    .ak-footer-grid {
         grid-template-columns: 1fr;
 
-        gap: 30px;
+        gap: 35px;
     }
 
     .ak-footer-bottom {
         flex-direction: column;
 
-        gap: 7px;
+        align-items: flex-start;
+
+        gap: 8px;
+    }
+}
+
+@media (max-width: 450px) {
+
+    .ak-brand img {
+        height: 38px;
+
+        max-width: 145px;
+    }
+
+    .ak-header {
+        padding: 9px 14px;
+    }
+}
+
+/* =========================================================
+   PRINT
+   ========================================================= */
+
+@media print {
+
+    .ak-header,
+    .ak-footer,
+    .no-print {
+        display: none !important;
     }
 }
