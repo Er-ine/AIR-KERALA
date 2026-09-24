@@ -99,12 +99,18 @@ router.post('/booking', requireAuth, async (req, res) => {
     }
 });
 
-router.put('/cancel-booking', async (req, res) => {
+// Cancelling requires a logged-in user, and only the booking's own owner
+// may cancel it — prevents cancelling someone else's booking by guessing
+// its id.
+router.put('/cancel-booking', requireAuth, async (req, res) => {
     const { booking_id } = req.body;
 
     try {
         const booking = mongoose.isValidObjectId(booking_id) ? await Booking.findById(booking_id) : null;
         if (!booking) return res.status(404).json({ success: false, message: 'Booking not found' });
+        if (String(booking.user) !== String(req.session.userId)) {
+            return res.status(403).json({ success: false, message: 'Not authorized to cancel this booking' });
+        }
         if (booking.status === 'CANCELLED') return res.status(400).json({ success: false, message: 'Already cancelled' });
 
         const flightForCancel = await Flight.findById(booking.flight).lean();
@@ -135,7 +141,10 @@ function wallClockText(str) {
     return str ? str.slice(0, 16) : null;
 }
 
-router.get('/booking-details/:booking_id', async (req, res) => {
+// Booking details are personal (passenger name, passport number, payment
+// info) — only available to a logged-in user, and only for their own
+// booking. Prevents viewing another user's booking by guessing its id.
+router.get('/booking-details/:booking_id', requireAuth, async (req, res) => {
     const { booking_id } = req.params;
 
     try {
@@ -145,6 +154,9 @@ router.get('/booking-details/:booking_id', async (req, res) => {
 
         const booking = await Booking.findById(booking_id).lean();
         if (!booking) return res.status(404).json({ success: false, message: 'Booking not found' });
+        if (String(booking.user) !== String(req.session.userId)) {
+            return res.status(403).json({ success: false, message: 'Not authorized to view this booking' });
+        }
 
         const [flight, passenger, payment] = await Promise.all([
             Flight.findById(booking.flight).lean(),
