@@ -1,17 +1,18 @@
 {
   "name": "airkerala-ticket-management-system",
   "version": "1.0.0",
+  "description": "Air Kerala Ticket Management System",
   "main": "server.js",
   "scripts": {
-    "dev": "node server.js",
-    "start": "node server.js"
+    "start": "node server.js",
+    "dev": "node server.js"
   },
   "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "cors": "^2.8.6",
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
     "dotenv": "^17.3.1",
-    "express": "^4.21.2",
-    "express-session": "^1.18.1",
-    "mongoose": "^8.9.0"
+    "express": "^5.2.1",
+    "express-session": "^1.18.2",
+    "mongoose": "^8.24.4"
   }
 }

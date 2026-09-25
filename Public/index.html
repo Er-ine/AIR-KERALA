@@ -1716,8 +1716,10 @@ function searchFlights() {
 ===================================================== */
 
 window.onload = async function() {
-    try {
-        const res = await fetch('/api/auth/me');
+    try {const res = await fetch('/api/auth/me', {
+    credentials: 'include'
+    });
+        
         const data = await res.json();
         if (data.success && data.authenticated && data.user) {
             localStorage.setItem("isLoggedIn", "true");
@@ -1794,23 +1796,19 @@ async function handleLogin() {
 
     try {
         const res = await fetch('/api/auth/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password })
-        });
-        const data = await res.json();
-        if (data.success) {
-            localStorage.setItem("isLoggedIn", "true");
-            localStorage.setItem("userName", data.user.name);
-            localStorage.setItem("userEmail", data.user.email);
-            localStorage.setItem("userId", data.user.id);
-            location.reload();
-        } else {
-            showAuthError(data.message || "Invalid credentials.");
-        }
-    } catch (err) {
-        showAuthError("Login failed: " + err.message);
-    }
+    method: 'POST',
+
+    headers: {
+        'Content-Type': 'application/json'
+    },
+
+    credentials: 'include',
+
+    body: JSON.stringify({
+        email,
+        password
+    })
+});
 }
 
 /* =====================================================
@@ -1837,11 +1835,24 @@ async function handleSignup() {
     }
 
     try {
-        const res = await fetch('/api/auth/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, dateOfBirth, phoneNumber, email, password, confirmPassword })
-        });
+       const res = await fetch('/api/auth/register', {
+    method: 'POST',
+
+    headers: {
+        'Content-Type': 'application/json'
+    },
+
+    credentials: 'include',
+
+    body: JSON.stringify({
+        name,
+        dateOfBirth,
+        phoneNumber,
+        email,
+        password,
+        confirmPassword
+    })
+});
         const data = await res.json();
         if (data.success) {
             localStorage.setItem("isLoggedIn", "true");

@@ -477,7 +477,7 @@
 <script
     src="site-common.js"
     data-page="book"
-    data-auth="required"
+    data-auth="account"
 ></script>
 
 
@@ -887,7 +887,77 @@
 
         `;
     }
+/* =========================================================
+   AUTHENTICATION CHECK
+========================================================= */
 
+async function checkAuthentication() {
+
+    try {
+
+        const response =
+            await fetch(
+                '/api/auth/me',
+                {
+                    method: 'GET',
+                    credentials: 'include'
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            !response.ok ||
+            !data.authenticated
+        ) {
+
+            window.location.href =
+                'index.html?login=required';
+
+            return false;
+        }
+
+
+        localStorage.setItem(
+            'isLoggedIn',
+            'true'
+        );
+
+        localStorage.setItem(
+            'userId',
+            data.user.id
+        );
+
+        localStorage.setItem(
+            'userName',
+            data.user.name
+        );
+
+        localStorage.setItem(
+            'userEmail',
+            data.user.email
+        );
+
+
+        return true;
+
+
+    } catch (error) {
+
+        console.error(
+            'AUTH CHECK ERROR:',
+            error
+        );
+
+        window.location.href =
+            'index.html?login=required';
+
+        return false;
+    }
+}
 
     function renderPassengers() {
 
