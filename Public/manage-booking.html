@@ -2,1243 +2,526 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage My Booking | AIR KERALA</title>
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>Payment | Air Kerala</title>
-
-    <link
-        rel="stylesheet"
-        href="site-common.css"
-    >
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="site-common.css">
 
     <style>
-
-        * {
-            box-sizing: border-box;
-        }
-
         body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f3f8fb;
+            min-height: 100vh;
+            background: linear-gradient(rgba(7, 27, 46, 0.6), rgba(7, 27, 46, 0.7)),
+                url("https://images.unsplash.com/photo-1542296332-2e4473faf563?auto=format&fit=crop&w=2200&q=90");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #17202a;
         }
 
-        .payment-page {
-            max-width: 900px;
-            margin: 110px auto 60px;
+        .manage-page {
+            max-width: 1100px;
+            margin: 100px auto 60px;
             padding: 20px;
         }
 
-        .payment-card {
-            background: white;
-            border-radius: 22px;
-            padding: 35px;
-            box-shadow:
-                0 15px 45px rgba(0, 0, 0, 0.10);
+        .page-header-box {
+            background: rgba(255, 255, 255, 0.96);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
         }
 
-        h1 {
-            text-align: center;
-            color: #123d59;
-            margin-bottom: 8px;
-        }
-
-        .subtitle {
-            text-align: center;
-            color: #71808b;
-            margin-bottom: 30px;
-        }
-
-        .booking-summary {
-            background: #f1f8fc;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 30px;
-        }
-
-        .summary-grid {
-            display: grid;
-            grid-template-columns:
-                repeat(auto-fit, minmax(160px, 1fr));
-            gap: 15px;
-        }
-
-        .summary-label {
-            font-size: 12px;
-            color: #71808b;
-            text-transform: uppercase;
-        }
-
-        .summary-value {
-            color: #123d59;
+        .page-title {
+            color: #071b2e;
+            font-size: 30px;
             font-weight: 700;
-            margin-top: 5px;
+            margin: 0 0 6px;
         }
 
-        .amount-box {
-            text-align: center;
-            padding: 20px;
-            border-radius: 14px;
-            background: #eef8f2;
-            margin-bottom: 25px;
+        .page-subtitle {
+            color: #64748b;
+            font-size: 14px;
+            margin: 0;
         }
 
-        .amount-label {
-            color: #587066;
-        }
-
-        .amount {
-            font-size: 32px;
-            font-weight: 800;
-            color: #146c43;
-            margin-top: 5px;
-        }
-
-        .methods {
+        .booking-tabs {
             display: flex;
-            gap: 10px;
-            margin-bottom: 25px;
+            gap: 12px;
+            margin-top: 22px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 2px;
+        }
+
+        .tab-btn {
+            border: none;
+            background: transparent;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #64748b;
+            cursor: pointer;
+            position: relative;
+            transition: 0.25s;
+        }
+
+        .tab-btn.active {
+            color: #0878d1;
+        }
+
+        .tab-btn.active::after {
+            content: "";
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #0878d1;
+            border-radius: 3px;
+        }
+
+        .booking-card {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 14px;
+            padding: 26px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            transition: transform 0.2s;
+        }
+
+        .booking-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .pnr-box {
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .pnr-box strong {
+            font-size: 18px;
+            color: #071b2e;
+            letter-spacing: 0.5px;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            display: inline-block;
+        }
+
+        .status-confirmed { background: #dcfce7; color: #15803d; }
+        .status-pending { background: #fef9c3; color: #a16207; }
+        .status-cancelled { background: #fee2e2; color: #b91c1c; }
+        .status-paid { background: #e0f2fe; color: #0369a1; }
+        .status-refunded { background: #f1f5f9; color: #475569; }
+
+        .trip-type-badge {
+            background: #f1f5f9;
+            color: #334155;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            margin-left: 8px;
+        }
+
+        .route-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin: 20px 0;
             flex-wrap: wrap;
         }
 
-        .method-btn {
+        .route-point {
             flex: 1;
-            min-width: 120px;
-            padding: 13px;
-            border: 1px solid #d5e0e7;
-            background: white;
+            min-width: 140px;
+        }
+
+        .route-code {
+            font-size: 26px;
+            font-weight: 800;
+            color: #071b2e;
+        }
+
+        .route-name {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .route-arrow {
+            color: #0878d1;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .segment-block {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
             border-radius: 10px;
-            cursor: pointer;
-            font-weight: 700;
+            padding: 14px 18px;
+            margin-bottom: 12px;
         }
 
-        .method-btn.active {
-            border-color: #123d59;
-            background: #123d59;
-            color: white;
-        }
-
-        .payment-section {
-            display: none;
-        }
-
-        .payment-section.active {
-            display: block;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns:
-                repeat(2, minmax(0, 1fr));
-            gap: 18px;
-        }
-
-        .field label {
-            display: block;
-            margin-bottom: 7px;
-            font-size: 14px;
-            font-weight: 600;
-            color: #354957;
-        }
-
-        input {
-            width: 100%;
-            padding: 13px;
-            border: 1px solid #d5e0e7;
+        .passenger-list {
+            margin-top: 15px;
+            background: #f1f5f9;
             border-radius: 10px;
-            font-size: 16px;
-            outline: none;
-        }
-
-        input:focus {
-            border-color: #1683bd;
-        }
-
-        .full {
-            grid-column: 1 / -1;
-        }
-
-        .pay-btn {
-            width: 100%;
-            margin-top: 25px;
-            border: none;
-            border-radius: 12px;
             padding: 16px;
-            background: #123d59;
-            color: white;
-            font-size: 17px;
-            font-weight: 700;
-            cursor: pointer;
         }
 
-        .pay-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .error {
-            display: none;
-            background: #fff1f1;
-            color: #a52b2b;
-            border: 1px solid #f0caca;
-            padding: 14px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-
-        .success {
-            display: none;
-            text-align: center;
-        }
-
-        .success-icon {
-            font-size: 55px;
-            margin-bottom: 15px;
-        }
-
-        .success h2 {
-            color: #146c43;
-        }
-
-        .receipt {
-            margin-top: 25px;
-            background: #f5faf7;
-            padding: 20px;
-            border-radius: 14px;
-            text-align: left;
-        }
-
-        .receipt-row {
+        .passenger-item {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             padding: 8px 0;
-            border-bottom: 1px solid #dce9e1;
+            border-bottom: 1px dashed #cbd5e1;
+            font-size: 13px;
         }
 
-        .receipt-row:last-child {
+        .passenger-item:last-child {
             border-bottom: none;
         }
 
-        .print-btn {
+        .action-btns {
+            display: flex;
+            gap: 10px;
             margin-top: 20px;
-            padding: 13px 25px;
-            border: none;
-            border-radius: 10px;
-            background: #123d59;
-            color: white;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
             cursor: pointer;
+            border: none;
+            transition: 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
 
-        @media (max-width: 650px) {
-
-            .payment-card {
-                padding: 20px;
-            }
-
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .full {
-                grid-column: auto;
-            }
+        .btn-view {
+            background: #0878d1;
+            color: white;
         }
 
-        @media print {
-
-            .no-print {
-                display: none !important;
-            }
-
-            .payment-page {
-                margin: 0;
-            }
+        .btn-view:hover {
+            background: #0565b0;
+            color: white;
         }
 
+        .btn-cancel {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-cancel:hover {
+            background: #dc2626;
+        }
+
+        .btn-pay {
+            background: #16a34a;
+            color: white;
+        }
+
+        .btn-pay:hover {
+            background: #15803d;
+        }
+
+        .empty-container {
+            background: white;
+            border-radius: 16px;
+            padding: 50px 20px;
+            text-align: center;
+            color: #64748b;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+        }
+
+        .empty-container h3 {
+            color: #071b2e;
+            margin-bottom: 8px;
+        }
     </style>
-
 </head>
 
 <body>
 
-<div class="payment-page">
+    <script src="site-common.js" data-page="manage" data-auth="logout"></script>
 
-    <div class="payment-card">
+    <main class="manage-page">
 
-        <div id="paymentContent">
+        <div class="page-header-box">
+            <h1 class="page-title">Manage My Bookings</h1>
+            <p class="page-subtitle">View, manage, download e-tickets, or cancel your Air Kerala flight bookings.</p>
 
-            <h1>
-                Complete Payment
-            </h1>
-
-            <p class="subtitle">
-                Secure payment for your Air Kerala booking
-            </p>
-
-
-            <div
-                id="errorMessage"
-                class="error"
-            ></div>
-
-
-            <!-- BOOKING SUMMARY -->
-
-            <div class="booking-summary">
-
-                <div class="summary-grid">
-
-                    <div>
-
-                        <div class="summary-label">
-                            Booking ID
-                        </div>
-
-                        <div
-                            id="bookingIdDisplay"
-                            class="summary-value"
-                        >
-                            Loading...
-                        </div>
-
-                    </div>
-
-
-                    <div>
-
-                        <div class="summary-label">
-                            Flight
-                        </div>
-
-                        <div
-                            id="flightDisplay"
-                            class="summary-value"
-                        >
-                            Loading...
-                        </div>
-
-                    </div>
-
-
-                    <div>
-
-                        <div class="summary-label">
-                            Route
-                        </div>
-
-                        <div
-                            id="routeDisplay"
-                            class="summary-value"
-                        >
-                            Loading...
-                        </div>
-
-                    </div>
-
-
-                    <div>
-
-                        <div class="summary-label">
-                            Passengers
-                        </div>
-
-                        <div
-                            id="passengersDisplay"
-                            class="summary-value"
-                        >
-                            Loading...
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- AMOUNT -->
-
-            <div class="amount-box">
-
-                <div class="amount-label">
-                    Total Amount
-                </div>
-
-                <div
-                    id="totalAmount"
-                    class="amount"
-                >
-                    ₹0
-                </div>
-
-            </div>
-
-
-            <!-- PAYMENT METHODS -->
-
-            <div class="methods no-print">
-
-                <button
-                    type="button"
-                    class="method-btn active"
-                    data-method="CARD"
-                >
-                    Card
+            <div class="booking-tabs">
+                <button class="tab-btn active" id="tabActive" onclick="switchTab('active')">
+                    Upcoming / Active Bookings (<span id="activeCount">0</span>)
                 </button>
-
-                <button
-                    type="button"
-                    class="method-btn"
-                    data-method="UPI"
-                >
-                    UPI
+                <button class="tab-btn" id="tabCancelled" onclick="switchTab('cancelled')">
+                    Past / Cancelled Bookings (<span id="cancelledCount">0</span>)
                 </button>
-
             </div>
-
-
-            <!-- CARD -->
-
-            <div
-                id="cardSection"
-                class="payment-section active"
-            >
-
-                <div class="form-grid">
-
-
-                    <div class="field full">
-
-                        <label>
-                            Card Number
-                        </label>
-
-                        <input
-                            id="cardNumber"
-                            type="text"
-                            inputmode="numeric"
-                            autocomplete="cc-number"
-                            maxlength="23"
-                            placeholder="1234 5678 9012 3456"
-                        >
-
-                    </div>
-
-
-                    <div class="field">
-
-                        <label>
-                            Expiry Date
-                        </label>
-
-                        <input
-                            id="expiry"
-                            type="text"
-                            inputmode="numeric"
-                            maxlength="5"
-                            placeholder="MM/YY"
-                        >
-
-                    </div>
-
-
-                    <div class="field">
-
-                        <label>
-                            CVV
-                        </label>
-
-                        <input
-                            id="cvv"
-                            type="password"
-                            inputmode="numeric"
-                            maxlength="4"
-                            placeholder="CVV"
-                        >
-
-                    </div>
-
-
-                    <!-- CARDHOLDER LAST -->
-
-                    <div class="field full">
-
-                        <label>
-                            Cardholder Name
-                        </label>
-
-                        <input
-                            id="cardholderName"
-                            type="text"
-                            autocomplete="cc-name"
-                            placeholder="Name as shown on card"
-                        >
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- UPI -->
-
-            <div
-                id="upiSection"
-                class="payment-section"
-            >
-
-                <div class="field">
-
-                    <label>
-                        UPI ID
-                    </label>
-
-                    <input
-                        id="upiId"
-                        type="text"
-                        placeholder="example@upi"
-                    >
-
-                </div>
-
-            </div>
-
-
-            <button
-                id="payButton"
-                class="pay-btn no-print"
-            >
-                Pay Now
-            </button>
-
         </div>
 
-
-        <!-- SUCCESS -->
-
-        <div
-            id="successSection"
-            class="success"
-        >
-
-            <div class="success-icon">
-                ✓
+        <div id="bookingListContainer">
+            <div class="empty-container">
+                <div class="spinner-border text-primary mb-3"></div>
+                <div>Loading your bookings from server...</div>
             </div>
-
-            <h2>
-                Payment Successful
-            </h2>
-
-            <p>
-                Your Air Kerala booking has been confirmed.
-            </p>
-
-
-            <div class="receipt">
-
-                <div class="receipt-row">
-
-                    <span>
-                        Booking ID
-                    </span>
-
-                    <strong
-                        id="receiptBookingId"
-                    >
-                    </strong>
-
-                </div>
-
-
-                <div class="receipt-row">
-
-                    <span>
-                        Flight
-                    </span>
-
-                    <strong
-                        id="receiptFlight"
-                    >
-                    </strong>
-
-                </div>
-
-
-                <div class="receipt-row">
-
-                    <span>
-                        Passengers
-                    </span>
-
-                    <strong
-                        id="receiptPassengers"
-                    >
-                    </strong>
-
-                </div>
-
-
-                <div class="receipt-row">
-
-                    <span>
-                        Payment Method
-                    </span>
-
-                    <strong
-                        id="receiptMethod"
-                    >
-                    </strong>
-
-                </div>
-
-
-                <div class="receipt-row">
-
-                    <span>
-                        Amount Paid
-                    </span>
-
-                    <strong
-                        id="receiptAmount"
-                    >
-                    </strong>
-
-                </div>
-
-            </div>
-
-
-            <button
-                class="print-btn no-print"
-                onclick="window.print()"
-            >
-                Print E-Ticket
-            </button>
-
         </div>
 
-    </div>
+    </main>
 
-</div>
+    <!-- Bootstrap Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
+    <script>
+        let allBookingsList = [];
+        let currentTab = 'active';
 
-<script
-    src="site-common.js"
-    data-page="payment"
-    data-auth="none"
-></script>
-
-
-<script>
-
-    // ========================================================
-    // BOOKING ID
-    // ========================================================
-
-    const params =
-        new URLSearchParams(
-            window.location.search
-        );
-
-    const bookingId =
-        params.get('booking_id') ||
-        localStorage.getItem('bookingId');
-
-
-    if (!bookingId) {
-
-        document.getElementById(
-            'errorMessage'
-        ).textContent =
-            'Booking ID is missing.';
-
-        document.getElementById(
-            'errorMessage'
-        ).style.display =
-            'block';
-
-        document.getElementById(
-            'payButton'
-        ).disabled = true;
-    }
-
-
-    document.getElementById(
-        'bookingIdDisplay'
-    ).textContent =
-        bookingId || '—';
-
-
-    // ========================================================
-    // FORMAT CURRENCY
-    // ========================================================
-
-    function formatCurrency(amount) {
-
-        return '₹' +
-            Number(amount || 0)
-                .toLocaleString('en-IN');
-    }
-
-
-    // ========================================================
-    // LOAD BOOKING DETAILS
-    // ========================================================
-
-    let bookingAmount = 0;
-
-    async function loadBooking() {
-
-        if (!bookingId) {
-            return;
-        }
-
-        try {
-
-            const response =
-                await fetch(
-                    `/api/booking-details/${encodeURIComponent(
-                        bookingId
-                    )}`,
-                    {
-                        credentials: 'include'
-                    }
-                );
-
-
-            const result =
-                await response.json();
-
-
-            if (
-                !response.ok ||
-                !result.success
-            ) {
-
-                throw new Error(
-                    result.message ||
-                    'Could not load booking.'
-                );
-            }
-
-
-            const data =
-                result.data;
-
-
-            bookingAmount =
-                Number(data.AMOUNT || 0);
-
-
-            if (
-                !Number.isFinite(
-                    bookingAmount
-                ) ||
-                bookingAmount <= 0
-            ) {
-
-                throw new Error(
-                    'Could not determine booking amount.'
-                );
-            }
-
-
-            document.getElementById(
-                'totalAmount'
-            ).textContent =
-                formatCurrency(
-                    bookingAmount
-                );
-
-
-            document.getElementById(
-                'flightDisplay'
-            ).textContent =
-                data.FLIGHT_NUMBER || '—';
-
-
-            document.getElementById(
-                'routeDisplay'
-            ).textContent =
-                `${data.ORIGIN || '—'} → ${data.DESTINATION || '—'}`;
-
-
-            const passengerList =
-                Array.isArray(
-                    data.PASSENGERS
-                )
-                    ? data.PASSENGERS
-                    : [];
-
-
-            document.getElementById(
-                'passengersDisplay'
-            ).textContent =
-                passengerList.length === 1
-                    ? '1 Passenger'
-                    : `${passengerList.length} Passengers`;
-
-        } catch (error) {
-
-            console.error(error);
-
-            showError(
-                error.message
-            );
-        }
-    }
-
-
-    // ========================================================
-    // ERROR
-    // ========================================================
-
-    function showError(message) {
-
-        const error =
-            document.getElementById(
-                'errorMessage'
-            );
-
-        error.textContent =
-            message;
-
-        error.style.display =
-            'block';
-    }
-
-
-    // ========================================================
-    // PAYMENT METHOD
-    // ========================================================
-
-    let selectedMethod = 'CARD';
-
-    document
-        .querySelectorAll('.method-btn')
-        .forEach(button => {
-
-            button.addEventListener(
-                'click',
-                () => {
-
-                    document
-                        .querySelectorAll(
-                            '.method-btn'
-                        )
-                        .forEach(btn =>
-                            btn.classList.remove(
-                                'active'
-                            )
-                        );
-
-                    button.classList.add(
-                        'active'
-                    );
-
-                    selectedMethod =
-                        button.dataset.method;
-
-
-                    document
-                        .getElementById(
-                            'cardSection'
-                        )
-                        .classList.toggle(
-                            'active',
-                            selectedMethod === 'CARD'
-                        );
-
-
-                    document
-                        .getElementById(
-                            'upiSection'
-                        )
-                        .classList.toggle(
-                            'active',
-                            selectedMethod === 'UPI'
-                        );
-                }
-            );
-
+        window.addEventListener('DOMContentLoaded', async () => {
+            await fetchUserBookings();
         });
 
-
-    // ========================================================
-    // CARD NUMBER AUTO SPACING
-    // ========================================================
-
-    document
-        .getElementById('cardNumber')
-        .addEventListener(
-            'input',
-            function () {
-
-                let value =
-                    this.value
-                        .replace(/\D/g, '')
-                        .slice(0, 19);
-
-                const groups = [];
-
-                for (
-                    let i = 0;
-                    i < value.length;
-                    i += 4
-                ) {
-
-                    groups.push(
-                        value.substring(
-                            i,
-                            i + 4
-                        )
-                    );
-                }
-
-                this.value =
-                    groups.join(' ');
-            }
-        );
-
-
-    // ========================================================
-    // EXPIRY AUTO /
-    // ========================================================
-
-    document
-        .getElementById('expiry')
-        .addEventListener(
-            'input',
-            function () {
-
-                let value =
-                    this.value
-                        .replace(/\D/g, '')
-                        .slice(0, 4);
-
-                if (
-                    value.length >= 3
-                ) {
-
-                    value =
-                        value.substring(0, 2) +
-                        '/' +
-                        value.substring(2);
-                }
-
-                this.value =
-                    value;
-            }
-        );
-
-
-    // ========================================================
-    // PAY
-    // ========================================================
-
-    document
-        .getElementById('payButton')
-        .addEventListener(
-            'click',
-            async function () {
-
-                const button =
-                    this;
-
-                const error =
-                    document.getElementById(
-                        'errorMessage'
-                    );
-
-                error.style.display =
-                    'none';
-
-
-                if (
-                    !bookingId
-                ) {
-
-                    showError(
-                        'Booking ID is missing.'
-                    );
-
+        async function fetchUserBookings() {
+            const container = document.getElementById('bookingListContainer');
+            try {
+                // Auth check first
+                const authRes = await fetch('/api/auth/me', { credentials: 'include' });
+                const authData = await authRes.json();
+                if (!authData.success || !authData.authenticated) {
+                    window.location.href = 'index.html?login=required';
                     return;
                 }
 
+                const response = await fetch('/api/my-bookings', { credentials: 'include' });
+                const result = await response.json();
 
-                if (
-                    !bookingAmount ||
-                    bookingAmount <= 0
-                ) {
-
-                    showError(
-                        'Could not determine booking amount.'
-                    );
-
-                    return;
+                if (!response.ok || !result.success) {
+                    throw new Error(result.message || 'Unable to load bookings.');
                 }
 
+                allBookingsList = result.bookings || [];
+                updateCounts();
+                renderTabContent();
 
-                // --------------------------------------------
-                // FRONTEND VALIDATION
-                // --------------------------------------------
+            } catch (err) {
+                console.error("Fetch bookings error:", err);
+                container.innerHTML = `
+                    <div class="empty-container">
+                        <h3>Unable to load bookings</h3>
+                        <p>${escapeHtml(err.message)}</p>
+                        <button class="btn btn-primary mt-2" onclick="fetchUserBookings()">Retry</button>
+                    </div>
+                `;
+            }
+        }
 
-                if (
-                    selectedMethod === 'CARD'
-                ) {
+        function updateCounts() {
+            const activeBookings = allBookingsList.filter(b => b.status !== 'CANCELLED' && b.status !== 'COMPLETED');
+            const cancelledBookings = allBookingsList.filter(b => b.status === 'CANCELLED' || b.status === 'COMPLETED');
 
-                    const card =
-                        document
-                            .getElementById(
-                                'cardNumber'
-                            )
-                            .value
-                            .replace(
-                                /\s/g,
-                                ''
-                            );
+            document.getElementById('activeCount').textContent = activeBookings.length;
+            document.getElementById('cancelledCount').textContent = cancelledBookings.length;
+        }
 
-                    const expiry =
-                        document
-                            .getElementById(
-                                'expiry'
-                            )
-                            .value;
+        function switchTab(tab) {
+            currentTab = tab;
+            document.getElementById('tabActive').classList.toggle('active', tab === 'active');
+            document.getElementById('tabCancelled').classList.toggle('active', tab === 'cancelled');
+            renderTabContent();
+        }
 
-                    const cvv =
-                        document
-                            .getElementById(
-                                'cvv'
-                            )
-                            .value;
+        function renderTabContent() {
+            const container = document.getElementById('bookingListContainer');
 
-                    const name =
-                        document
-                            .getElementById(
-                                'cardholderName'
-                            )
-                            .value
-                            .trim();
-
-
-                    if (
-                        card.length < 12
-                    ) {
-
-                        showError(
-                            'Please enter a valid card number.'
-                        );
-
-                        return;
-                    }
-
-
-                    if (
-                        expiry.length !== 5
-                    ) {
-
-                        showError(
-                            'Please enter the expiry date as MM/YY.'
-                        );
-
-                        return;
-                    }
-
-
-                    if (
-                        cvv.length < 3
-                    ) {
-
-                        showError(
-                            'Please enter a valid CVV.'
-                        );
-
-                        return;
-                    }
-
-
-                    if (!name) {
-
-                        showError(
-                            'Please enter the cardholder name.'
-                        );
-
-                        return;
-                    }
-
+            const filtered = allBookingsList.filter(b => {
+                if (currentTab === 'active') {
+                    return b.status !== 'CANCELLED' && b.status !== 'COMPLETED';
                 } else {
-
-                    const upi =
-                        document
-                            .getElementById(
-                                'upiId'
-                            )
-                            .value
-                            .trim();
-
-
-                    if (!upi) {
-
-                        showError(
-                            'Please enter your UPI ID.'
-                        );
-
-                        return;
-                    }
+                    return b.status === 'CANCELLED' || b.status === 'COMPLETED';
                 }
+            });
 
-
-                button.disabled =
-                    true;
-
-                button.textContent =
-                    'Processing Payment...';
-
-
-                try {
-
-                    const response =
-                        await fetch(
-                            '/api/payment',
-                            {
-                                method: 'POST',
-
-                                headers: {
-                                    'Content-Type':
-                                        'application/json'
-                                },
-
-                                credentials: 'include',
-
-                                body:
-                                    JSON.stringify({
-
-                                        booking_id:
-                                            String(
-                                                bookingId
-                                            ),
-
-                                        payment_method:
-                                            selectedMethod
-
-                                    })
-                            }
-                        );
-
-
-                    const result =
-                        await response.json();
-
-
-                    if (
-                        !response.ok ||
-                        !result.success
-                    ) {
-
-                        throw new Error(
-                            result.message ||
-                            'Payment failed.'
-                        );
-                    }
-
-
-                    // ----------------------------------------
-                    // SUCCESS
-                    // ----------------------------------------
-
-                    const paidAmount =
-                        Number(
-                            result.amount ||
-                            bookingAmount
-                        );
-
-
-                    document.getElementById(
-                        'receiptBookingId'
-                    ).textContent =
-                        bookingId;
-
-
-                    document.getElementById(
-                        'receiptFlight'
-                    ).textContent =
-                        document.getElementById(
-                            'flightDisplay'
-                        ).textContent;
-
-
-                    document.getElementById(
-                        'receiptPassengers'
-                    ).textContent =
-                        document.getElementById(
-                            'passengersDisplay'
-                        ).textContent;
-
-
-                    document.getElementById(
-                        'receiptMethod'
-                    ).textContent =
-                        selectedMethod;
-
-
-                    document.getElementById(
-                        'receiptAmount'
-                    ).textContent =
-                        formatCurrency(
-                            paidAmount
-                        );
-
-
-                    document.getElementById(
-                        'paymentContent'
-                    ).style.display =
-                        'none';
-
-
-                    document.getElementById(
-                        'successSection'
-                    ).style.display =
-                        'block';
-
-
-                    localStorage.removeItem(
-                        'bookingTotal'
-                    );
-
-                } catch (error) {
-
-                    console.error(error);
-
-                    showError(
-                        error.message ||
-                        'Payment failed.'
-                    );
-
-                    button.disabled =
-                        false;
-
-                    button.textContent =
-                        'Pay Now';
-                }
-
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-container">
+                        <h3>No ${currentTab === 'active' ? 'upcoming' : 'previous'} bookings found</h3>
+                        <p>${currentTab === 'active' ? 'You have no active flight reservations at the moment.' : 'No cancelled or past flight records found.'}</p>
+                        <a href="index.html" class="btn btn-outline-primary fw-bold mt-2">Book a Flight →</a>
+                    </div>
+                `;
+                return;
             }
-        );
 
+            container.innerHTML = filtered.map(booking => {
+                const isCancelled = booking.status === 'CANCELLED';
+                const isPaid = booking.paymentStatus === 'PAID';
+                const isPendingPayment = booking.paymentStatus === 'PENDING' && !isCancelled;
 
-    // ========================================================
-    // START
-    // ========================================================
+                // Build Segment List
+                const flights = Array.isArray(booking.flights) && booking.flights.length > 0
+                    ? booking.flights
+                    : [{
+                        flightNumber: booking.flightNumber,
+                        airlineName: booking.airlineName,
+                        origin: booking.origin,
+                        destination: booking.destination,
+                        departureDate: booking.departureDate,
+                        departureTime: booking.departureTime,
+                        arrivalTime: booking.arrivalTime
+                    }];
 
-    loadBooking();
+                const passengers = Array.isArray(booking.passengers) ? booking.passengers : [];
 
-</script>
+                return `
+                    <article class="booking-card">
+                        <div class="card-top">
+                            <div class="pnr-box">
+                                PNR / BOOKING REF<br>
+                                <strong>${escapeHtml(booking.bookingReference || 'AK' + String(booking.id).slice(-6).toUpperCase())}</strong>
+                                <span class="trip-type-badge">${escapeHtml(booking.tripType || (flights.length > 1 ? 'MULTI_CITY' : 'ONE_WAY'))}</span>
+                            </div>
+                            <div>
+                                <span class="status-badge ${isCancelled ? 'status-cancelled' : 'status-confirmed'} me-1">
+                                    ${escapeHtml(booking.status || 'CONFIRMED')}
+                                </span>
+                                <span class="status-badge ${isPaid ? 'status-paid' : (booking.paymentStatus === 'REFUNDED' ? 'status-refunded' : 'status-pending')}">
+                                    ${escapeHtml(booking.paymentStatus || 'PENDING')}
+                                </span>
+                            </div>
+                        </div>
 
+                        <!-- FLIGHT SEGMENTS -->
+                        <div class="mt-3">
+                            ${flights.map((f, idx) => `
+                                <div class="segment-block">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <strong style="color:#0878d1;">Flight ${flights.length > 1 ? idx + 1 + ': ' : ''}${escapeHtml(f.flightNumber || booking.flightNumber || 'AK-101')} (${escapeHtml(f.airlineName || 'Air Kerala')})</strong>
+                                        <span class="text-secondary small">📅 ${escapeHtml(f.departureDate || booking.departureDate || '')}</span>
+                                    </div>
+                                    <div class="route-info my-2">
+                                        <div class="route-point">
+                                            <div class="route-code">${escapeHtml(f.origin || booking.origin)}</div>
+                                            <div class="route-name">Departure: ${escapeHtml(f.departureTime || booking.departureTime || '10:00')}</div>
+                                        </div>
+                                        <div class="route-arrow">✈</div>
+                                        <div class="route-point">
+                                            <div class="route-code">${escapeHtml(f.destination || booking.destination)}</div>
+                                            <div class="route-name">Arrival: ${escapeHtml(f.arrivalTime || booking.arrivalTime || '12:00')}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <!-- PASSENGERS -->
+                        <div class="passenger-list">
+                            <div class="fw-bold mb-2 text-dark small uppercase">Passengers (${passengers.length || 1})</div>
+                            ${passengers.map(p => `
+                                <div class="passenger-item">
+                                    <div>
+                                        <strong>👤 ${escapeHtml(p.name || 'Passenger')}</strong>
+                                        <span class="ms-2 text-muted">(${escapeHtml(p.cabinClass || 'Economy')})</span>
+                                        ${p.mealPreference && p.mealPreference !== 'None' ? `<span class="badge bg-light text-dark ms-1">🍱 ${escapeHtml(p.mealPreference)}</span>` : ''}
+                                        ${p.wheelchairRequired === 'YES' ? `<span class="badge bg-warning text-dark ms-1">♿ Wheelchair</span>` : ''}
+                                    </div>
+                                    <div>
+                                        <span>Seat: <strong>${escapeHtml(p.seatNumber || 'Assigned at check-in')}</strong></span>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <!-- AMOUNT AND ACTIONS -->
+                        <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+                            <div>
+                                <span class="text-muted small">Total Fare:</span>
+                                <strong class="fs-5 text-success ms-2">₹${Number(booking.totalAmount || 0).toLocaleString('en-IN')}</strong>
+                            </div>
+
+                            <div class="action-btns">
+                                <a href="ticket.html?bookingId=${encodeURIComponent(booking.id)}" class="btn-action btn-view">
+                                    📄 View E-Ticket
+                                </a>
+
+                                ${isPendingPayment ? `
+                                    <a href="payment.html?booking_id=${encodeURIComponent(booking.id)}" class="btn-action btn-pay">
+                                        💳 Complete Payment
+                                    </a>
+                                ` : ''}
+
+                                ${!isCancelled ? `
+                                    <button type="button" class="btn-action btn-cancel" onclick="cancelBooking('${booking.id}')">
+                                        🚫 Cancel Booking
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </article>
+                `;
+            }).join('');
+        }
+
+        async function cancelBooking(bookingId) {
+            if (!confirm("Are you sure you want to cancel this booking? This will release reserved seats and request a refund.")) {
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/cancel-booking', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ booking_id: bookingId })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok || !result.success) {
+                    throw new Error(result.message || 'Unable to cancel booking.');
+                }
+
+                alert("Booking cancelled successfully.");
+                await fetchUserBookings();
+
+            } catch (err) {
+                console.error("Cancel booking error:", err);
+                alert("Cancellation failed: " + err.message);
+            }
+        }
+
+        function escapeHtml(value) {
+            return String(value ?? "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    </script>
 </body>
 </html>

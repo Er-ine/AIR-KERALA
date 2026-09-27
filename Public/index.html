@@ -1134,141 +1134,126 @@
 
         <div class="search-card">
 
-
             <!-- Search tabs -->
-
             <div class="search-tabs">
-
-                <button class="search-tab active">
+                <button class="search-tab active" data-trip="ONE_WAY" onclick="setTripType('ONE_WAY')">
                     One Way
                 </button>
-
-                <button class="search-tab">
+                <button class="search-tab" data-trip="ROUND_TRIP" onclick="setTripType('ROUND_TRIP')">
                     Round Trip
                 </button>
-
-                <button class="search-tab">
+                <button class="search-tab" data-trip="MULTI_CITY" onclick="setTripType('MULTI_CITY')">
                     Multi-City
                 </button>
-
             </div>
 
+            <!-- Single / Round Trip Search Fields -->
+            <div id="standardSearchContainer">
+                <div class="search-fields" id="searchFieldsGrid" style="grid-template-columns: 1.3fr 1.3fr 1.1fr 1.1fr 0.9fr 160px;">
 
-            <!-- Search fields -->
+                    <div class="field">
+                        <label class="field-label">From</label>
+                        <select class="field-input" id="fromField">
+                            <option value="all">Any airport</option>
+                            <option value="COK">Kochi (COK)</option>
+                            <option value="TRV">Trivandrum (TRV)</option>
+                            <option value="CCJ">Kozhikode (CCJ)</option>
+                            <option value="CNN">Kannur (CNN)</option>
+                            <option value="BLR">Bengaluru (BLR)</option>
+                            <option value="MAA">Chennai (MAA)</option>
+                            <option value="HYD">Hyderabad (HYD)</option>
+                            <option value="BOM">Mumbai (BOM)</option>
+                            <option value="DEL">Delhi (DEL)</option>
+                            <option value="CCU">Kolkata (CCU)</option>
+                            <option value="PNQ">Pune (PNQ)</option>
+                            <option value="GOI">Goa (GOI)</option>
+                            <option value="AMD">Ahmedabad (AMD)</option>
+                            <option value="JAI">Jaipur (JAI)</option>
+                            <option value="LKO">Lucknow (LKO)</option>
+                            <option value="IXC">Chandigarh (IXC)</option>
+                            <option value="BBI">Bhubaneswar (BBI)</option>
+                            <option value="PAT">Patna (PAT)</option>
+                            <option value="GAU">Guwahati (GAU)</option>
+                            <option value="IXE">Mangaluru (IXE)</option>
+                        </select>
+                    </div>
 
-            <div class="search-fields">
+                    <div class="field">
+                        <label class="field-label">To</label>
+                        <select class="field-input" id="toField">
+                            <option value="all">Any destination</option>
+                            <option value="COK">Kochi (COK)</option>
+                            <option value="TRV">Trivandrum (TRV)</option>
+                            <option value="CCJ">Kozhikode (CCJ)</option>
+                            <option value="CNN">Kannur (CNN)</option>
+                            <option value="BLR">Bengaluru (BLR)</option>
+                            <option value="MAA">Chennai (MAA)</option>
+                            <option value="HYD">Hyderabad (HYD)</option>
+                            <option value="BOM">Mumbai (BOM)</option>
+                            <option value="DEL">Delhi (DEL)</option>
+                            <option value="CCU">Kolkata (CCU)</option>
+                            <option value="PNQ">Pune (PNQ)</option>
+                            <option value="GOI">Goa (GOI)</option>
+                            <option value="AMD">Ahmedabad (AMD)</option>
+                            <option value="JAI">Jaipur (JAI)</option>
+                            <option value="LKO">Lucknow (LKO)</option>
+                            <option value="IXC">Chandigarh (IXC)</option>
+                            <option value="BBI">Bhubaneswar (BBI)</option>
+                            <option value="PAT">Patna (PAT)</option>
+                            <option value="GAU">Guwahati (GAU)</option>
+                            <option value="IXE">Mangaluru (IXE)</option>
+                        </select>
+                    </div>
 
+                    <div class="field">
+                        <label class="field-label">Departure</label>
+                        <input class="field-input" id="departureDate" type="date">
+                    </div>
 
-                <div class="field">
+                    <div class="field" id="returnDateFieldWrapper" style="display:none;">
+                        <label class="field-label">Return <span style="color:#d33;">*</span></label>
+                        <input class="field-input" id="returnDate" type="date">
+                    </div>
 
-                    <label class="field-label">
-                        From
-                    </label>
+                    <div class="field">
+                        <label class="field-label">Passengers</label>
+                        <select class="field-input" id="passengerCountSelect">
+                            <option value="1">1 Adult</option>
+                            <option value="2">2 Adults</option>
+                            <option value="3">3 Adults</option>
+                            <option value="4">4 Adults</option>
+                        </select>
+                    </div>
 
-                    <select class="field-input" id="fromField">
-                        <option value="all">Any airport</option>
-                        <option value="COK">Kochi</option>
-                        <option value="TRV">Thiruvananthapuram</option>
-                        <option value="CCJ">Kozhikode</option>
-                        <option value="CNN">Kannur</option>
-                        <option value="BLR">Bengaluru</option>
-                        <option value="MAA">Chennai</option>
-                        <option value="HYD">Hyderabad</option>
-                        <option value="BOM">Mumbai</option>
-                        <option value="DEL">Delhi</option>
-                        <option value="CCU">Kolkata</option>
-                        <option value="PNQ">Pune</option>
-                        <option value="GOI">Goa</option>
-                        <option value="AMD">Ahmedabad</option>
-                        <option value="JAI">Jaipur</option>
-                        <option value="LKO">Lucknow</option>
-                        <option value="IXC">Chandigarh</option>
-                        <option value="BBI">Bhubaneswar</option>
-                        <option value="PAT">Patna</option>
-                        <option value="GAU">Guwahati</option>
-                        <option value="IXE">Mangaluru</option>
-                    </select>
-
-                </div>
-
-
-                <div class="field">
-
-                    <label class="field-label">
-                        To
-                    </label>
-
-                    <select class="field-input" id="toField">
-                        <option value="all">Any destination</option>
-                        <option value="COK">Kochi</option>
-                        <option value="TRV">Thiruvananthapuram</option>
-                        <option value="CCJ">Kozhikode</option>
-                        <option value="CNN">Kannur</option>
-                        <option value="BLR">Bengaluru</option>
-                        <option value="MAA">Chennai</option>
-                        <option value="HYD">Hyderabad</option>
-                        <option value="BOM">Mumbai</option>
-                        <option value="DEL">Delhi</option>
-                        <option value="CCU">Kolkata</option>
-                        <option value="PNQ">Pune</option>
-                        <option value="GOI">Goa</option>
-                        <option value="AMD">Ahmedabad</option>
-                        <option value="JAI">Jaipur</option>
-                        <option value="LKO">Lucknow</option>
-                        <option value="IXC">Chandigarh</option>
-                        <option value="BBI">Bhubaneswar</option>
-                        <option value="PAT">Patna</option>
-                        <option value="GAU">Guwahati</option>
-                        <option value="IXE">Mangaluru</option>
-                    </select>
-
-                </div>
-
-
-                <div class="field">
-
-                    <label class="field-label">
-                        Departure
-                    </label>
-
-                    <input
-                        class="field-input"
-                        id="departureDate"
-                        type="date">
-
-                </div>
-
-
-                <div class="field">
-
-                    <label class="field-label">
-                        Passengers
-                    </label>
-
-                    <select class="field-input">
-
-                        <option>1 Adult</option>
-
-                        <option>2 Adults</option>
-
-                        <option>3 Adults</option>
-
-                        <option>4 Adults</option>
-
-                    </select>
+                    <button class="search-button" onclick="searchFlights()">
+                        Book Tickets →
+                    </button>
 
                 </div>
+            </div>
 
-
-                <button
-                    class="search-button"
-                    onclick="searchFlights()">
-
-                    Book Tickets →
-
-                </button>
-
-
+            <!-- Multi City Search Fields Container -->
+            <div id="multiCityContainer" style="display:none; padding: 20px;">
+                <div id="multiCitySegments"></div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:15px; border-top:1px solid #eee; padding-top:15px;">
+                    <div>
+                        <button type="button" class="btn btn-sm btn-outline-primary fw-bold" onclick="addMultiCitySegment()">+ Add Segment</button>
+                    </div>
+                    <div style="display:flex; gap:15px; align-items:center;">
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <label class="field-label mb-0">Passengers:</label>
+                            <select class="field-input" id="multiPassengerSelect" style="width:auto; padding:4px 8px;">
+                                <option value="1">1 Adult</option>
+                                <option value="2">2 Adults</option>
+                                <option value="3">3 Adults</option>
+                                <option value="4">4 Adults</option>
+                            </select>
+                        </div>
+                        <button class="search-button" style="padding:10px 25px;" onclick="searchFlights()">
+                            Search Multi-City Flights →
+                        </button>
+                    </div>
+                </div>
             </div>
 
         </div>
@@ -1686,31 +1671,189 @@ startSlideshow();
 
 
 /* =====================================================
-   SEARCH FLIGHTS
-   Passes what the user actually entered through to the
-   flights page as query params, so it runs immediately
-   against the live feed instead of landing on a blank form.
+   SEARCH FLIGHTS / BOOK TICKETS
 ===================================================== */
 
-function searchFlights() {
+let currentTripType = 'ONE_WAY';
+let multiCitySegmentsList = [
+    { from: 'COK', to: 'DEL', date: '' },
+    { from: 'DEL', to: 'BOM', date: '' }
+];
 
-    const from = document.getElementById('fromField').value;
-    const to = document.getElementById('toField').value;
-    const date = document.getElementById('departureDate').value;
+function setTripType(type) {
+    currentTripType = type;
+    document.querySelectorAll('.search-tab').forEach(tab => {
+        tab.classList.toggle('active', tab.getAttribute('data-trip') === type);
+    });
 
-    const params = new URLSearchParams();
+    const stdContainer = document.getElementById('standardSearchContainer');
+    const multiContainer = document.getElementById('multiCityContainer');
+    const returnWrapper = document.getElementById('returnDateFieldWrapper');
 
-    if (from && from !== 'all') params.set('from', from);
-    if (to && to !== 'all') params.set('to', to);
-    if (date) params.set('date', date);
-
-    const query = params.toString();
-
-    window.location.href = 'flights.html' + (query ? ('?' + query) : '');
+    if (type === 'MULTI_CITY') {
+        if (stdContainer) stdContainer.style.display = 'none';
+        if (multiContainer) multiContainer.style.display = 'block';
+        renderMultiCitySegments();
+    } else {
+        if (stdContainer) stdContainer.style.display = 'block';
+        if (multiContainer) multiContainer.style.display = 'none';
+        if (returnWrapper) {
+            returnWrapper.style.display = (type === 'ROUND_TRIP') ? 'block' : 'none';
+        }
+    }
 }
 
+function renderMultiCitySegments() {
+    const container = document.getElementById('multiCitySegments');
+    if (!container) return;
+    
+    const airportsOptions = `
+        <option value="COK">Kochi (COK)</option>
+        <option value="TRV">Trivandrum (TRV)</option>
+        <option value="CCJ">Kozhikode (CCJ)</option>
+        <option value="CNN">Kannur (CNN)</option>
+        <option value="BLR">Bengaluru (BLR)</option>
+        <option value="MAA">Chennai (MAA)</option>
+        <option value="HYD">Hyderabad (HYD)</option>
+        <option value="BOM">Mumbai (BOM)</option>
+        <option value="DEL">Delhi (DEL)</option>
+        <option value="CCU">Kolkata (CCU)</option>
+        <option value="PNQ">Pune (PNQ)</option>
+        <option value="GOI">Goa (GOI)</option>
+        <option value="AMD">Ahmedabad (AMD)</option>
+        <option value="JAI">Jaipur (JAI)</option>
+        <option value="LKO">Lucknow (LKO)</option>
+        <option value="IXC">Chandigarh (IXC)</option>
+        <option value="BBI">Bhubaneswar (BBI)</option>
+        <option value="PAT">Patna (PAT)</option>
+        <option value="GAU">Guwahati (GAU)</option>
+        <option value="IXE">Mangaluru (IXE)</option>
+    `;
 
+    container.innerHTML = multiCitySegmentsList.map((seg, idx) => `
+        <div class="row align-items-center mb-3 p-2 border rounded" style="background:#f8fafc;">
+            <div class="col-md-1 fw-bold text-secondary">Flight ${idx + 1}</div>
+            <div class="col-md-3">
+                <label class="field-label mb-1">From</label>
+                <select class="form-select form-select-sm multi-from" data-idx="${idx}">
+                    ${airportsOptions}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="field-label mb-1">To</label>
+                <select class="form-select form-select-sm multi-to" data-idx="${idx}">
+                    ${airportsOptions}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="field-label mb-1">Departure Date</label>
+                <input type="date" class="form-control form-control-sm multi-date" data-idx="${idx}" value="${seg.date}">
+            </div>
+            <div class="col-md-2 text-end mt-2 mt-md-0">
+                ${multiCitySegmentsList.length > 2 ? `<button type="button" class="btn btn-sm btn-outline-danger" onclick="removeMultiCitySegment(${idx})">✕ Remove</button>` : ''}
+            </div>
+        </div>
+    `).join('');
 
+    multiCitySegmentsList.forEach((seg, idx) => {
+        const fromSel = container.querySelector(`.multi-from[data-idx="${idx}"]`);
+        const toSel = container.querySelector(`.multi-to[data-idx="${idx}"]`);
+        if (fromSel) fromSel.value = seg.from;
+        if (toSel) toSel.value = seg.to;
+    });
+
+    container.querySelectorAll('.multi-from').forEach(el => {
+        el.addEventListener('change', e => {
+            const idx = Number(e.target.dataset.idx);
+            multiCitySegmentsList[idx].from = e.target.value;
+        });
+    });
+    container.querySelectorAll('.multi-to').forEach(el => {
+        el.addEventListener('change', e => {
+            const idx = Number(e.target.dataset.idx);
+            multiCitySegmentsList[idx].to = e.target.value;
+        });
+    });
+    container.querySelectorAll('.multi-date').forEach(el => {
+        el.addEventListener('change', e => {
+            const idx = Number(e.target.dataset.idx);
+            multiCitySegmentsList[idx].date = e.target.value;
+        });
+    });
+}
+
+function addMultiCitySegment() {
+    if (multiCitySegmentsList.length >= 5) {
+        alert('Maximum 5 segments allowed.');
+        return;
+    }
+    const lastSeg = multiCitySegmentsList[multiCitySegmentsList.length - 1];
+    multiCitySegmentsList.push({
+        from: lastSeg ? lastSeg.to : 'DEL',
+        to: 'COK',
+        date: ''
+    });
+    renderMultiCitySegments();
+}
+
+function removeMultiCitySegment(idx) {
+    if (multiCitySegmentsList.length <= 2) return;
+    multiCitySegmentsList.splice(idx, 1);
+    renderMultiCitySegments();
+}
+
+function searchFlights() {
+    const params = new URLSearchParams();
+    params.set("tripType", currentTripType);
+
+    if (currentTripType === 'ONE_WAY') {
+        const from = document.getElementById("fromField").value;
+        const to = document.getElementById("toField").value;
+        const date = document.getElementById("departureDate").value;
+        const passengers = document.getElementById("passengerCountSelect").value;
+
+        if (from && from !== "all") params.set("from", from);
+        if (to && to !== "all") params.set("to", to);
+        if (date) params.set("date", date);
+        params.set("passengers", passengers);
+
+    } else if (currentTripType === 'ROUND_TRIP') {
+        const from = document.getElementById("fromField").value;
+        const to = document.getElementById("toField").value;
+        const date = document.getElementById("departureDate").value;
+        const returnDate = document.getElementById("returnDate").value;
+        const passengers = document.getElementById("passengerCountSelect").value;
+
+        if (!returnDate) {
+            alert('Please select a Return Date for Round Trip.');
+            return;
+        }
+
+        if (from && from !== "all") params.set("from", from);
+        if (to && to !== "all") params.set("to", to);
+        if (date) params.set("date", date);
+        params.set("returnDate", returnDate);
+        params.set("passengers", passengers);
+
+    } else if (currentTripType === 'MULTI_CITY') {
+        const passengers = document.getElementById("multiPassengerSelect").value;
+        params.set("passengers", passengers);
+
+        for (let i = 0; i < multiCitySegmentsList.length; i++) {
+            const seg = multiCitySegmentsList[i];
+            if (!seg.from || !seg.to) {
+                alert(`Please select From and To airports for Segment ${i + 1}.`);
+                return;
+            }
+        }
+
+        sessionStorage.setItem("multiCitySegments", JSON.stringify(multiCitySegmentsList));
+    }
+
+    const query = params.toString();
+    console.log("Opening flights page:", query);
+    window.location.href = "flights.html?" + query;
+}
 /* =====================================================
    LOGIN
 ===================================================== */
@@ -1785,9 +1928,14 @@ function toggleAuth(showSignup) {
 ===================================================== */
 
 async function handleLogin() {
+
     clearAuthError();
-    const email = document.getElementById("loginEmail").value.trim();
-    const password = document.getElementById("loginPass").value;
+
+    const emailInput = document.getElementById("loginEmail");
+    const passwordInput = document.getElementById("loginPass");
+
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
 
     if (!email || !password) {
         showAuthError("Please enter your email and password.");
@@ -1795,22 +1943,143 @@ async function handleLogin() {
     }
 
     try {
-        const res = await fetch('/api/auth/login', {
-    method: 'POST',
 
-    headers: {
-        'Content-Type': 'application/json'
-    },
+        const res = await fetch("/api/auth/login", {
 
-    credentials: 'include',
+            method: "POST",
 
-    body: JSON.stringify({
-        email,
-        password
-    })
-});
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            credentials: "include",
+
+            body: JSON.stringify({
+                email: email,
+                password: password
+            })
+
+        });
+
+        let data;
+
+        try {
+            data = await res.json();
+        } catch (jsonError) {
+            data = {};
+        }
+
+        console.log("Login response:", data);
+
+        if (!res.ok || !data.success) {
+
+            showAuthError(
+                data.message ||
+                data.error ||
+                "Invalid email or password."
+            );
+
+            return;
+        }
+
+        /* ---------------------------------------------
+           SAVE USER INFORMATION
+        --------------------------------------------- */
+
+        if (data.user) {
+
+            localStorage.setItem(
+                "isLoggedIn",
+                "true"
+            );
+
+            localStorage.setItem(
+                "userName",
+                data.user.name || ""
+            );
+
+            localStorage.setItem(
+                "userEmail",
+                data.user.email || email
+            );
+
+            if (data.user.id) {
+
+                localStorage.setItem(
+                    "userId",
+                    data.user.id
+                );
+
+            }
+
+            updateUI(
+                data.user.name ||
+                data.user.email ||
+                "Account"
+            );
+
+        } else {
+
+            localStorage.setItem(
+                "isLoggedIn",
+                "true"
+            );
+
+            localStorage.setItem(
+                "userEmail",
+                email
+            );
+
+        }
+
+        /* ---------------------------------------------
+           CLOSE LOGIN POPUP
+        --------------------------------------------- */
+
+        const modalElement =
+            document.getElementById("loginModal");
+
+        if (
+            modalElement &&
+            typeof bootstrap !== "undefined"
+        ) {
+
+            const modal =
+                bootstrap.Modal.getInstance(
+                    modalElement
+                );
+
+            if (modal) {
+                modal.hide();
+            }
+
+        }
+
+        /* ---------------------------------------------
+           CLEAR FORM
+        --------------------------------------------- */
+
+        emailInput.value = "";
+        passwordInput.value = "";
+
+        clearAuthError();
+
+        console.log("Air Kerala login successful.");
+
+    } catch (error) {
+
+        console.error(
+            "Login error:",
+            error
+        );
+
+        showAuthError(
+            "Unable to connect to the server. Please make sure the Air Kerala server is running."
+        );
+
+    }
+
 }
-
 /* =====================================================
    SIGNUP
 ===================================================== */

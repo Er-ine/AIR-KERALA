@@ -38,6 +38,15 @@
         );
 
 
+    /*
+       Use the original Air Kerala logo image.
+
+       IMPORTANT:
+       Do not add a background to this image.
+       The image itself should contain the transparent
+       background supplied with the original logo.
+    */
+
     const LOGO =
         'airkeralalogo.png';
 
@@ -267,6 +276,7 @@
                 id="akBurger"
                 type="button"
                 aria-label="Open navigation"
+                aria-expanded="false"
             >
 
                 <span></span>
@@ -349,6 +359,11 @@
 
                 header.classList.remove(
                     'ak-open'
+                );
+
+                burger.setAttribute(
+                    'aria-expanded',
+                    'false'
                 );
             }
         }
@@ -470,6 +485,8 @@
                 <div class="ak-footer-grid">
 
 
+                    <!-- BRAND -->
+
                     <div>
 
                         <img
@@ -491,11 +508,14 @@
                     </div>
 
 
+                    <!-- CONTACT -->
+
                     <div>
 
                         <div class="ak-footer-heading">
                             Contact Us
                         </div>
+
 
                         <div class="ak-contact-item">
 
@@ -504,53 +524,44 @@
                             <div>
 
                                 <strong>
-                                    Office
+                                    Corporate Office
                                 </strong>
 
-                                Air Kerala Headquarters
+                                Air Kerala Corporate Office
+
+                                <br>
+
+                                Riverway Plaza
+
+                                <br>
+
+                                First Floor, XXIII/129
+
+                                <br>
+
+                                NH Service Road
+
+                                <br>
+
+                                Opp. Metro Station
+
+                                <br>
+
+                                Aluva – 683101
+
+                                <br>
+
+                                Ernakulam, Kerala, India
 
                             </div>
 
                         </div>
 
-
-                        <div class="ak-contact-item">
-
-                            <span>📞</span>
-
-                            <div>
-
-                                <strong>
-                                    Support
-                                </strong>
-
-                                Air Kerala Customer Support
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="ak-contact-item">
-
-                            <span>✉️</span>
-
-                            <div>
-
-                                <strong>
-                                    Email
-                                </strong>
-
-                                <a href="mailto:support@airkerala.com">
-                                    support@airkerala.com
-                                </a>
-
-                            </div>
-
-                        </div>
 
                     </div>
 
+
+                    <!-- QUICK LINKS -->
 
                     <div>
 
@@ -566,18 +577,27 @@
 
                     </div>
 
+
                 </div>
 
 
                 <div class="ak-footer-bottom">
 
                     <span>
+
                         © ${new Date().getFullYear()}
-                        Air Kerala. All rights reserved.
+
+                        Air Kerala.
+
+                        All rights reserved.
+
                     </span>
 
+
                     <span>
+
                         Fly beyond.
+
                     </span>
 
                 </div>
@@ -606,6 +626,7 @@
     } else {
 
         buildFooter();
+
     }
 
 })();

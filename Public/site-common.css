@@ -42,15 +42,15 @@ body {
 
     gap: 30px;
 
-    background: rgba(7,27,46,.98);
+    background: rgba(7, 27, 46, .98);
 
     border-bottom:
         1px solid
-        rgba(255,255,255,.1);
+        rgba(255, 255, 255, .1);
 
     box-shadow:
         0 5px 25px
-        rgba(0,0,0,.15);
+        rgba(0, 0, 0, .15);
 
     backdrop-filter:
         blur(15px);
@@ -74,6 +74,13 @@ body {
    LOGO
 ===================================================== */
 
+/*
+   IMPORTANT:
+   The logo image itself must contain the transparent
+   background. We do NOT add a grey, white, blue or
+   coloured background behind it here.
+*/
+
 .ak-brand {
 
     width: 205px;
@@ -84,9 +91,15 @@ body {
 
     flex-shrink: 0;
 
-    overflow: hidden;
+    overflow: visible;
 
     text-decoration: none;
+
+    background: transparent;
+
+    border: none;
+
+    box-shadow: none;
 }
 
 
@@ -95,11 +108,18 @@ body {
     display: block;
 
     width: auto;
+
     max-width: 205px;
 
     height: 48px;
 
     object-fit: contain;
+
+    background: transparent;
+
+    border: none;
+
+    box-shadow: none;
 }
 
 
@@ -134,7 +154,7 @@ body {
         9px 17px;
 
     color:
-        rgba(255,255,255,.88);
+        rgba(255, 255, 255, .88);
 
     text-decoration: none;
 
@@ -153,7 +173,7 @@ body {
     color: white;
 
     background:
-        rgba(255,255,255,.09);
+        rgba(255, 255, 255, .09);
 }
 
 
@@ -162,7 +182,7 @@ body {
     color: white;
 
     background:
-        rgba(255,255,255,.07);
+        rgba(255, 255, 255, .07);
 }
 
 
@@ -204,10 +224,10 @@ body {
 
     border:
         1px solid
-        rgba(255,255,255,.25);
+        rgba(255, 255, 255, .25);
 
     background:
-        rgba(255,255,255,.08);
+        rgba(255, 255, 255, .08);
 
     color: white;
 
@@ -226,7 +246,7 @@ body {
 .login-btn:hover {
 
     background:
-        rgba(255,255,255,.16);
+        rgba(255, 255, 255, .16);
 }
 
 
@@ -243,12 +263,12 @@ body {
 
     border:
         1px solid
-        rgba(255,255,255,.2);
+        rgba(255, 255, 255, .2);
 
     border-radius: 8px;
 
     background:
-        rgba(255,255,255,.08);
+        rgba(255, 255, 255, .08);
 
     padding: 8px;
 
@@ -325,13 +345,19 @@ body {
     object-fit: contain;
 
     margin-bottom: 18px;
+
+    background: transparent;
+
+    border: none;
+
+    box-shadow: none;
 }
 
 
 .ak-footer-about {
 
     color:
-        rgba(255,255,255,.65);
+        rgba(255, 255, 255, .65);
 
     font-size: 13px;
 
@@ -365,7 +391,7 @@ body {
     margin-bottom: 16px;
 
     color:
-        rgba(255,255,255,.68);
+        rgba(255, 255, 255, .68);
 
     font-size: 12px;
 
@@ -390,7 +416,7 @@ body {
 .ak-contact-item a {
 
     color:
-        rgba(255,255,255,.72);
+        rgba(255, 255, 255, .72);
 
     text-decoration: none;
 }
@@ -421,7 +447,7 @@ body {
     width: fit-content;
 
     color:
-        rgba(255,255,255,.68);
+        rgba(255, 255, 255, .68);
 
     text-decoration: none;
 
@@ -456,10 +482,10 @@ body {
 
     border-top:
         1px solid
-        rgba(255,255,255,.12);
+        rgba(255, 255, 255, .12);
 
     color:
-        rgba(255,255,255,.42);
+        rgba(255, 255, 255, .42);
 
     font-size: 11px;
 }
@@ -493,6 +519,8 @@ body {
     .ak-brand {
 
         width: auto;
+
+        background: transparent;
     }
 
 
@@ -501,6 +529,8 @@ body {
         height: 42px;
 
         max-width: 165px;
+
+        background: transparent;
     }
 
 

@@ -484,786 +484,316 @@
 <script>
 
     // ========================================================
-    // SELECTED FLIGHT
+    // SELECTED FLIGHT & MULTI-FLIGHT DATA
     // ========================================================
 
-    const flightId =
-        localStorage.getItem('flightId');
+    const flightId = localStorage.getItem('flightId');
+    let selectedFlightsList = [];
+    try {
+        selectedFlightsList = JSON.parse(sessionStorage.getItem('selectedFlightsData') || '[]');
+    } catch (e) {
+        selectedFlightsList = [];
+    }
 
     const flightData = {
-
-        flight_number:
-            localStorage.getItem('flightNum') || '—',
-
-        airline:
-            localStorage.getItem('airline') || 'Air Kerala',
-
-        origin:
-            localStorage.getItem('origin') || '—',
-
-        destination:
-            localStorage.getItem('dest') || '—',
-
-        departure:
-            localStorage.getItem('dep') || '—',
-
-        arrival:
-            localStorage.getItem('arr') || '—',
-
-        date:
-            localStorage.getItem('flightDate') || ''
+        flight_number: localStorage.getItem('flightNum') || '—',
+        airline: localStorage.getItem('airline') || 'Air Kerala',
+        origin: localStorage.getItem('origin') || '—',
+        destination: localStorage.getItem('dest') || '—',
+        departure: localStorage.getItem('dep') || '—',
+        arrival: localStorage.getItem('arr') || '—',
+        date: localStorage.getItem('flightDate') || ''
     };
 
+    function renderItinerarySummary() {
+        const container = document.getElementById('flightSummary');
+        if (!container) return;
 
-    // ========================================================
-    // DISPLAY FLIGHT
-    // ========================================================
+        if (selectedFlightsList.length > 1) {
+            container.innerHTML = selectedFlightsList.map((f, idx) => `
+                <div style="width:100%; border-bottom: 1px solid #d5e0e7; padding-bottom:10px; margin-bottom:10px;" class="mb-2">
+                    <strong style="color:#0878d1;">Segment ${idx + 1}: ${f.number} (${f.airline})</strong>
+                    <div style="display:flex; justify-content:space-between; margin-top:5px; font-size:14px; flex-wrap:wrap; gap:10px;">
+                        <span>From: <strong>${f.origin} (${f.originCode})</strong></span>
+                        <span>To: <strong>${f.dest} (${f.destCode})</strong></span>
+                        <span>Date: <strong>${f.date}</strong></span>
+                        <span>Time: <strong>${f.dep}</strong> → <strong>${f.arr}</strong></span>
+                    </div>
+                </div>
+            `).join('');
+        } else {
+            const numEl = document.getElementById('flightNumber');
+            const origEl = document.getElementById('origin');
+            const destEl = document.getElementById('destination');
+            const depEl = document.getElementById('departure');
+            const arrEl = document.getElementById('arrival');
 
-    document.getElementById(
-        'flightNumber'
-    ).textContent =
-        flightData.flight_number;
-
-    document.getElementById(
-        'origin'
-    ).textContent =
-        flightData.origin;
-
-    document.getElementById(
-        'destination'
-    ).textContent =
-        flightData.destination;
-
-    document.getElementById(
-        'departure'
-    ).textContent =
-        flightData.departure;
-
-    document.getElementById(
-        'arrival'
-    ).textContent =
-        flightData.arrival;
-
-
-    // ========================================================
-    // ERROR
-    // ========================================================
+            if (numEl) numEl.textContent = flightData.flight_number;
+            if (origEl) origEl.textContent = flightData.origin;
+            if (destEl) destEl.textContent = flightData.destination;
+            if (depEl) depEl.textContent = flightData.departure;
+            if (arrEl) arrEl.textContent = flightData.arrival;
+        }
+    }
 
     function showError(message) {
-
-        const box =
-            document.getElementById(
-                'errorMessage'
-            );
-
-        box.textContent = message;
-
-        box.style.display = 'block';
-
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
+        const box = document.getElementById('errorMessage');
+        if (box) {
+            box.textContent = message;
+            box.style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
     }
-
 
     function clearError() {
-
-        const box =
-            document.getElementById(
-                'errorMessage'
-            );
-
-        box.style.display = 'none';
-        box.textContent = '';
+        const box = document.getElementById('errorMessage');
+        if (box) {
+            box.style.display = 'none';
+            box.textContent = '';
+        }
     }
-
-
-    // ========================================================
-    // PASSENGER FORM
-    // ========================================================
 
     function createPassengerCard(index) {
-
-        const number =
-            index + 1;
-
+        const number = index + 1;
         return `
-
-        <div
-            class="passenger-card"
-            data-passenger="${number}"
-        >
-
+        <div class="passenger-card" data-passenger="${number}">
             <div class="passenger-title">
-
-                <h3>
-                    Passenger ${number}
-                </h3>
-
-                <div class="passenger-number">
-                    ${number}
-                </div>
-
+                <h3>Passenger ${number}</h3>
+                <div class="passenger-number">${number}</div>
             </div>
-
-
             <div class="form-grid">
-
-
-                <!-- FIRST NAME -->
-
                 <div class="field">
-
-                    <label>
-                        First Name
-                        <span class="required">*</span>
-                    </label>
-
-                    <input
-                        type="text"
-                        class="first-name"
-                        placeholder="Enter first name"
-                        required
-                    >
-
+                    <label>First Name <span class="required">*</span></label>
+                    <input type="text" class="first-name" placeholder="Enter first name" required>
                 </div>
-
-
-                <!-- SURNAME -->
-
                 <div class="field">
-
-                    <label>
-                        Surname
-                        <span class="required">*</span>
-                    </label>
-
-                    <input
-                        type="text"
-                        class="surname"
-                        placeholder="Enter surname"
-                        required
-                    >
-
+                    <label>Surname <span class="required">*</span></label>
+                    <input type="text" class="surname" placeholder="Enter surname" required>
                 </div>
-
-
-                <!-- DOB -->
-
                 <div class="field">
-
-                    <label>
-                        Date of Birth
-                        <span class="required">*</span>
-                    </label>
-
-                    <input
-                        type="date"
-                        class="dob"
-                        required
-                    >
-
+                    <label>Date of Birth <span class="required">*</span></label>
+                    <input type="date" class="dob" required>
                 </div>
-
-
-                <!-- GENDER -->
-
                 <div class="field">
-
-                    <label>
-                        Gender
-                        <span class="required">*</span>
-                    </label>
-
-                    <select
-                        class="gender"
-                        required
-                    >
-
-                        <option value="">
-                            Select gender
-                        </option>
-
-                        <option value="Male">
-                            Male
-                        </option>
-
-                        <option value="Female">
-                            Female
-                        </option>
-
-                        <option value="Other">
-                            Other
-                        </option>
-
+                    <label>Gender <span class="required">*</span></label>
+                    <select class="gender" required>
+                        <option value="">Select gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
                     </select>
-
                 </div>
-
-
-                <!-- PASSPORT -->
-
                 <div class="field">
-
-                    <label>
-                        Passport Number
-                        <span class="required">*</span>
-                    </label>
-
-                    <input
-                        type="text"
-                        class="passport"
-                        placeholder="Enter passport number"
-                        maxlength="20"
-                        required
-                    >
-
+                    <label>Passport Number <span class="required">*</span></label>
+                    <input type="text" class="passport" placeholder="Enter passport number" maxlength="20" required>
                 </div>
-
-
-                <!-- CABIN -->
-
                 <div class="field">
-
-                    <label>
-                        Cabin Class
-                        <span class="required">*</span>
-                    </label>
-
-                    <select
-                        class="cabin-class"
-                        required
-                    >
-
-                        <option value="Economy">
-                            Economy
-                        </option>
-
-                        <option value="Business">
-                            Business
-                        </option>
-
-                        <option value="First">
-                            First
-                        </option>
-
+                    <label>Cabin Class <span class="required">*</span></label>
+                    <select class="cabin-class" required>
+                        <option value="Economy">Economy</option>
+                        <option value="Business">Business</option>
+                        <option value="First">First</option>
                     </select>
-
                 </div>
-
-
             </div>
-
-
-            <!-- PREFERENCES -->
 
             <div class="preferences">
-
-                <h4>
-                    Meal & Special Assistance
-                </h4>
-
-
+                <h4>Meal & Special Assistance</h4>
                 <div class="form-grid">
-
-
-                    <!-- MEAL -->
-
                     <div class="field">
-
-                        <label>
-                            Meal Preference
-                        </label>
-
+                        <label>Meal Preference</label>
                         <select class="meal">
-
-                            <option value="None">
-                                No Preference
-                            </option>
-
-                            <option value="Vegetarian">
-                                Vegetarian
-                            </option>
-
-                            <option value="Non-Vegetarian">
-                                Non-Vegetarian
-                            </option>
-
-                            <option value="Vegan">
-                                Vegan
-                            </option>
-
-                            <option value="Jain">
-                                Jain
-                            </option>
-
-                            <option value="Child Meal">
-                                Child Meal
-                            </option>
-
+                            <option value="None">No Preference</option>
+                            <option value="Vegetarian">Vegetarian</option>
+                            <option value="Non-Vegetarian">Non-Vegetarian</option>
+                            <option value="Vegan">Vegan</option>
+                            <option value="Jain">Jain</option>
+                            <option value="Child Meal">Child Meal</option>
                         </select>
-
                     </div>
-
-
-                    <!-- ASSISTANCE -->
-
                     <div class="field">
-
-                        <label>
-                            Special Assistance
-                        </label>
-
+                        <label>Special Assistance</label>
                         <select class="assistance">
-
-                            <option value="None">
-                                No Assistance
-                            </option>
-
-                            <option value="Wheelchair">
-                                Wheelchair Assistance
-                            </option>
-
-                            <option value="Hearing Assistance">
-                                Hearing Assistance
-                            </option>
-
-                            <option value="Visual Assistance">
-                                Visual Assistance
-                            </option>
-
-                            <option value="Medical Assistance">
-                                Medical Assistance
-                            </option>
-
-                            <option value="Other">
-                                Other Assistance
-                            </option>
-
+                            <option value="None">No Assistance</option>
+                            <option value="Wheelchair">Wheelchair Assistance</option>
+                            <option value="Hearing Assistance">Hearing Assistance</option>
+                            <option value="Visual Assistance">Visual Assistance</option>
+                            <option value="Medical Assistance">Medical Assistance</option>
+                            <option value="Other">Other Assistance</option>
                         </select>
-
                     </div>
-
-
-                    <!-- CHECKBOXES -->
-
                     <div class="field full">
-
                         <div class="checkbox-row">
-
                             <label class="check-item">
-
-                                <input
-                                    type="checkbox"
-                                    class="wheelchair"
-                                >
-
-                                Wheelchair Required
-
+                                <input type="checkbox" class="wheelchair"> Wheelchair Required
                             </label>
-
-
                             <label class="check-item">
-
-                                <input
-                                    type="checkbox"
-                                    class="bassinet"
-                                >
-
-                                Infant Bassinet Required
-
+                                <input type="checkbox" class="bassinet"> Infant Bassinet Required
                             </label>
-
                         </div>
-
                     </div>
-
                 </div>
-
             </div>
-
         </div>
-
         `;
     }
-/* =========================================================
-   AUTHENTICATION CHECK
-========================================================= */
 
-async function checkAuthentication() {
+    /* =========================================================
+       AUTHENTICATION CHECK & INITIALIZATION
+    ========================================================= */
 
-    try {
+    async function checkAuthentication() {
+        try {
+            const response = await fetch('/api/auth/me', {
+                method: 'GET',
+                credentials: 'include'
+            });
+            const data = await response.json();
 
-        const response =
-            await fetch(
-                '/api/auth/me',
-                {
-                    method: 'GET',
-                    credentials: 'include'
-                }
-            );
+            if (!response.ok || !data.authenticated) {
+                window.location.href = 'index.html?login=required';
+                return false;
+            }
 
-
-        const data =
-            await response.json();
-
-
-        if (
-            !response.ok ||
-            !data.authenticated
-        ) {
-
-            window.location.href =
-                'index.html?login=required';
-
+            localStorage.setItem('isLoggedIn', 'true');
+            if (data.user) {
+                localStorage.setItem('userId', data.user.id);
+                localStorage.setItem('userName', data.user.name);
+                localStorage.setItem('userEmail', data.user.email);
+            }
+            return true;
+        } catch (error) {
+            console.error('AUTH CHECK ERROR:', error);
+            window.location.href = 'index.html?login=required';
             return false;
         }
-
-
-        localStorage.setItem(
-            'isLoggedIn',
-            'true'
-        );
-
-        localStorage.setItem(
-            'userId',
-            data.user.id
-        );
-
-        localStorage.setItem(
-            'userName',
-            data.user.name
-        );
-
-        localStorage.setItem(
-            'userEmail',
-            data.user.email
-        );
-
-
-        return true;
-
-
-    } catch (error) {
-
-        console.error(
-            'AUTH CHECK ERROR:',
-            error
-        );
-
-        window.location.href =
-            'index.html?login=required';
-
-        return false;
     }
-}
 
     function renderPassengers() {
-
-        const count =
-            Number(
-                document.getElementById(
-                    'passengerCount'
-                ).value
-            );
-
-        const container =
-            document.getElementById(
-                'passengersContainer'
-            );
-
+        const countSelect = document.getElementById('passengerCount');
+        if (!countSelect) return;
+        const count = Number(countSelect.value);
+        const container = document.getElementById('passengersContainer');
+        if (!container) return;
         container.innerHTML = '';
-
-        for (
-            let i = 0;
-            i < count;
-            i++
-        ) {
-
-            container.insertAdjacentHTML(
-                'beforeend',
-                createPassengerCard(i)
-            );
+        for (let i = 0; i < count; i++) {
+            container.insertAdjacentHTML('beforeend', createPassengerCard(i));
         }
-
-        document.getElementById(
-            'passengerTotal'
-        ).textContent =
-            count === 1
-                ? '1 Passenger'
-                : `${count} Passengers`;
+        const totalEl = document.getElementById('passengerTotal');
+        if (totalEl) {
+            totalEl.textContent = count === 1 ? '1 Passenger' : `${count} Passengers`;
+        }
     }
 
+    const countSelEl = document.getElementById('passengerCount');
+    if (countSelEl) {
+        countSelEl.addEventListener('change', renderPassengers);
+    }
 
-    document.getElementById(
-        'passengerCount'
-    ).addEventListener(
-        'change',
-        renderPassengers
-    );
+    window.addEventListener('DOMContentLoaded', async () => {
+        const isAuth = await checkAuthentication();
+        if (!isAuth) return;
 
-
-    renderPassengers();
-
+        renderItinerarySummary();
+        renderPassengers();
+    });
 
     // ========================================================
-    // SUBMIT
+    // SUBMIT BOOKING
     // ========================================================
 
-    document.getElementById(
-        'continueButton'
-    ).addEventListener(
-        'click',
-        async function () {
-
+    const continueBtn = document.getElementById('continueButton');
+    if (continueBtn) {
+        continueBtn.addEventListener('click', async function () {
             clearError();
 
             if (!flightId) {
-
-                showError(
-                    'No flight has been selected. Please go back and select a flight.'
-                );
-
+                showError('No flight has been selected. Please go back and select a flight.');
                 return;
             }
 
-
-            const cards =
-                document.querySelectorAll(
-                    '.passenger-card'
-                );
-
+            const cards = document.querySelectorAll('.passenger-card');
             const passengers = [];
 
+            for (let i = 0; i < cards.length; i++) {
+                const card = cards[i];
+                const firstName = card.querySelector('.first-name').value.trim();
+                const surname = card.querySelector('.surname').value.trim();
+                const dob = card.querySelector('.dob').value;
+                const gender = card.querySelector('.gender').value;
+                const passport = card.querySelector('.passport').value.trim();
+                const cabinClass = card.querySelector('.cabin-class').value;
+                const meal = card.querySelector('.meal').value;
+                const assistance = card.querySelector('.assistance').value;
+                const wheelchair = card.querySelector('.wheelchair').checked;
+                const bassinet = card.querySelector('.bassinet').checked;
 
-            // ------------------------------------------------
-            // COLLECT PASSENGERS
-            // ------------------------------------------------
-
-            for (
-                let i = 0;
-                i < cards.length;
-                i++
-            ) {
-
-                const card =
-                    cards[i];
-
-                const firstName =
-                    card.querySelector(
-                        '.first-name'
-                    ).value.trim();
-
-                const surname =
-                    card.querySelector(
-                        '.surname'
-                    ).value.trim();
-
-                const dob =
-                    card.querySelector(
-                        '.dob'
-                    ).value;
-
-                const gender =
-                    card.querySelector(
-                        '.gender'
-                    ).value;
-
-                const passport =
-                    card.querySelector(
-                        '.passport'
-                    ).value.trim();
-
-                const cabinClass =
-                    card.querySelector(
-                        '.cabin-class'
-                    ).value;
-
-                const meal =
-                    card.querySelector(
-                        '.meal'
-                    ).value;
-
-                const assistance =
-                    card.querySelector(
-                        '.assistance'
-                    ).value;
-
-                const wheelchair =
-                    card.querySelector(
-                        '.wheelchair'
-                    ).checked;
-
-                const bassinet =
-                    card.querySelector(
-                        '.bassinet'
-                    ).checked;
-
-
-                if (
-                    !firstName ||
-                    !surname ||
-                    !dob ||
-                    !gender ||
-                    !passport
-                ) {
-
-                    showError(
-                        `Please complete all required fields for Passenger ${i + 1}.`
-                    );
-
-                    card.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'center'
-                    });
-
+                if (!firstName || !surname || !dob || !gender || !passport) {
+                    showError(`Please complete all required fields for Passenger ${i + 1}.`);
+                    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     return;
                 }
 
-
                 passengers.push({
-
-                    first_name:
-                        firstName,
-
-                    surname:
-                        surname,
-
-                    date_of_birth:
-                        dob,
-
-                    gender:
-                        gender,
-
-                    passport_number:
-                        passport,
-
-                    cabin_class:
-                        cabinClass,
-
-                    meal_preference:
-                        meal,
-
-                    special_assistance:
-                        assistance,
-
-                    wheelchair_required:
-                        wheelchair,
-
-                    infant_bassinet_required:
-                        bassinet
+                    first_name: firstName,
+                    surname: surname,
+                    date_of_birth: dob,
+                    gender: gender,
+                    passport_number: passport,
+                    cabin_class: cabinClass,
+                    meal_preference: meal,
+                    special_assistance: assistance,
+                    wheelchair_required: wheelchair,
+                    infant_bassinet_required: bassinet
                 });
             }
 
-
-            // ------------------------------------------------
-            // DISABLE BUTTON
-            // ------------------------------------------------
-
-            const button =
-                document.getElementById(
-                    'continueButton'
-                );
-
+            const button = document.getElementById('continueButton');
             button.disabled = true;
+            button.textContent = 'Creating Booking...';
 
-            button.textContent =
-                'Creating Booking...';
-
-
+            let flightIdsList = [];
             try {
-
-                const response =
-                    await fetch(
-                        '/api/booking-group',
-                        {
-                            method: 'POST',
-
-                            headers: {
-                                'Content-Type':
-                                    'application/json'
-                            },
-
-                            credentials: 'include',
-
-                            body: JSON.stringify({
-
-                                flight_id:
-                                    flightId,
-
-                                booking_date:
-                                    flightData.date ||
-                                    new Date()
-                                        .toISOString()
-                                        .split('T')[0],
-
-                                passengers:
-                                    passengers
-                            })
-                        }
-                    );
-
-
-                const result =
-                    await response.json();
-
-
-                if (!response.ok || !result.success) {
-
-                    throw new Error(
-                        result.message ||
-                        'Unable to create booking.'
-                    );
-                }
-
-
-                // ------------------------------------------------
-                // SAVE BOOKING DATA
-                // ------------------------------------------------
-
-                localStorage.setItem(
-                    'bookingId',
-                    String(result.booking_id)
-                );
-
-                localStorage.setItem(
-                    'bookingTotal',
-                    String(result.amount || 0)
-                );
-
-                localStorage.setItem(
-                    'passengerCount',
-                    String(passengers.length)
-                );
-
-
-                // ------------------------------------------------
-                // GO PAYMENT
-                // ------------------------------------------------
-
-                window.location.href =
-                    `payment.html?booking_id=${encodeURIComponent(
-                        result.booking_id
-                    )}`;
-
-            } catch (error) {
-
-                console.error(error);
-
-                showError(
-                    error.message ||
-                    'Unable to create booking.'
-                );
-
-                button.disabled = false;
-
-                button.textContent =
-                    'Continue to Payment';
+                flightIdsList = JSON.parse(sessionStorage.getItem('flightIds') || '[]');
+            } catch(e) {}
+            if (flightIdsList.length === 0 && flightId) {
+                flightIdsList = [flightId];
             }
 
-        }
-    );
+            try {
+                const response = await fetch('/api/booking-group', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        flight_id: flightId,
+                        flight_ids: flightIdsList,
+                        trip_type: localStorage.getItem('tripType') || (flightIdsList.length > 1 ? 'MULTI_CITY' : 'ONE_WAY'),
+                        booking_date: flightData.date || new Date().toISOString().split('T')[0],
+                        passengers: passengers
+                    })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok || !result.success) {
+                    throw new Error(result.message || 'Unable to create booking.');
+                }
+
+                localStorage.setItem('bookingId', String(result.booking_id));
+                localStorage.setItem('bookingTotal', String(result.amount || 0));
+                localStorage.setItem('passengerCount', String(passengers.length));
+
+                window.location.href = `payment.html?booking_id=${encodeURIComponent(result.booking_id)}`;
+
+            } catch (error) {
+                console.error(error);
+                showError(error.message || 'Unable to create booking.');
+                button.disabled = false;
+                button.textContent = 'Continue to Payment';
+            }
+        });
+    }
 
 </script>
 

@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Air Kerala | E-Ticket Confirmation</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(135deg, #eef4fb 0%, #f8fafc 100%);
+      color: #1e293b;
+      min-height: 100vh;
+      padding-bottom: 60px;
+    }
+
+    .topbar {
+      height: 72px;
+      background: #062b63;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 6%;
+      color: white;
+      box-shadow: 0 4px 15px rgba(6, 43, 99, 0.15);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      font-size: 22px;
+      letter-spacing: 0.5px;
+    }
+
+    .brand img {
+      width: 44px;
+      height: 44px;
+      object-fit: contain;
+      background: white;
+      border-radius: 8px;
+      padding: 3px;
+    }
+
+    .topbar button {
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: 0.2s ease;
+    }
+
+    .topbar button:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .page {
+      width: min(960px, 94%);
+      margin: 35px auto 40px;
+    }
+
+    .success-banner {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .success-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #10b981;
+      color: white;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      margin-bottom: 12px;
+      box-shadow: 0 6px 18px rgba(16, 185, 129, 0.3);
+    }
+
+    .success-banner h1 {
+      color: #062b63;
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .success-banner p {
+      color: #64748b;
+      font-size: 15px;
+    }
+
+    .ticket-document {
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 16px 45px rgba(6, 43, 99, 0.12);
+      border: 1px solid #cbd5e1;
+    }
+
+    /* Ticket Header */
+    .ticket-header {
+      background: #062b63;
+      color: white;
+      padding: 26px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      border-bottom: 3px solid #dcae36;
+    }
+
+    .ticket-logo {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .ticket-logo img {
+      width: 60px;
+      height: 60px;
+      object-fit: contain;
+      background: white;
+      border-radius: 12px;
+      padding: 4px;
+    }
+
+    .ticket-logo h2 {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+
+    .ticket-logo p {
+      margin-top: 2px;
+      opacity: 0.85;
+      font-size: 13px;
+    }
+
+    .ticket-badge-box {
+      text-align: right;
+    }
+
+    .ticket-badge-box strong {
+      display: block;
+      font-size: 20px;
+      letter-spacing: 2px;
+      color: #ffffff;
+    }
+
+    .ticket-badge-box span {
+      display: inline-block;
+      margin-top: 6px;
+      background: #dcae36;
+      color: #062b63;
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-weight: 800;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+    }
+
+    /* Reference Bar */
+    .reference-bar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      background: #f8fafc;
+      border-bottom: 1px dashed #cbd5e1;
+    }
+
+    .ref-item {
+      padding: 18px 25px;
+      border-right: 1px solid #e2e8f0;
+    }
+
+    .ref-item:last-child {
+      border-right: 0;
+    }
+
+    .ref-item small {
+      display: block;
+      color: #64748b;
+      font-size: 11px;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      margin-bottom: 4px;
+    }
+
+    .ref-item strong {
+      font-size: 17px;
+      color: #062b63;
+      font-family: 'Courier New', Courier, monospace;
+      font-weight: 700;
+    }
+
+    /* Flight Cards Container */
+    .section-block {
+      padding: 28px 32px;
+      border-bottom: 1px dashed #cbd5e1;
+    }
+
+    .section-title {
+      color: #062b63;
+      font-size: 17px;
+      font-weight: 800;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .segment-card {
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 22px;
+      margin-bottom: 16px;
+    }
+
+    .segment-card:last-child {
+      margin-bottom: 0;
+    }
+
+    .segment-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .segment-tag {
+      background: #062b63;
+      color: white;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      letter-spacing: 0.5px;
+    }
+
+    .segment-airline {
+      color: #64748b;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .route-grid {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .airport-box {
+      text-align: left;
+    }
+
+    .airport-box.right {
+      text-align: right;
+    }
+
+    .airport-code {
+      font-size: 34px;
+      font-weight: 900;
+      color: #062b63;
+      line-height: 1;
+    }
+
+    .airport-city {
+      font-size: 15px;
+      font-weight: 700;
+      color: #334155;
+      margin-top: 4px;
+    }
+
+    .airport-fullname {
+      font-size: 12px;
+      color: #64748b;
+      margin-top: 2px;
+    }
+
+    .flight-time {
+      font-size: 14px;
+      font-weight: 700;
+      color: #062b63;
+      margin-top: 6px;
+    }
+
+    .flight-date {
+      font-size: 12px;
+      color: #64748b;
+      margin-top: 2px;
+    }
+
+    .flight-divider {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      min-width: 160px;
+    }
+
+    .flight-num-badge {
+      font-size: 13px;
+      font-weight: 800;
+      color: #062b63;
+      background: white;
+      padding: 3px 10px;
+      border-radius: 12px;
+      border: 1px solid #cbd5e1;
+    }
+
+    .line-wrapper {
+      width: 100%;
+      height: 2px;
+      background: #94a3b8;
+      position: relative;
+      margin: 8px 0;
+    }
+
+    .plane-icon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #f1f5f9;
+      padding: 0 8px;
+      color: #dcae36;
+      font-size: 18px;
+    }
+
+    .class-badge {
+      font-size: 12px;
+      color: #475569;
+      font-weight: 600;
+    }
+
+    /* Passengers Grid */
+    .passengers-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .passenger-card {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-left: 5px solid #062b63;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .passenger-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .passenger-name-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #062b63;
+    }
+
+    .seat-pill {
+      background: #e0f2fe;
+      color: #0369a1;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-weight: 800;
+      font-size: 13px;
+    }
+
+    .passenger-info-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    .info-cell small {
+      display: block;
+      font-size: 11px;
+      color: #64748b;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 3px;
+    }
+
+    .info-cell strong {
+      font-size: 14px;
+      color: #1e293b;
+    }
+
+    .info-cell span.highlight {
+      color: #062b63;
+      font-weight: 700;
+    }
+
+    /* Fare Section */
+    .fare-box {
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 18px 22px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .fare-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      color: #475569;
+      font-size: 14px;
+    }
+
+    .fare-row.total {
+      margin-top: 10px;
+      padding-top: 14px;
+      border-top: 2px solid #cbd5e1;
+      color: #062b63;
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    /* Payment Grid */
+    .payment-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    /* QR Code Section */
+    .qr-footer {
+      padding: 26px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 25px;
+      background: #f8fafc;
+    }
+
+    .qr-image {
+      width: 120px;
+      height: 120px;
+      background: white;
+      padding: 6px;
+      border-radius: 10px;
+      border: 1px solid #cbd5e1;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .qr-info h3 {
+      color: #062b63;
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .qr-info p {
+      color: #64748b;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    /* Actions */
+    .action-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      margin-top: 25px;
+    }
+
+    .btn {
+      padding: 13px 26px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+      transition: 0.2s ease;
+    }
+
+    .btn-primary {
+      background: #062b63;
+      color: white;
+      box-shadow: 0 4px 12px rgba(6, 43, 99, 0.2);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: #062b63;
+      border: 1px solid #cbd5e1;
+    }
+
+    .btn:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .loading-state,
+    .error-state {
+      text-align: center;
+      padding: 60px 20px;
+      background: white;
+      border-radius: 18px;
+    }
+
+    .error-state h2 {
+      color: #ef4444;
+      margin-bottom: 8px;
+    }
+
+    @media (max-width: 768px) {
+      .reference-bar,
+      .passenger-info-grid,
+      .payment-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .route-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .airport-box.right {
+        text-align: center;
+      }
+
+      .flight-divider {
+        margin: 12px 0;
+      }
+
+      .qr-footer {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 500px) {
+      .reference-bar,
+      .passenger-info-grid,
+      .payment-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .ticket-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .ticket-badge-box {
+        text-align: left;
+      }
+    }
+
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+      }
+      .topbar, .action-buttons, .success-banner {
+        display: none !important;
+      }
+      .page {
+        width: 100%;
+        margin: 0;
+      }
+      .ticket-document {
+        box-shadow: none;
+        border: 1px solid #94a3b8;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <header class="topbar">
+    <div class="brand">
+      <img src="/airkeralalogo.png" onerror="this.onerror=null; this.src='/assets/airkeralalogo.png'" alt="Air Kerala Logo" />
+      <span>AIR KERALA</span>
+    </div>
+    <button onclick="window.location.href='/'">Back to Home</button>
+  </header>
+
+  <main class="page">
+    <section class="success-banner">
+      <div class="success-icon">✓</div>
+      <h1>Booking Confirmed & E-Ticket Issued</h1>
+      <p>Thank you for choosing Air Kerala. Here is your official electronic ticket.</p>
+    </section>
+
+    <!-- LOADING & ERROR STATES -->
+    <div id="loadingState" class="loading-state">
+      <p>Retrieving ticket details from MongoDB...</p>
+    </div>
+
+    <div id="errorState" class="error-state" style="display: none;">
+      <h2>Unable to Load E-Ticket</h2>
+      <p id="errorMessageText">Booking ID not found or missing credentials.</p>
+    </div>
+
+    <!-- TICKET CONTAINER -->
+    <article id="ticketContainer" class="ticket-document" style="display: none;">
+      
+      <!-- TICKET HEADER -->
+      <div class="ticket-header">
+        <div class="ticket-logo">
+          <img src="/airkeralalogo.png" onerror="this.onerror=null; this.src='/assets/airkeralalogo.png'" alt="Air Kerala Logo" />
+          <div>
+            <h2>AIR KERALA</h2>
+            <p>Affordable Air Travel, Redefined</p>
+          </div>
+        </div>
+        <div class="ticket-badge-box">
+          <strong>E-TICKET</strong>
+          <span>CONFIRMED</span>
+        </div>
+      </div>
+
+      <!-- REFERENCE BAR -->
+      <div class="reference-bar">
+        <div class="ref-item">
+          <small>Booking Reference / PNR</small>
+          <strong id="displayPNR">—</strong>
+        </div>
+        <div class="ref-item">
+          <small>Ticket Number</small>
+          <strong id="displayTicketNum">—</strong>
+        </div>
+        <div class="ref-item">
+          <small>Date Issued</small>
+          <strong id="displayIssuedDate">—</strong>
+        </div>
+      </div>
+
+      <!-- FLIGHT SEGMENTS -->
+      <section class="section-block">
+        <h3 class="section-title">✈ Flight Itinerary</h3>
+        <div id="flightSegmentsContainer">
+          <!-- Dynamically populated flight segment cards -->
+        </div>
+      </section>
+
+      <!-- PASSENGER DETAILS -->
+      <section class="section-block">
+        <h3 class="section-title">👤 Passenger Information</h3>
+        <div id="passengersContainer" class="passengers-container">
+          <!-- Dynamically populated passenger cards -->
+        </div>
+      </section>
+
+      <!-- FARE DETAILS -->
+      <section class="section-block">
+        <h3 class="section-title">💳 Fare Breakdown</h3>
+        <div class="fare-box">
+          <div class="fare-row">
+            <span>Base Fare</span>
+            <strong id="fareBase">₹0.00</strong>
+          </div>
+          <div class="fare-row">
+            <span>Taxes & Airport Charges</span>
+            <strong id="fareTaxes">₹0.00</strong>
+          </div>
+          <div class="fare-row">
+            <span>Service Fees</span>
+            <strong id="fareFees">₹0.00</strong>
+          </div>
+          <div class="fare-row total">
+            <span>Total Paid</span>
+            <strong id="fareTotal">₹0.00</strong>
+          </div>
+        </div>
+      </section>
+
+      <!-- PAYMENT INFO -->
+      <section class="section-block">
+        <h3 class="section-title">🔒 Payment Information</h3>
+        <div class="payment-grid">
+          <div class="info-cell">
+            <small>Payment Status</small>
+            <strong id="paymentStatusDisplay">PAID</strong>
+          </div>
+          <div class="info-cell">
+            <small>Payment Method</small>
+            <strong id="paymentMethodDisplay">—</strong>
+          </div>
+          <div class="info-cell">
+            <small>Transaction Reference</small>
+            <strong id="transactionRefDisplay">—</strong>
+          </div>
+        </div>
+      </section>
+
+      <!-- QR FOOTER -->
+      <footer class="qr-footer">
+        <img id="qrCodeImg" class="qr-image" alt="E-Ticket QR Verification Code" />
+        <div class="qr-info">
+          <h3>Boarding Pass QR Verification</h3>
+          <p>Scan this QR code at the airport gate or check-in kiosk to verify ticket authenticity and passenger booking status.</p>
+        </div>
+      </footer>
+
+    </article>
+
+    <!-- ACTION BUTTONS -->
+    <div id="actionButtons" class="action-buttons" style="display: none;">
+      <button class="btn btn-primary" onclick="window.print()">Print Boarding Pass / Ticket</button>
+      <button class="btn btn-secondary" onclick="window.print()">Save as PDF</button>
+    </div>
+  </main>
+
+  <script>
+    // AIRPORT LOOKUP DICTIONARY
+    const AIRPORTS = {
+      'COK': { code: 'COK', name: 'Cochin International Airport', city: 'Kochi' },
+      'KOCHI': { code: 'COK', name: 'Cochin International Airport', city: 'Kochi' },
+      'COCHIN': { code: 'COK', name: 'Cochin International Airport', city: 'Kochi' },
+      'MAA': { code: 'MAA', name: 'Chennai International Airport', city: 'Chennai' },
+      'CHENNAI': { code: 'MAA', name: 'Chennai International Airport', city: 'Chennai' },
+      'TRV': { code: 'TRV', name: 'Trivandrum International Airport', city: 'Thiruvananthapuram' },
+      'TRIVANDRUM': { code: 'TRV', name: 'Trivandrum International Airport', city: 'Thiruvananthapuram' },
+      'BOM': { code: 'BOM', name: 'Chhatrapati Shivaji Maharaj International Airport', city: 'Mumbai' },
+      'MUMBAI': { code: 'BOM', name: 'Chhatrapati Shivaji Maharaj International Airport', city: 'Mumbai' },
+      'DEL': { code: 'DEL', name: 'Indira Gandhi International Airport', city: 'Delhi' },
+      'DELHI': { code: 'DEL', name: 'Indira Gandhi International Airport', city: 'Delhi' },
+      'BLR': { code: 'BLR', name: 'Kempegowda International Airport', city: 'Bengaluru' },
+      'BANGALORE': { code: 'BLR', name: 'Kempegowda International Airport', city: 'Bengaluru' },
+      'BENGALURU': { code: 'BLR', name: 'Kempegowda International Airport', city: 'Bengaluru' },
+      'CCJ': { code: 'CCJ', name: 'Calicut International Airport', city: 'Kozhikode' },
+      'KOZHIKODE': { code: 'CCJ', name: 'Calicut International Airport', city: 'Kozhikode' },
+      'CNN': { code: 'CNN', name: 'Kannur International Airport', city: 'Kannur' },
+      'KANNUR': { code: 'CNN', name: 'Kannur International Airport', city: 'Kannur' },
+      'DXB': { code: 'DXB', name: 'Dubai International Airport', city: 'Dubai' },
+      'DUBAI': { code: 'DXB', name: 'Dubai International Airport', city: 'Dubai' }
+    };
+
+    function resolveAirportInfo(inputStr) {
+      if (!inputStr) return { code: 'AK', name: 'Air Kerala Airport', city: 'Destination Port' };
+      const key = String(inputStr).trim().toUpperCase();
+      if (AIRPORTS[key]) return AIRPORTS[key];
+      const is3 = key.length === 3;
+      return {
+        code: is3 ? key : key.slice(0, 3).toUpperCase(),
+        name: `${inputStr} International Airport`,
+        city: inputStr
+      };
+    }
+
+    function formatCurrency(val) {
+      const num = Number(val || 0);
+      return '₹' + num.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function formatDateStr(val) {
+      if (!val) return '—';
+      const d = new Date(val);
+      if (isNaN(d.getTime())) return val;
+      return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+    }
+
+    function maskPassport(pass) {
+      if (!pass || pass === '—') return 'Not Specified';
+      if (pass.length <= 4) return pass;
+      return pass.slice(0, 2) + '****' + pass.slice(-2);
+    }
+
+    async function initTicketPage() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const bookingId = urlParams.get('bookingId') || urlParams.get('booking_id');
+
+      if (!bookingId) {
+        showError('No Booking ID was supplied in the URL parameter.');
+        return;
+      }
+
+      let bookingData = null;
+
+      // Try 1: Fetch from /api/booking-details/:id
+      try {
+        const res = await fetch(`/api/booking-details/${encodeURIComponent(bookingId)}`, { credentials: 'include' });
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && json.data) {
+            bookingData = json.data;
+          }
+        }
+      } catch (err) {
+        console.warn('Booking details fetch attempt 1 error:', err);
+      }
+
+      // Try 2: Fallback to /api/payment/:id if bookingData not retrieved
+      if (!bookingData) {
+        try {
+          const res = await fetch(`/api/payment/${encodeURIComponent(bookingId)}`, { credentials: 'include' });
+          if (res.ok) {
+            const json = await res.json();
+            if (json.success && json.booking) {
+              const b = json.booking;
+              const primaryFlight = b.flight || b.flightId || {};
+
+              const passList = [];
+              if (Array.isArray(b.passengers) && b.passengers.length > 0) {
+                b.passengers.forEach(item => {
+                  const p = item.passenger || item;
+                  passList.push({
+                    FIRST_NAME: p.first_name || p.firstName || '',
+                    SURNAME: p.surname || p.lastName || '',
+                    NAME: p.name || `${p.first_name || p.firstName || ''} ${p.surname || p.lastName || ''}`.trim() || 'Passenger',
+                    DOB: p.date_of_birth || p.dateOfBirth || '',
+                    GENDER: p.gender || '',
+                    PASSPORT_NUMBER: p.passport_number || p.passportNumber || '',
+                    SEAT_NUMBER: item.seat_number || item.seatNumber || b.seatNumber || 'Unassigned',
+                    CLASS: item.cabin_class || item.cabinClass || b.cabinClass || 'Economy',
+                    MEAL_PREFERENCE: p.meal_preference || p.mealPreference || b.meal_preference || 'None',
+                    SPECIAL_ASSISTANCE: p.special_assistance || p.specialAssistance || b.special_assistance || 'None',
+                    WHEELCHAIR_REQUIRED: (p.wheelchair_required || p.wheelchair || b.wheelchair_required === 'YES') ? 'YES' : 'NO',
+                    INFANT_BASSINET_REQUIRED: (p.infant_bassinet_required || b.infant_bassinet_required === 'YES') ? 'YES' : 'NO'
+                  });
+                });
+              } else if (b.passenger) {
+                const p = b.passenger;
+                passList.push({
+                  FIRST_NAME: p.first_name || p.firstName || '',
+                  SURNAME: p.surname || p.lastName || '',
+                  NAME: p.name || `${p.first_name || p.firstName || ''} ${p.surname || p.lastName || ''}`.trim() || 'Passenger',
+                  DOB: p.date_of_birth || p.dateOfBirth || '',
+                  GENDER: p.gender || '',
+                  PASSPORT_NUMBER: p.passport_number || p.passportNumber || '',
+                  SEAT_NUMBER: b.seat_number || b.seatNumber || 'Unassigned',
+                  CLASS: b.cabin_class || b.cabinClass || 'Economy',
+                  MEAL_PREFERENCE: b.meal_preference || p.meal_preference || 'None',
+                  SPECIAL_ASSISTANCE: b.special_assistance || p.special_assistance || 'None',
+                  WHEELCHAIR_REQUIRED: (b.wheelchair_required === 'YES' || p.wheelchair_required) ? 'YES' : 'NO',
+                  INFANT_BASSINET_REQUIRED: (b.infant_bassinet_required === 'YES' || p.infant_bassinet_required) ? 'YES' : 'NO'
+                });
+              }
+
+              const total = b.totalAmount || (b.paymentId ? b.paymentId.amount : 0);
+              let base = b.baseFare || 0;
+              let tax = b.taxes || 0;
+              let fee = b.fees || 0;
+
+              if (base === 0 && total > 0) {
+                base = Math.round(total * 0.85);
+                tax = Math.round(total * 0.10);
+                fee = total - base - tax;
+              }
+
+              bookingData = {
+                BOOKING_ID: b._id,
+                PNR: b.bookingReference || ('AK' + String(b._id).slice(-6).toUpperCase()),
+                TICKET_NUMBER: b.ticketNumber || ('AK-' + String(b._id).slice(-8)),
+                ISSUED_AT: b.issuedAt || b.createdAt,
+                STATUS: b.status || 'CONFIRMED',
+                BOOKING_DATE: b.departureDate || b.booking_date,
+                FLIGHT_NUMBER: b.flightNumber || primaryFlight.flight_number || 'AK-101',
+                AIRLINE_NAME: primaryFlight.airline_name || 'Air Kerala',
+                ORIGIN: b.origin || primaryFlight.origin || '',
+                DESTINATION: b.destination || primaryFlight.destination || '',
+                DEP_TEXT: b.departureTime || primaryFlight.departure_time || '',
+                ARR_TEXT: b.arrivalTime || primaryFlight.arrival_time || '',
+                TRIP_TYPE: b.tripType || (b.flights && b.flights.length > 1 ? 'MULTI_CITY' : 'ONE_WAY'),
+                FLIGHTS: (b.flights && b.flights.length > 0) ? b.flights : [{
+                  flightNumber: b.flightNumber || primaryFlight.flight_number || 'AK-101',
+                  airlineName: primaryFlight.airline_name || 'Air Kerala',
+                  origin: b.origin || primaryFlight.origin || '',
+                  destination: b.destination || primaryFlight.destination || '',
+                  departureTime: b.departureTime || primaryFlight.departure_time || '',
+                  arrivalTime: b.arrivalTime || primaryFlight.arrival_time || '',
+                  departureDate: b.departureDate || b.booking_date
+                }],
+                PASSENGERS: passList,
+                AMOUNT: total,
+                BASE_FARE: base,
+                TAXES: tax,
+                FEES: fee,
+                PAYMENT_STATUS: b.paymentStatus || 'PAID',
+                PAYMENT_METHOD: b.paymentMethod || 'CARD',
+                TRANSACTION_REF: b.transactionReference || b._id
+              };
+            }
+          }
+        } catch (err) {
+          console.error('Booking payment fetch error:', err);
+        }
+      }
+
+      if (!bookingData) {
+        showError('Could not locate booking record in database for ID: ' + bookingId);
+        return;
+      }
+
+      renderTicket(bookingData);
+    }
+
+    function renderTicket(data) {
+      document.getElementById('loadingState').style.display = 'none';
+      document.getElementById('ticketContainer').style.display = 'block';
+      document.getElementById('actionButtons').style.display = 'flex';
+
+      document.getElementById('displayPNR').textContent = data.PNR || 'AK-PNR';
+      document.getElementById('displayTicketNum').textContent = data.TICKET_NUMBER || ('AK-' + String(data.BOOKING_ID).slice(-8));
+      document.getElementById('displayIssuedDate').textContent = formatDateStr(data.ISSUED_AT || data.BOOKING_DATE);
+
+      // Render Flight Segments
+      const flightContainer = document.getElementById('flightSegmentsContainer');
+      flightContainer.innerHTML = '';
+
+      const flightsList = (data.FLIGHTS && data.FLIGHTS.length > 0) ? data.FLIGHTS : [{
+        flightNumber: data.FLIGHT_NUMBER,
+        airlineName: data.AIRLINE_NAME,
+        origin: data.ORIGIN,
+        destination: data.DESTINATION,
+        departureTime: data.DEP_TEXT,
+        arrivalTime: data.ARR_TEXT,
+        departureDate: data.BOOKING_DATE
+      }];
+
+      const tripType = data.TRIP_TYPE || (flightsList.length > 1 ? (flightsList.length === 2 ? 'ROUND_TRIP' : 'MULTI_CITY') : 'ONE_WAY');
+
+      flightsList.forEach((seg, idx) => {
+        const depInfo = resolveAirportInfo(seg.origin || seg.originCode || data.ORIGIN);
+        const arrInfo = resolveAirportInfo(seg.destination || seg.destinationCode || data.DESTINATION);
+
+        let tagLabel = `FLIGHT SEGMENT ${idx + 1}`;
+        if (tripType === 'ROUND_TRIP') {
+          tagLabel = idx === 0 ? 'OUTBOUND FLIGHT' : 'RETURN FLIGHT';
+        } else if (tripType === 'ONE_WAY') {
+          tagLabel = 'ONE WAY FLIGHT';
+        }
+
+        const segmentCard = document.createElement('div');
+        segmentCard.className = 'segment-card';
+        segmentCard.innerHTML = `
+          <div class="segment-header">
+            <span class="segment-tag">${tagLabel}</span>
+            <span class="segment-airline">${seg.airlineName || 'Air Kerala'} • ${seg.flightNumber || data.FLIGHT_NUMBER || 'AK-101'}</span>
+          </div>
+          <div class="route-grid">
+            <div class="airport-box">
+              <div class="airport-code">${depInfo.code}</div>
+              <div class="airport-city">${depInfo.city}</div>
+              <div class="airport-fullname">${depInfo.name}</div>
+              <div class="flight-time">🕒 ${seg.departureTime || data.DEP_TEXT || '10:00 AM'}</div>
+              <div class="flight-date">📅 ${formatDateStr(seg.departureDate || data.BOOKING_DATE)}</div>
+            </div>
+            <div class="flight-divider">
+              <span class="flight-num-badge">${seg.flightNumber || data.FLIGHT_NUMBER || 'AK-101'}</span>
+              <div class="line-wrapper">
+                <span class="plane-icon">✈</span>
+              </div>
+              <span class="class-badge">Cabin: ${data.PASSENGERS?.[0]?.CLASS || 'Economy'}</span>
+            </div>
+            <div class="airport-box right">
+              <div class="airport-code">${arrInfo.code}</div>
+              <div class="airport-city">${arrInfo.city}</div>
+              <div class="airport-fullname">${arrInfo.name}</div>
+              <div class="flight-time">🕒 ${seg.arrivalTime || data.ARR_TEXT || '12:30 PM'}</div>
+              <div class="flight-date">📅 ${formatDateStr(seg.arrivalDate || seg.departureDate || data.BOOKING_DATE)}</div>
+            </div>
+          </div>
+        `;
+        flightContainer.appendChild(segmentCard);
+      });
+
+      // Render Passengers
+      const passContainer = document.getElementById('passengersContainer');
+      passContainer.innerHTML = '';
+
+      const passengersList = (data.PASSENGERS && data.PASSENGERS.length > 0) ? data.PASSENGERS : [];
+
+      passengersList.forEach((p, index) => {
+        const fullName = p.NAME || `${p.FIRST_NAME || ''} ${p.SURNAME || ''}`.trim() || `Passenger ${index + 1}`;
+        const pCard = document.createElement('div');
+        pCard.className = 'passenger-card';
+        pCard.innerHTML = `
+          <div class="passenger-header">
+            <div class="passenger-name-title">PASSENGER ${index + 1}: ${fullName}</div>
+            <div class="seat-pill">Seat: ${p.SEAT_NUMBER || 'Assigned at check-in'} (${p.CLASS || 'Economy'})</div>
+          </div>
+          <div class="passenger-info-grid">
+            <div class="info-cell">
+              <small>First Name</small>
+              <strong>${p.FIRST_NAME || fullName.split(' ')[0] || '—'}</strong>
+            </div>
+            <div class="info-cell">
+              <small>Surname</small>
+              <strong>${p.SURNAME || fullName.split(' ').slice(1).join(' ') || '—'}</strong>
+            </div>
+            <div class="info-cell">
+              <small>Date of Birth</small>
+              <strong>${formatDateStr(p.DOB)}</strong>
+            </div>
+            <div class="info-cell">
+              <small>Gender</small>
+              <strong>${p.GENDER || 'Unspecified'}</strong>
+            </div>
+            <div class="info-cell">
+              <small>Passport Number</small>
+              <strong>${maskPassport(p.PASSPORT_NUMBER)}</strong>
+            </div>
+            <div class="info-cell">
+              <small>Meal Preference</small>
+              <strong class="highlight">${p.MEAL_PREFERENCE || 'None'}</strong>
+            </div>
+            <div class="info-cell">
+              <small>Special Assistance</small>
+              <strong>${p.SPECIAL_ASSISTANCE || 'None'}</strong>
+            </div>
+            <div class="info-cell">
+              <small>Wheelchair Required</small>
+              <strong>${p.WHEELCHAIR_REQUIRED === 'YES' ? '♿ YES' : 'NO'}</strong>
+            </div>
+            <div class="info-cell">
+              <small>Infant Bassinet</small>
+              <strong>${p.INFANT_BASSINET_REQUIRED === 'YES' ? '👶 YES' : 'NO'}</strong>
+            </div>
+          </div>
+        `;
+        passContainer.appendChild(pCard);
+      });
+
+      // Fare Breakdown
+      document.getElementById('fareBase').textContent = formatCurrency(data.BASE_FARE || (data.AMOUNT * 0.85));
+      document.getElementById('fareTaxes').textContent = formatCurrency(data.TAXES || (data.AMOUNT * 0.10));
+      document.getElementById('fareFees').textContent = formatCurrency(data.FEES || (data.AMOUNT * 0.05));
+      document.getElementById('fareTotal').textContent = formatCurrency(data.AMOUNT);
+
+      // Payment Info
+      document.getElementById('paymentStatusDisplay').textContent = data.PAYMENT_STATUS || 'PAID';
+      document.getElementById('paymentMethodDisplay').textContent = data.PAYMENT_METHOD || 'CREDIT / DEBIT CARD';
+      document.getElementById('transactionRefDisplay').textContent = data.TRANSACTION_REF || data.BOOKING_ID;
+
+      // QR Code Generation
+      const qrPayload = JSON.stringify({
+        pnr: data.PNR,
+        ticket: data.TICKET_NUMBER,
+        flight: data.FLIGHT_NUMBER,
+        passengers: passengersList.map(p => p.NAME || `${p.FIRST_NAME} ${p.SURNAME}`).join(', ')
+      });
+      document.getElementById('qrCodeImg').src = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' + encodeURIComponent(qrPayload);
+    }
+
+    function showError(msg) {
+      document.getElementById('loadingState').style.display = 'none';
+      document.getElementById('ticketContainer').style.display = 'none';
+      document.getElementById('actionButtons').style.display = 'none';
+      document.getElementById('errorState').style.display = 'block';
+      document.getElementById('errorMessageText').textContent = msg;
+    }
+
+    window.addEventListener('DOMContentLoaded', initTicketPage);
+  </script>
+</body>
+</html>

@@ -14,10 +14,13 @@ const paymentRoutes = require('./routes/payment');
 const liveflightRoutes = require('./routes/liveflights');
 
 
+/* =========================================================
+   CREATE EXPRESS APP
+========================================================= */
+
 const app = express();
 
-const PORT =
-    process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 
 
 /* =========================================================
@@ -53,7 +56,6 @@ app.use(
 
 app.use(
     session({
-
         secret:
             process.env.SESSION_SECRET ||
             'air-kerala-session-secret',
@@ -63,7 +65,6 @@ app.use(
         saveUninitialized: false,
 
         cookie: {
-
             httpOnly: true,
 
             secure: false,
@@ -75,9 +76,7 @@ app.use(
                 60 *
                 60 *
                 24
-
         }
-
     })
 );
 
@@ -95,31 +94,50 @@ app.use(
     )
 );
 
+app.use(
+    '/assets',
+    express.static(
+        path.join(
+            __dirname,
+            'Public'
+        )
+    )
+);
+
 
 /* =========================================================
    API ROUTES
 ========================================================= */
 
+/* AUTH */
 app.use(
     '/api/auth',
     authRoutes
 );
 
+
+/* FLIGHTS */
 app.use(
     '/api',
     flightRoutes
 );
 
+
+/* BOOKINGS */
 app.use(
     '/api',
     bookingRoutes
 );
 
+
+/* PAYMENT */
 app.use(
-    '/api',
+    '/api/payment',
     paymentRoutes
 );
 
+
+/* LIVE FLIGHTS */
 app.use(
     '/api',
     liveflightRoutes
@@ -159,6 +177,26 @@ app.get(
 
 
 /* =========================================================
+   ROOT ROUTE
+========================================================= */
+
+app.get(
+    '/',
+    (req, res) => {
+
+        res.sendFile(
+            path.join(
+                __dirname,
+                'Public',
+                'index.html'
+            )
+        );
+
+    }
+);
+
+
+/* =========================================================
    DATABASE + SERVER
 ========================================================= */
 
@@ -174,18 +212,32 @@ connectDB()
                 console.log(
                     '======================================'
                 );
+
                 console.log(
                     '        AIR KERALA SERVER'
                 );
+
                 console.log(
                     '======================================'
                 );
+
                 console.log(
                     `http://localhost:${PORT}`
                 );
+
                 console.log(
                     '======================================'
                 );
+
+                console.log('');
+                console.log(
+                    'MongoDB connected successfully.'
+                );
+
+                console.log(
+                    'Server is running successfully.'
+                );
+
                 console.log('');
 
             }

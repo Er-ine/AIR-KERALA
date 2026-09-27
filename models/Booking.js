@@ -1,155 +1,339 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
+const passengerSchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      default: "",
+    },
 
-const passengerBookingSchema =
-    new mongoose.Schema({
+    firstName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
 
-        passenger: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Passenger',
-            required: true
-        },
+    lastName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
 
-        seat_id: {
-            type: mongoose.Schema.Types.ObjectId,
-            required: true
-        },
+    gender: {
+      type: String,
+      default: "",
+    },
 
-        seat_number: {
-            type: String,
-            required: true
-        },
+    dateOfBirth: {
+      type: String,
+      default: "",
+    },
 
-        cabin_class: {
-            type: String,
-            required: true
-        }
+    nationality: {
+      type: String,
+      default: "",
+    },
 
-    }, {
-        _id: false
-    });
+    passportNumber: {
+      type: String,
+      default: "",
+    },
 
+    email: {
+      type: String,
+      default: "",
+      trim: true,
+    },
 
-const bookingSchema =
-    new mongoose.Schema({
+    phone: {
+      type: String,
+      default: "",
+      trim: true,
+    },
 
-        user: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
-            required: true
-        },
+    mealPreference: {
+      type: String,
+      default: "",
+    },
 
-        agent_id: {
-            type: Number,
-            default: 1
-        },
+    wheelchair: {
+      type: Boolean,
+      default: false,
+    },
 
-        flight: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Flight',
-            required: true
-        },
+    medicalPreference: {
+      type: String,
+      default: "",
+    },
+  },
+  { _id: false }
+);
 
+const flightSegmentSchema = new mongoose.Schema(
+  {
+    flightId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Flight",
+    },
+    flightNumber: {
+      type: String,
+      default: "",
+    },
+    airlineName: {
+      type: String,
+      default: "Air Kerala",
+    },
+    origin: {
+      type: String,
+      default: "",
+    },
+    originCode: {
+      type: String,
+      default: "",
+    },
+    destination: {
+      type: String,
+      default: "",
+    },
+    destinationCode: {
+      type: String,
+      default: "",
+    },
+    departureDate: {
+      type: String,
+      default: "",
+    },
+    departureTime: {
+      type: String,
+      default: "",
+    },
+    arrivalDate: {
+      type: String,
+      default: "",
+    },
+    arrivalTime: {
+      type: String,
+      default: "",
+    },
+  },
+  { _id: false }
+);
 
-        passengers: {
-            type: [passengerBookingSchema],
-            default: []
-        },
+const bookingSchema = new mongoose.Schema(
+  {
+    bookingReference: {
+      type: String,
+      unique: true,
+      sparse: true,
+      index: true,
+    },
 
+    ticketNumber: {
+      type: String,
+      unique: true,
+      sparse: true,
+      index: true,
+    },
 
-        /*
-         * Legacy fields
-         * kept for compatibility.
-         */
+    ticketStatus: {
+      type: String,
+      enum: [
+        "NOT_ISSUED",
+        "ISSUED",
+        "CANCELLED",
+      ],
+      default: "NOT_ISSUED",
+    },
 
-        passenger: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Passenger',
-            default: null
-        },
+    issuedAt: {
+      type: Date,
+      default: null,
+    },
 
-        seat_id: {
-            type: mongoose.Schema.Types.ObjectId,
-            default: null
-        },
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: false,
+    },
 
-        seat_number: {
-            type: String,
-            default: null
-        },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: false,
+    },
 
-        cabin_class: {
-            type: String,
-            default: null
-        },
+    flightId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Flight",
+      required: false,
+    },
 
+    flight: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Flight",
+      required: false,
+    },
 
-        meal_preference: {
-            type: String,
-            default: 'None'
-        },
+    tripType: {
+      type: String,
+      enum: ["ONE_WAY", "ROUND_TRIP", "MULTI_CITY"],
+      default: "ONE_WAY",
+    },
 
-        wheelchair_required: {
-            type: String,
-            default: 'NO'
-        },
+    flights: {
+      type: [flightSegmentSchema],
+      default: [],
+    },
 
-        special_assistance: {
-            type: String,
-            default: 'None'
-        },
+    flightNumber: {
+      type: String,
+      default: "",
+    },
 
-        infant_bassinet_required: {
-            type: String,
-            default: 'NO'
-        },
+    origin: {
+      type: String,
+      default: "",
+    },
 
+    originCode: {
+      type: String,
+      default: "",
+    },
 
-        booking_date: {
-            type: String,
-            default: () =>
-                new Date()
-                    .toISOString()
-                    .split('T')[0]
-        },
+    destination: {
+      type: String,
+      default: "",
+    },
 
+    destinationCode: {
+      type: String,
+      default: "",
+    },
 
-        status: {
-            type: String,
+    departureDate: {
+      type: String,
+      default: "",
+    },
 
-            enum: [
-                'CONFIRMED',
-                'CANCELLED',
-                'CHECKED_IN'
-            ],
+    departureTime: {
+      type: String,
+      default: "",
+    },
 
-            default: 'CONFIRMED'
-        },
+    arrivalDate: {
+      type: String,
+      default: "",
+    },
 
+    arrivalTime: {
+      type: String,
+      default: "",
+    },
 
-        payment_status: {
-            type: String,
+    cabinClass: {
+      type: String,
+      default: "Economy",
+    },
 
-            enum: [
-                'PENDING',
-                'PAID',
-                'REFUNDED'
-            ],
+    seatNumber: {
+      type: String,
+      default: "",
+    },
 
-            default: 'PENDING'
-        },
+    passenger: {
+      type: mongoose.Schema.Types.Mixed,
+      ref: "Passenger",
+      required: false,
+    },
 
+    passengers: {
+      type: mongoose.Schema.Types.Mixed,
+      default: [],
+    },
 
-        createdAt: {
-            type: Date,
-            default: Date.now
-        }
+    booking_date: {
+      type: String,
+      default: "",
+    },
 
-    });
+    baseFare: {
+      type: Number,
+      default: 0,
+    },
 
+    taxes: {
+      type: Number,
+      default: 0,
+    },
 
-module.exports =
-    mongoose.model(
-        'Booking',
-        bookingSchema
-    );
+    fees: {
+      type: Number,
+      default: 0,
+    },
+
+    totalAmount: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+
+    paymentId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Payment",
+      default: null,
+    },
+
+    paymentStatus: {
+      type: String,
+      enum: [
+        "PENDING",
+        "PAID",
+        "FAILED",
+        "CANCELLED",
+        "REFUNDED",
+      ],
+      default: "PENDING",
+    },
+
+    paymentMethod: {
+      type: String,
+      default: "",
+    },
+
+    transactionReference: {
+      type: String,
+      default: "",
+    },
+
+    baggageAllowance: {
+      type: String,
+      default: "",
+    },
+
+    status: {
+      type: String,
+      enum: [
+        "PENDING",
+        "CONFIRMED",
+        "CANCELLED",
+        "COMPLETED",
+      ],
+      default: "PENDING",
+    },
+
+    cancelledAt: {
+      type: Date,
+      default: null,
+    },
+
+    cancellationReason: {
+      type: String,
+      default: "",
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+module.exports = mongoose.model("Booking", bookingSchema);
