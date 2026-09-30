@@ -46,8 +46,7 @@
         ===================================================== */
 
         .hero {
-            height: 760px;
-            min-height: 680px;
+            min-height: 640px;
             position: relative;
             overflow: hidden;
             color: white;
@@ -292,7 +291,7 @@
 
             margin: 0 auto;
 
-            padding: 175px 5% 0;
+            padding: 175px 5% 120px;
         }
 
         .hero-eyebrow {
@@ -350,7 +349,7 @@
             position: absolute;
 
             left: 5%;
-            bottom: 170px;
+            bottom: 70px;
 
             z-index: 7;
 
@@ -418,7 +417,7 @@
         .slider-dots {
             position: absolute;
 
-            bottom: 108px;
+            bottom: 40px;
 
             left: 5%;
 
@@ -452,17 +451,42 @@
         ===================================================== */
 
         .search-wrapper {
-            position: absolute;
+            position: relative;
 
-            bottom: -1px;
-
-            left: 50%;
-
-            transform: translateX(-50%);
+            margin: 32px auto 0;
 
             width: min(1180px, 90%);
+        }
 
-            z-index: 10;
+        #multiCityContainer {
+            box-sizing: border-box;
+            max-width: 100%;
+        }
+
+        .multi-city-footer {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-top: 15px;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+
+        .multi-city-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+        }
+
+        @media (max-width: 600px) {
+            .multi-city-footer,
+            .multi-city-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
         }
 
         .search-card {
@@ -470,10 +494,10 @@
 
             color: #17202a;
 
-            border-radius: 5px 5px 0 0;
+            border-radius: 5px;
 
             box-shadow:
-                0 -10px 40px rgba(0,0,0,0.18);
+                0 10px 40px rgba(0,0,0,0.14);
         }
 
 
@@ -954,9 +978,7 @@
                 grid-template-columns: repeat(2, 1fr);
             }
 
-            .hero {
-                height: 820px;
-            }
+
 
             .features {
                 grid-template-columns: 1fr;
@@ -978,14 +1000,9 @@
                 padding: 8px 12px;
             }
 
-            .hero {
-                min-height: 900px;
-                height: auto;
-            }
-
             .hero-content {
                 padding-top: 140px;
-                padding-bottom: 350px;
+                padding-bottom: 110px;
             }
 
             .hero-title {
@@ -1130,6 +1147,13 @@
          FLIGHT SEARCH
     ===================================================== -->
 
+</section>
+
+
+<!-- =====================================================
+     FLIGHT SEARCH (below hero, normal flow)
+===================================================== -->
+
     <div class="search-wrapper">
 
         <div class="search-card">
@@ -1235,11 +1259,11 @@
             <!-- Multi City Search Fields Container -->
             <div id="multiCityContainer" style="display:none; padding: 20px;">
                 <div id="multiCitySegments"></div>
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:15px; border-top:1px solid #eee; padding-top:15px;">
+                <div class="multi-city-footer">
                     <div>
                         <button type="button" class="btn btn-sm btn-outline-primary fw-bold" onclick="addMultiCitySegment()">+ Add Segment</button>
                     </div>
-                    <div style="display:flex; gap:15px; align-items:center;">
+                    <div class="multi-city-actions">
                         <div style="display:flex; align-items:center; gap:8px;">
                             <label class="field-label mb-0">Passengers:</label>
                             <select class="field-input" id="multiPassengerSelect" style="width:auto; padding:4px 8px;">
@@ -1259,9 +1283,6 @@
         </div>
 
     </div>
-
-</section>
-
 
 
 <!-- =====================================================
