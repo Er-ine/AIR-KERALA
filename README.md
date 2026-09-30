@@ -1,42 +1,173 @@
-# NAVIERO — Flight Ticket Management System (DBMS Project)
+# ✈️ Air Kerala — Ticket Management System
 
-## Project Overview
+> **Affordable Air Travel, Redefined.**
 
-NAVIERO is a flight booking platform that pulls **real-time live flight data** — actual departures, arrivals, statuses, and aircraft info — instead of static dummy listings. Users can search live flights, pick a cabin class and seat, and complete a booking with payment, all backed by a MongoDB database.
+Air Kerala Ticket Management System is a full-stack airline booking platform designed to provide a smooth and modern experience for searching flights, booking tickets, managing passenger information, processing payments, and viewing electronic tickets.
 
-## Tech stack
+The project combines a responsive airline-style frontend with a Node.js/Express backend and MongoDB database to manage flight, passenger, booking, authentication, and payment data.
 
-Backend
-* Node.js — Runtime environment
-* Express.js — Web framework for building APIs
+---
 
-Database
-* MongoDB — Document database (set `MONGODB_URI` in `.env`)
-* Mongoose — MongoDB object modelling
+## 🌐 Overview
 
-## Collections (Mongoose models in `models/`)
+Air Kerala is designed as a digital airline platform where users can:
 
-1. Flight
-2. Seat
-3. Passenger
-4. Booking (includes the booking–passenger details)
-5. Payment
-6. Counter (sequential numeric IDs)
+- Create and manage an account
+- Search available flights
+- View live flight information
+- Select and book flights
+- Enter passenger details
+- Support multiple passengers within a booking
+- Make and track payments
+- View generated e-tickets
+- Manage upcoming bookings
+- View previous bookings
+- Cancel eligible bookings
+- Access booking and passenger information securely
 
-## Features
-- Sign up / login
-- Live flight search by origin and destination
-- Domestic flights skip the First Class option
-- Cabin class and seat selection
-- Passenger details with meal, wheelchair, and medical preferences
-- Payment with a printable e-ticket receipt
-- Flight booking and cancellation
-- Seat availability tracking
-- Payment and refund management
+The application follows a complete booking flow:
 
-## Files
+**Home → Flight Details → Passenger Details → Payment → E-Ticket → Manage Booking**
 
-* `schema.sql`, `sample_data.sql`, `queries.sql` – legacy MySQL files, kept only as reference for the old data
+---
 
-## Author
-Erine Anna Binu
+## ✨ Features
+
+### 🔐 User Authentication
+
+- User registration
+- Secure login using server-side sessions
+- Authentication state management
+- Logout functionality
+- Protected booking and account-related operations
+
+### ✈️ Flight Management
+
+- Flight search interface
+- Live flight information
+- Domestic flight support
+- Departure and arrival information
+- Flight timing and route information
+- Seat availability management
+- Cabin/class information
+
+### 🎫 Ticket Booking
+
+- Passenger information collection
+- Multiple passengers in a single booking
+- Seat selection
+- Cabin class selection
+- Meal preferences
+- Special assistance requirements
+- Wheelchair assistance options
+- Infant-related assistance options
+- Booking status tracking
+
+### 💳 Payment Management
+
+- Payment processing interface
+- Payment status tracking
+- Booking-payment association
+- Payment information stored in MongoDB
+- Payment summary linked to the corresponding booking
+
+### 🎟️ E-Ticket
+
+The system generates an airline-style electronic ticket containing:
+
+- Air Kerala branding
+- Passenger details
+- Booking reference
+- Ticket information
+- Flight segments
+- Departure and arrival information
+- Seat information
+- Cabin class
+- Fare information
+- Payment details
+- QR code
+
+### 📋 Manage My Booking
+
+Users can access their bookings without repeatedly entering passenger information.
+
+The management section supports:
+
+- Upcoming bookings
+- Previous bookings
+- Booking status
+- Booking details
+- Cancellation of eligible bookings
+- Check-in related functionality
+- Payment completion for pending bookings
+
+---
+
+## 🛠️ Technology Stack
+
+### Frontend
+
+- HTML5
+- CSS3
+- JavaScript
+- Responsive UI
+- Fetch API
+
+### Backend
+
+- Node.js
+- Express.js
+- REST APIs
+- Express Session
+- CORS
+
+### Database
+
+- MongoDB
+- Mongoose
+
+### Development Tools
+
+- Visual Studio Code
+- npm
+- Git
+- GitHub
+
+---
+
+## 📁 Project Structure
+
+```text
+AirKerala-Ticket-Management-System/
+│
+├── Public/
+│   ├── index.html
+│   ├── flights.html
+│   ├── booking.html
+│   ├── payment.html
+│   ├── ticket.html
+│   ├── manage-booking.html
+│   ├── site-common.css
+│   ├── site-common.js
+│   └── airkeralalogo.png
+│
+├── models/
+│   ├── Booking.js
+│   ├── Flight.js
+│   ├── Passenger.js
+│   ├── Payment.js
+│   └── User.js
+│
+├── routes/
+│   ├── auth.js
+│   ├── booking.js
+│   ├── flights.js
+│   ├── liveflights.js
+│   └── payment.js
+│
+├── db.js
+├── server.js
+├── package.json
+├── package-lock.json
+├── .env
+└── README.md
