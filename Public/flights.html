@@ -304,12 +304,43 @@
         .book-flight-button:hover {
             background: #0565b0;
         }
+    
+        /* ---------- RESPONSIVE (tablet + mobile) ---------- */
+        #flightResults {
+            grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+        }
+        .airport, .route-point { min-width: 0; }
+        .airport-city, .airport-code { overflow-wrap: anywhere; line-height: 1.2; }
+        .flight-time { flex-wrap: wrap; }
+        @media (max-width: 900px) {
+            .flights-page { padding: 36px 16px 60px; }
+            .flight-search-box { padding: 24px; }
+            .flight-search-title { font-size: 25px; }
+        }
+        @media (max-width: 600px) {
+            body { background-attachment: scroll; }
+            .flights-page { padding: 24px 12px 48px; }
+            .flight-search-box { padding: 18px 16px; }
+            .flight-search-title { font-size: 22px; }
+            .flight-search-subtitle { margin-bottom: 20px; }
+            .form-control, .form-select { font-size: 16px; }
+            .search-button, .clear-button, .book-flight-button { min-height: 48px; }
+            .results-heading { flex-wrap: wrap; }
+            .results-heading h2 { font-size: 19px; }
+            .flight-card { padding: 18px 16px; }
+            .route { gap: 8px; }
+            .airport { flex: 1.7; }
+            .route-line { flex: .5; min-width: 30px; }
+            .airport-code { font-size: 17px; }
+            .flight-time { flex-direction: column; gap: 4px; }
+            .trip-banner { padding: 14px; }
+        }
     </style>
 </head>
 
 <body>
 
-    <script src="site-common.js" data-page="book"></script>
+    <script src="site-common.js" data-page="book" data-auth="modal"></script>
 
     <main class="flights-page">
         <div class="flights-container">
@@ -449,24 +480,11 @@
         }
 
         /* =====================================================
-           VERIFY AUTHENTICATION ON LOAD
+           SEARCH IS PUBLIC - login is only required when the user
+           continues from the selected flight to booking.html
         ===================================================== */
-        window.addEventListener('DOMContentLoaded', async () => {
-            try {
-                const authRes = await fetch('/api/auth/me', { credentials: 'include' });
-                const authData = await authRes.json();
-                if (!authData.success || !authData.authenticated) {
-                    window.location.href = 'index.html?login=required';
-                    return;
-                }
-
-                // Auth OK, initialize search workflow
-                initWorkflow();
-
-            } catch (err) {
-                console.error("Auth check error:", err);
-                window.location.href = 'index.html?login=required';
-            }
+        window.addEventListener('DOMContentLoaded', () => {
+            initWorkflow();
         });
 
         function initWorkflow() {
@@ -742,6 +760,20 @@
                 return;
             }
 
+            // Final selection made: this is the authentication gate.
+            // Express session (GET /api/auth/me) decides - not localStorage.
+            const user = await AKAuth.check();
+
+            if (!user) {
+                // multiFlightSelections stays in memory while the modal is open
+                AKAuth.openLogin(continueToBooking);
+                return;
+            }
+
+            await continueToBooking();
+        }
+
+        async function continueToBooking() {
             // All flight segments selected for trip! Ensure all flights exist in DB
             try {
                 const createdFlightIds = [];

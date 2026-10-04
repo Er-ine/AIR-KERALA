@@ -1050,6 +1050,26 @@
             }
         }
 
+    
+        /* ---------- RESPONSIVE: search bar ----------
+           (the 6-column template used to be an inline style, which beat
+           every media query and broke the layout on phones/tablets) */
+        #searchFieldsGrid {
+            grid-template-columns: 1.3fr 1.3fr 1.1fr 1.1fr 0.9fr 160px;
+        }
+        .field, .field-input { min-width: 0; }
+        @media (max-width: 1000px) {
+            #searchFieldsGrid { grid-template-columns: 1fr 1fr; }
+            #searchFieldsGrid .search-button { grid-column: 1 / -1; }
+            .field:nth-of-type(even) { border-right: none; }
+        }
+        @media (max-width: 600px) {
+            #searchFieldsGrid { grid-template-columns: 1fr; padding: 8px; }
+            #searchFieldsGrid .search-button { margin: 12px 15px 15px; min-height: 52px; }
+            .field-input { font-size: 16px; min-height: 36px; }
+            .search-tab { padding: 15px 14px; white-space: nowrap; }
+            .search-tabs { padding: 0 8px; }
+        }
     </style>
 
     <!-- Shared navbar + footer styles -->
@@ -1173,7 +1193,7 @@
 
             <!-- Single / Round Trip Search Fields -->
             <div id="standardSearchContainer">
-                <div class="search-fields" id="searchFieldsGrid" style="grid-template-columns: 1.3fr 1.3fr 1.1fr 1.1fr 0.9fr 160px;">
+                <div class="search-fields" id="searchFieldsGrid">
 
                     <div class="field">
                         <label class="field-label">From</label>
@@ -1896,11 +1916,11 @@ window.onload = async function() {
             localStorage.removeItem("userName");
             localStorage.removeItem("userEmail");
             localStorage.removeItem("userId");
-            showAuthModal();
+            /* Logged out visitors simply keep browsing - no automatic popup.
+               The navbar Login button opens the modal manually. */
         }
     } catch (e) {
         console.error("Session check error:", e);
-        showAuthModal();
     }
 };
 
@@ -2084,6 +2104,10 @@ async function handleLogin() {
         passwordInput.value = "";
 
         clearAuthError();
+
+        if (window.AKAuth) {
+            AKAuth.loginSucceeded(data.user);
+        }
 
         console.log("Air Kerala login successful.");
 

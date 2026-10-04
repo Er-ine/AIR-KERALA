@@ -287,6 +287,26 @@
             }
         }
 
+    
+        /* ---------- RESPONSIVE (tablet + mobile) ---------- */
+        body { background-attachment: scroll; }
+        .booking-page { margin-top: 40px; }
+        .summary-value { overflow-wrap: anywhere; }
+        @media (max-width: 900px) {
+            .booking-card { padding: 26px; }
+            .passenger-card { padding: 20px; }
+        }
+        @media (max-width: 600px) {
+            .booking-page { margin: 16px auto 40px; padding: 10px; }
+            .booking-card { padding: 18px 14px; border-radius: 16px; }
+            .flight-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 14px; gap: 12px; }
+            .passenger-card { padding: 16px 14px; border-radius: 14px; }
+            .checkbox-row { flex-direction: column; gap: 12px; }
+            select, input { font-size: 16px; min-height: 46px; }
+            .check-item input { min-height: 0; width: 20px; height: 20px; }
+            .continue-btn { width: 100%; min-height: 52px; padding: 15px 20px; }
+            .total-value { font-size: 23px; }
+        }
     </style>
 </head>
 
@@ -651,7 +671,6 @@
             const data = await response.json();
 
             if (!response.ok || !data.authenticated) {
-                window.location.href = 'index.html?login=required';
                 return false;
             }
 
@@ -664,7 +683,6 @@
             return true;
         } catch (error) {
             console.error('AUTH CHECK ERROR:', error);
-            window.location.href = 'index.html?login=required';
             return false;
         }
     }
@@ -692,7 +710,27 @@
 
     window.addEventListener('DOMContentLoaded', async () => {
         const isAuth = await checkAuthentication();
-        if (!isAuth) return;
+
+        if (!isAuth) {
+            // Open the login modal; continue rendering this page after login.
+            // If dismissed, leave the booking step (it needs an account).
+            AKAuth.openLogin(
+                function () {
+                    renderItinerarySummary();
+                    renderPassengers();
+                },
+                {
+                    onCancel: function () {
+                        if (history.length > 1) {
+                            history.back();
+                        } else {
+                            window.location.href = 'flights.html';
+                        }
+                    }
+                }
+            );
+            return;
+        }
 
         renderItinerarySummary();
         renderPassengers();

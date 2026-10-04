@@ -263,12 +263,38 @@
             color: #071b2e;
             margin-bottom: 8px;
         }
+    
+        /* ---------- RESPONSIVE (tablet + mobile) ---------- */
+        .route-code, .route-name, .pnr-box { overflow-wrap: anywhere; }
+        .booking-tabs { overflow-x: auto; scrollbar-width: none; }
+        .booking-tabs::-webkit-scrollbar { display: none; }
+        .tab-btn { white-space: nowrap; }
+        @media (max-width: 900px) {
+            .manage-page { margin-top: 40px; padding: 16px; }
+        }
+        @media (max-width: 600px) {
+            body { background-attachment: scroll; }
+            .manage-page { margin: 16px auto 40px; padding: 10px; }
+            .page-header-box { padding: 20px 16px; }
+            .page-title { font-size: 24px; }
+            .booking-tabs { gap: 4px; }
+            .tab-btn { flex: 1; padding: 12px 8px; font-size: 13px; white-space: normal; text-align: center; min-height: 48px; }
+            .booking-card { padding: 18px 14px; }
+            .booking-card:hover { transform: none; }
+            .card-top { flex-direction: column; align-items: flex-start; }
+            .route-info { gap: 10px; }
+            .route-point { min-width: 100px; }
+            .route-arrow { transform: rotate(90deg); margin: 0 auto; }
+            .passenger-item { flex-direction: column; align-items: flex-start; gap: 4px; }
+            .action-btns { flex-direction: column; }
+            .btn-action { width: 100%; justify-content: center; min-height: 46px; }
+        }
     </style>
 </head>
 
 <body>
 
-    <script src="site-common.js" data-page="manage" data-auth="logout"></script>
+    <script src="site-common.js" data-page="manage" data-auth="modal"></script>
 
     <main class="manage-page">
 
@@ -313,7 +339,14 @@
                 const authRes = await fetch('/api/auth/me', { credentials: 'include' });
                 const authData = await authRes.json();
                 if (!authData.success || !authData.authenticated) {
-                    window.location.href = 'index.html?login=required';
+                    container.innerHTML = `
+                        <div class="empty-container">
+                            <h3>Please log in</h3>
+                            <p>Log in to view and manage your bookings.</p>
+                            <button class="btn btn-primary mt-2" onclick="AKAuth.openLogin(fetchUserBookings)">Login</button>
+                        </div>
+                    `;
+                    AKAuth.openLogin(fetchUserBookings);
                     return;
                 }
 

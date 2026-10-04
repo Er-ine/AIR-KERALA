@@ -372,6 +372,24 @@
                 box-shadow: none;
             }
         }
+    
+        /* ---------- RESPONSIVE (tablet + mobile) ---------- */
+        body { overflow-x: hidden; }
+        .payment-page { margin-top: 40px; }
+        @media (max-width: 900px) {
+            .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+        @media (max-width: 650px) {
+            .payment-page { margin: 16px auto 40px; padding: 10px; }
+            .payment-card { padding: 18px 14px; border-radius: 16px; }
+            .summary-grid { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+            .booking-summary { padding: 16px; }
+            h1 { font-size: 24px; }
+            .amount { font-size: 28px; }
+            .methods { gap: 8px; }
+            .method-btn { flex: 1 1 calc(50% - 8px); min-width: 0; min-height: 48px; }
+            .pay-btn, .print-btn, .ticket-btn { min-height: 52px; text-align: center; }
+        }
     </style>
 </head>
 
