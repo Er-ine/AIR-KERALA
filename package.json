@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "check:syntax": "node --check counter.js && node --check server.js && node --check db.js && node --check models/User.js && node --check models/Payment.js && node --check models/Passenger.js && node --check models/Flight.js && node --check models/Booking.js && node --check routes/liveflights.js && node --check routes/flights.js && node --check routes/booking.js && node --check routes/auth.js && node --check routes/payment.js && node --check routes/passenger.js && node --check routes/seat.js && node --check Public/site-common.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",
